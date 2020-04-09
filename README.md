@@ -40,13 +40,12 @@ $ npm run migrate:Kovan
 ### Setup frontend
 1. Execute command below in root directory.
 ```
-
 $ npm run client
 ```
 
 2. Access to browser by using link 
 ```
-http://127.0.0.1:3000
+http://127.0.0.1:3000/gas-fee-pool
 ```
 
 &nbsp;
@@ -63,19 +62,19 @@ http://127.0.0.1:3000
 ## 【References】
 - [rDAI]
   - [MetaCartel - Dragon Quest]
-    - Best rDAI Integration or Tool
+    - Best rDAI Integration or Tool  
       https://explorer.bounties.network/bounty/3921
 
-  - rtoken-contracts：
+  - rtoken-contracts：  
     https://github.com/rtoken-project/rtoken-contracts 
 
-  - rDAI explorer：
+  - rDAI explorer：  
     https://explorer.rdai.money
 
-  - Video of rDAI with eth.build
+  - Video of rDAI with eth.build  
     https://www.youtube.com/watch?v=nEC2kadoLms
 
-  - [Use Case]：Existing dApp（Dapps built on rDAI include）
+  - [Use Case]：Existing dApp（Dapps built on rDAI include）  
 	https://app.rdai.money
 	https://rtrees.dappy.dev
 	https://highpriests.rdai.money
@@ -84,16 +83,16 @@ http://127.0.0.1:3000
 
 
 - [Biconomy]
-  - [Money Legos A Global Online DeFi Hackathon]
+  - [Money Legos A Global Online DeFi Hackathon]  
     https://moneylegos.devfolio.co/#prizes
 
 
   - [Repos]
-	- SmartContract / Mexa
+	- SmartContract / Mexa  
 	  https://github.com/bcnmy/mexa
 
-	- Mexa-SDK
+	- Mexa-SDK  
 	  https://github.com/bcnmy/mexa-sdk
 
-	- Mexa Example Projects
+	- Mexa Example Projects  
 	  https://github.com/bcnmy/mexa-examples

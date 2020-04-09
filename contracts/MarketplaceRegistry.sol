@@ -19,13 +19,11 @@ import "./storage/McConstants.sol";
 contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     using SafeMath for uint;
 
-    address _erc20 = 0x3a33ddF84Eb9E16129b00e92dD3445A96b329d29;  // ETH address on Matic;
-    //address _erc20 = 0xaD6D458402F60fD3Bd25163575031ACDce07538D;  // DAI address on Ropsten;
+    //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
 
     IERC20 public erc20;
 
-    //constructor(address _erc20) public {
-    constructor() public {
+    constructor(address _erc20) public {
         erc20 = IERC20(_erc20);
     }
 
