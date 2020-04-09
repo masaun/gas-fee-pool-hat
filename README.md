@@ -65,6 +65,10 @@ http://127.0.0.1:3000/gas-fee-pool
     - Best rDAI Integration or Tool  
       https://explorer.bounties.network/bounty/3921
 
+  - [rDAI / Tutorial]
+    - rDAI Basics: A Tutorial on Programming Interest with DeFi  
+      https://medium.com/@victorrortvedt/rdai-basics-a-tutorial-on-programming-interest-with-defi-458baab9477a
+
   - rtoken-contracts：  
     https://github.com/rtoken-project/rtoken-contracts 
 
