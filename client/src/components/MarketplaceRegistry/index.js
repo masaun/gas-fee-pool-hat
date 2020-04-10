@@ -12,7 +12,7 @@ import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import styles from '../../App.module.scss';
 //import './App.css';
 
-import { walletAddressList } from '../../data/testWalletAddress'
+import { walletAddressList } from '../../data/testWalletAddress.js'
 
 
 export default class MarketplaceRegistry extends Component {
@@ -37,6 +37,32 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of testFunc() function ===', response);
     }
 
+    createHat = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+        //console.log('=== accounts ===', accounts);
+
+        const recipient1 = walletAddressList["addressList"]["address1"];
+        const recipient2 = walletAddressList["addressList"]["address2"];
+
+        const _recipients = [recipient1, recipient2];
+        //const _recipients = [accounts[0], accounts[1]]; 
+        const _proportions = [70, 30];
+        const _doChangeHat = true;
+
+        let response = await marketplace_registry.methods._createHat(_recipients, 
+                                                                     _proportions, 
+                                                                     _doChangeHat).send({ from: accounts[0] })
+        console.log('=== response of _createHat() function ===', response);                
+    }
+
+    getHatByID = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _hatID = 3;
+
+        let response = await marketplace_registry.methods._getHatByID(_hatID).call();
+        console.log('=== response of _getHatByID() function ===', response);          
+    }
 
   
     //////////////////////////////////// 
@@ -155,7 +181,7 @@ export default class MarketplaceRegistry extends Component {
             <div className={styles.widgets}>
                 <Grid container style={{ marginTop: 32 }}>
                     <Grid item xs={12}>
-                        <h4>Marketplace Registry</h4>
+                        <h4>Gas Fee Pool</h4>
 
                         <Card width={"auto"} 
                               maxWidth={"420px"} 
@@ -164,7 +190,11 @@ export default class MarketplaceRegistry extends Component {
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button>
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
                         </Card>
                     </Grid>
 
