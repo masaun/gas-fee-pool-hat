@@ -12,7 +12,7 @@ import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import styles from '../../App.module.scss';
 //import './App.css';
 
-import { walletAddressList } from '../../data/testWalletAddress'
+import { walletAddressList } from '../../data/testWalletAddress.js'
 
 
 export default class MarketplaceRegistry extends Component {
@@ -39,8 +39,13 @@ export default class MarketplaceRegistry extends Component {
 
     createHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
+        //console.log('=== accounts ===', accounts);
 
-        const _recipients = [accounts[0], accounts[1]]; 
+        const recipient1 = walletAddressList["addressList"]["address1"];
+        const recipient2 = walletAddressList["addressList"]["address2"];
+
+        const _recipients = [recipient1, recipient2];
+        //const _recipients = [accounts[0], accounts[1]]; 
         const _proportions = [70, 30];
         const _doChangeHat = true;
 
@@ -53,9 +58,9 @@ export default class MarketplaceRegistry extends Component {
     getHatByID = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _hatID = 1;
+        const _hatID = 3;
 
-        let response = await marketplace_registry.methods._getHatByID(_hatID).send({ from: accounts[0] })
+        let response = await marketplace_registry.methods._getHatByID(_hatID).call();
         console.log('=== response of _getHatByID() function ===', response);          
     }
 
