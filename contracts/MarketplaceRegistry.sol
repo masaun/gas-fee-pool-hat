@@ -1,6 +1,7 @@
 pragma solidity ^0.5.10;
 pragma experimental ABIEncoderV2;
 
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -11,6 +12,8 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./storage/McStorage.sol";
 import "./storage/McConstants.sol";
 
+// rDAI
+import "./rtoken-contracts/contracts/IRToken.sol";
 
 
 /***
@@ -22,9 +25,11 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
 
     IERC20 public erc20;
+    IRToken public rToken;
 
-    constructor(address _erc20) public {
+    constructor(address _erc20, address _rToken) public {
         erc20 = IERC20(_erc20);
+        rToken = IRToken(_rToken);
     }
 
     function testFunc() public returns (bool) {
