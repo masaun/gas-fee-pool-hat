@@ -47,6 +47,10 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
 
+    function rTokenInfo() public view returns (string memory _name, string memory _symbol, uint256 _decimals) {
+        return (rToken.name(), rToken.symbol(), rToken.decimals());
+    }
+
     function _createHat(
         address[] memory _recipients,
         uint32[] memory _proportions,

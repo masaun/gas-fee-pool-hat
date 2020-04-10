@@ -38,6 +38,12 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of testFunc() function ===', response);
     }
 
+    rTokenInfo = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+        let response = await marketplace_registry.methods.rTokenInfo().call();
+        console.log('=== response of rTokenInfo() function ===', response);
+    }
+
     createHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
         //console.log('=== accounts ===', accounts);
@@ -68,7 +74,6 @@ export default class MarketplaceRegistry extends Component {
     approve = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        //const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB"  // rDAI-proxy contract address
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];
         const _amount = 1;
 
@@ -211,6 +216,8 @@ export default class MarketplaceRegistry extends Component {
                               borderColor={"#E8E8E8"}
                         >
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
 
