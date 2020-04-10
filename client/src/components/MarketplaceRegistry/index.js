@@ -93,83 +93,80 @@ export default class MarketplaceRegistry extends Component {
      
         let MarketplaceRegistry = {};
         try {
-            MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
+          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");          // Load artifact-file of MarketplaceRegistry
         } catch (e) {
-            console.log(e);
+          console.log(e);
         }
 
         try {
-            const isProd = process.env.NODE_ENV === 'production';
-            if (!isProd) {
-                // Get network provider and web3 instance.
-                const web3 = await getWeb3();
-                let ganacheAccounts = [];
+          const isProd = process.env.NODE_ENV === 'production';
+          if (!isProd) {
+            // Get network provider and web3 instance.
+            const web3 = await getWeb3();
+            let ganacheAccounts = [];
 
-                try {
-                    ganacheAccounts = await this.getGanacheAddresses();
-                } catch (e) {
-                    console.log('Ganache is not running');
-                }
-
-                // Use web3 to get the user's accounts.
-                const accounts = await web3.eth.getAccounts();
-                // Get the contract instance.
-                const networkId = await web3.eth.net.getId();
-                const networkType = await web3.eth.net.getNetworkType();
-                const isMetaMask = web3.currentProvider.isMetaMask;
-                let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
-                balance = web3.utils.fromWei(balance, 'ether');
-
-                let instanceMarketplaceRegistry = null;
-                let deployedNetwork = null;
-
-                // Create instance of contracts
-                if (MarketplaceRegistry.networks) {
-                    deployedNetwork = MarketplaceRegistry.networks[networkId.toString()];
-                    if (deployedNetwork) {
-                        instanceMarketplaceRegistry = new web3.eth.Contract(
-                            MarketplaceRegistry.abi,
-                            deployedNetwork && deployedNetwork.address,
-                        );
-                        console.log('=== instanceMarketplaceRegistry ===', instanceMarketplaceRegistry);
-                    }
-                }
-
-                if (MarketplaceRegistry) {
-                    // Set web3, accounts, and contract to the state, and then proceed with an
-                    // example of interacting with the contract's methods.
-                    this.setState({ 
-                        web3, 
-                        ganacheAccounts, 
-                        accounts, 
-                        balance, 
-                        networkId, 
-                        networkType, 
-                        hotLoaderDisabled,
-                        isMetaMask, 
-                        marketplace_registry: instanceMarketplaceRegistry
-                    }, () => {
-                        this.refreshValues(
-                            instanceMarketplaceRegistry
-                        );
-                        setInterval(() => {
-                            this.refreshValues(instanceMarketplaceRegistry);
-                        }, 5000);
-                    });
-
-                    //@dev - Call all of struct of Item every time
-                    this.getAllOfItems();
-                }
-                else {
-                    this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
-                }
+            try {
+              ganacheAccounts = await this.getGanacheAddresses();
+            } catch (e) {
+              console.log('Ganache is not running');
             }
+
+            // Use web3 to get the user's accounts.
+            const accounts = await web3.eth.getAccounts();
+            // Get the contract instance.
+            const networkId = await web3.eth.net.getId();
+            const networkType = await web3.eth.net.getNetworkType();
+            const isMetaMask = web3.currentProvider.isMetaMask;
+            let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
+            balance = web3.utils.fromWei(balance, 'ether');
+
+            let instanceMarketplaceRegistry = null;
+            let deployedNetwork = null;
+
+            // Create instance of contracts
+            if (MarketplaceRegistry.networks) {
+              deployedNetwork = MarketplaceRegistry.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instanceMarketplaceRegistry = new web3.eth.Contract(
+                  MarketplaceRegistry.abi,
+                  deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instanceMarketplaceRegistry ===', instanceMarketplaceRegistry);
+              }
+            }
+
+            if (MarketplaceRegistry) {
+              // Set web3, accounts, and contract to the state, and then proceed with an
+              // example of interacting with the contract's methods.
+              this.setState({ 
+                web3, 
+                ganacheAccounts, 
+                accounts, 
+                balance, 
+                networkId, 
+                networkType, 
+                hotLoaderDisabled,
+                isMetaMask, 
+                marketplace_registry: instanceMarketplaceRegistry
+              }, () => {
+                this.refreshValues(
+                  instanceMarketplaceRegistry
+                );
+                setInterval(() => {
+                  this.refreshValues(instanceMarketplaceRegistry);
+                }, 5000);
+              });
+            }
+            else {
+              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+            }
+          }
         } catch (error) {
-            // Catch any errors for any of the above operations.
-            alert(
-              `Failed to load web3, accounts, or contract. Check console for details.`,
-            );
-            console.error(error);
+          // Catch any errors for any of the above operations.
+          alert(
+            `Failed to load web3, accounts, or contract. Check console for details.`,
+          );
+          console.error(error);
         }
     }
 
