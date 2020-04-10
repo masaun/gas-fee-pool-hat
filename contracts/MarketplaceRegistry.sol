@@ -64,7 +64,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
     function _approve(address _spender, uint256 _amount) public returns (bool) {
-        //@dev- IRToken.sol inherit IERC20.sol (So that instance can access to approve function)
+        //@dev- IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
         rToken.approve(_spender, _amount.div(10**18));
     }
     
