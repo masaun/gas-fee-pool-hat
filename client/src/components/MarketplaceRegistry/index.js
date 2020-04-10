@@ -13,7 +13,7 @@ import styles from '../../App.module.scss';
 //import './App.css';
 
 import { walletAddressList } from '../../data/testWalletAddress.js'
-import { rtokenContractAddress } from '../../data/contractAddress/contractAddress.js'
+import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
 
 export default class MarketplaceRegistry extends Component {
@@ -68,7 +68,8 @@ export default class MarketplaceRegistry extends Component {
     approve = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _spender = rtokenContractAddress["Kovan"]["rtoken-contract"]["rDAI-proxy"];
+        const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB"  // rDAI-proxy contract address
+        //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];
         const _amount = 1;
 
         let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });

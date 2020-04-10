@@ -1,4 +1,4 @@
-module.exports = {
+export const contractAddressList = {
     "Kovan": {
         "rtoken-contract": {
             "rDAI-proxy": "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB",          // Use this address in your dapp    
