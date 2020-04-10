@@ -13,7 +13,7 @@ import styles from '../../App.module.scss';
 //import './App.css';
 
 import { walletAddressList } from '../../data/testWalletAddress.js'
-import { rtokenContractAddress } from '../../../../migrations/contractAddress/contractAddress.js'
+import { rtokenContractAddress } from '../../data/contractAddress/contractAddress.js'
 
 
 export default class MarketplaceRegistry extends Component {
