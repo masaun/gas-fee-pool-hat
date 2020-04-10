@@ -13,6 +13,7 @@ import styles from '../../App.module.scss';
 //import './App.css';
 
 import { walletAddressList } from '../../data/testWalletAddress.js'
+import { rtokenContractAddress } from '../../../../migrations/contractAddress/contractAddress.js'
 
 
 export default class MarketplaceRegistry extends Component {
@@ -64,7 +65,28 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _getHatByID() function ===', response);          
     }
 
+    approve = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _spender = rtokenContractAddress["Kovan"]["rtoken-contract"]["rDAI-proxy"];
+        const _amount = 1;
+
+        let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
+        console.log('=== response of _approve() function ===', response);     
+    }
+
+    mintWithSelectedHat = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _mintAmount = 1;
+        const _hatID = 1;
+
+        let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
+        console.log('=== response of _mintWithSelectedHat() function ===', response);     
+    }
   
+
+
     //////////////////////////////////// 
     ///// Refresh Values
     ////////////////////////////////////
@@ -192,6 +214,10 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
                         </Card>
                     </Grid>
 

@@ -64,11 +64,11 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
     function _approve(address _spender, uint256 _amount) public returns (bool) {
-        erc20.approve(_spender, _amount);
+        erc20.approve(_spender, _amount.div(10**18));
     }
     
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
-        rToken.mintWithSelectedHat(_mintAmount, _hatID);
-    };
+        rToken.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
+    }
     
 }
