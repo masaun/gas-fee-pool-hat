@@ -55,4 +55,12 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
         return _hatID;
     }
+
+    function _getHatByID(uint256 _hatID)
+        public
+        view
+        returns (address[] memory _recipients, uint32[] memory _proportions) {
+        return rToken.getHatByID(_hatID);
+    }
+    
 }
