@@ -14,8 +14,8 @@ import "./storage/McConstants.sol";
 
 // rDAI
 import "./rtoken-contracts/contracts/IRToken.sol";
-import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
+import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 
 
 /***
@@ -28,14 +28,14 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
     IERC20 public erc20;
     IRToken public rToken;
-    IAllocationStrategy public allocationStrategy;
     rDAI public rDai;
+    IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rToken, address _rDai, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
         rToken = IRToken(_rToken);
+        rDai = rDAI(_rDai);
         allocationStrategy = IAllocationStrategy(_allocationStrategy);
-        rDai = rDAI(_rDai, allocationStrategy);
     }
 
     function testFunc() public returns (bool) {
