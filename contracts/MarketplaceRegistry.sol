@@ -74,7 +74,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
     function _approve(address _spender, uint256 _amount) public returns (bool) {
-        //@dev- IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
+        //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
         rToken.approve(_spender, _amount);
     }
     
@@ -84,6 +84,14 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
         rToken.mintWithSelectedHat(_mintAmount, _hatID);
+    }
+    
+    function _mintWithNewHat(
+        uint256 _mintAmount,
+        address[] memory _recipients,
+        uint32[] memory _proportions
+    ) public returns (bool) {
+        rToken.mintWithNewHat(_mintAmount, _recipients, _proportions);
     }
     
 }

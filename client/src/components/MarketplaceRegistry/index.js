@@ -101,6 +101,18 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _mintWithSelectedHat() function ===', response);     
     }
   
+    mintWithNewHat = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _mintAmount = 1;
+        const _recipients = [accounts[0], [accounts[1]]];
+        const _proportions = [214748364, 4080218930];
+
+        let response = await marketplace_registry.methods._mintWithNewHat(_mintAmount, _recipients, _proportions).send({ from: accounts[0] });
+        console.log('=== response of mintWithNewHat() function ===', response);     
+    }
+
+
 
 
     //////////////////////////////////// 
@@ -242,6 +254,8 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
                         </Card>
                     </Grid>
 
