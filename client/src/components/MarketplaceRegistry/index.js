@@ -216,7 +216,7 @@ export default class MarketplaceRegistry extends Component {
             <div className={styles.widgets}>
                 <Grid container style={{ marginTop: 32 }}>
                     <Grid item xs={12}>
-                        <h4>Gas Fee Pool</h4>
+                        <h4>Gas Fee Pool</h4> <br />
 
                         <Card width={"auto"} 
                               maxWidth={"420px"} 
@@ -225,6 +225,8 @@ export default class MarketplaceRegistry extends Component {
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
+                            <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
+                            
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
