@@ -227,7 +227,7 @@ export default class MarketplaceRegistry extends Component {
                         >
                             <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
                             <h4>↓</h4> <br />
-                            <h4>10%: GasFeePool<br />90%: Owner</h4> <br />
+                            <h4>Proportions<br />10%: GasFeePool<br />90%: Owner</h4> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
 
