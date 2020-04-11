@@ -17,6 +17,8 @@ module.exports = async function(deployer, network, accounts) {
 
     const marketplaceRegistry = await MarketplaceRegistry.deployed();
 
+    //marketplaceRegistry.send(web3.utils.toWei("0.1", "ether")).then(function(result) { return console.log('=== result ===', result) });
+
     const iERC20 = await IERC20.at(_erc20);
 
     //@dev - Transfer 3 DAI from deployer's address to contract address in advance
