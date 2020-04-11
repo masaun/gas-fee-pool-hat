@@ -104,8 +104,11 @@ export default class MarketplaceRegistry extends Component {
     mintWithNewHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
+        const recipient1 = walletAddressList["addressList"]["address1"];
+        const recipient2 = walletAddressList["addressList"]["address2"];
+
         const _mintAmount = 1;
-        const _recipients = [accounts[0], [accounts[1]]];
+        const _recipients = [recipient1, recipient2];
         const _proportions = [214748364, 4080218930];
 
         let response = await marketplace_registry.methods._mintWithNewHat(_mintAmount, _recipients, _proportions).send({ from: accounts[0] });
