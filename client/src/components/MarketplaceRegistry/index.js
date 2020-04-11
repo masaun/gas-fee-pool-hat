@@ -235,6 +235,8 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
 
+                            <Button size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
+
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
                         </Card>
                     </Grid>
