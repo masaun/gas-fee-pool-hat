@@ -65,7 +65,7 @@ export default class MarketplaceRegistry extends Component {
     getHatByID = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _hatID = 3;
+        const _hatID = 1;
 
         let response = await marketplace_registry.methods._getHatByID(_hatID).call();
         console.log('=== response of _getHatByID() function ===', response);          
@@ -74,11 +74,21 @@ export default class MarketplaceRegistry extends Component {
     approve = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];
+        const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI
         const _amount = 1;
 
         let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
         console.log('=== response of _approve() function ===', response);     
+    }
+
+    allowance = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _owner = contractAddressList["Kovan"]["rtoken-contract"]["Underlying-token"];  // DAI
+        const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];      // rDAI
+
+        let response = await marketplace_registry.methods._allowance(_owner, _spender).send({ from: accounts[0] });
+        console.log('=== response of _allowance() function ===', response);
     }
 
     mintWithSelectedHat = async () => {

@@ -78,6 +78,10 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rToken.approve(_spender, _amount.div(10**18));
     }
     
+    function _allowance(address _owner, address _spender) external view returns (uint256) {
+        return rToken.allowance(_owner, _spender);
+    }
+
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
         rToken.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
     }
