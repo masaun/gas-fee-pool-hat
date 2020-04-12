@@ -36,6 +36,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rToken = IRToken(_rToken);
         rDai = rDAI(_rDai);
         allocationStrategy = IAllocationStrategy(_allocationStrategy);
+
+        //@dev - Using initialize() function which is inherited from rDAI.sol
+        rDai.initialize(allocationStrategy);
     }
 
     function testFunc() public returns (bool) {
