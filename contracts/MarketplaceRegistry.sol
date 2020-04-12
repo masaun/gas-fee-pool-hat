@@ -14,6 +14,8 @@ import "./storage/McConstants.sol";
 
 // rDAI
 import "./rtoken-contracts/contracts/IRToken.sol";
+import "./rtoken-contracts/contracts/tokens/rDAI.sol";
+import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 
 
 /***
@@ -25,11 +27,15 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
 
     IERC20 public erc20;
-    IRToken public rToken;
+    //IRToken public rToken;
+    rDAI public rDai;
+    //IAllocationStrategy public allocationStrategy;
 
-    constructor(address _erc20, address _rToken) public {
+    constructor(address _erc20, address _rToken, address _rDai, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
-        rToken = IRToken(_rToken);
+        //rToken = IRToken(_rToken);
+        rDai = rDAI(_rDai);
+        //allocationStrategy = IAllocationStrategy(_allocationStrategy);
     }
 
     function testFunc() public returns (bool) {
@@ -46,13 +52,26 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         return McConstants.CONFIRMED;
     }
 
+    function transferEtherToContract() public payable returns (bool) {
+        //@dev - Transfer ether from caller's address to contract
+        uint256 etherAmount = msg.value;
+        address(uint160(address(this))).transfer(etherAmount.div(10**1));
+    }
+    
+
+
+    function rTokenInfo() public view returns (string memory _name, string memory _symbol, uint256 _decimals) {
+        return (rDai.name(), rDai.symbol(), rDai.decimals());
+        //return (rToken.name(), rToken.symbol(), rToken.decimals());
+    }
 
     function _createHat(
         address[] memory _recipients,
         uint32[] memory _proportions,
         bool _doChangeHat
     ) public returns (uint256 _hatID) {
-        uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
+        uint256 _hatID = rDai.createHat(_recipients, _proportions, _doChangeHat);
+        //uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
         return _hatID;
     }
 
@@ -60,7 +79,33 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         public
         view
         returns (address[] memory _recipients, uint32[] memory _proportions) {
-        return rToken.getHatByID(_hatID);
+        return rDai.getHatByID(_hatID);
+        //return rToken.getHatByID(_hatID);
+    }
+
+    function _approve(address _spender, uint256 _amount) public returns (bool) {
+        //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
+        rDai.approve(_spender, _amount.div(10**18));
+        //rToken.approve(_spender, _amount.div(10**18));
+    }
+    
+    function _allowance(address _owner, address _spender) external view returns (uint256) {
+        return rDai.allowance(_owner, _spender);
+        //return rToken.allowance(_owner, _spender);
+    }
+
+    function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
+        rDai.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
+        //rToken.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
+    }
+    
+    function _mintWithNewHat(
+        uint256 _mintAmount,
+        address[] memory _recipients,
+        uint32[] memory _proportions
+    ) public returns (bool) {
+        rDai.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
+        //rToken.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
     }
     
 }
