@@ -38,6 +38,13 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of testFunc() function ===', response);
     }
 
+    transferEtherToContract = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        let response = await marketplace_registry.methods.transferEtherToContract().send({ from: accounts[0], value: 100000000000000000 });  // wei
+        console.log('=== response of transferEtherToContract() function ===', response);
+    }
+
     rTokenInfo = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
         let response = await marketplace_registry.methods.rTokenInfo().call();
@@ -245,6 +252,8 @@ export default class MarketplaceRegistry extends Component {
                             <h4>Proportions<br />10%: GasFeePool<br />90%: Owner</h4> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.transferEtherToContract}> transfer Ether To Contract </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 

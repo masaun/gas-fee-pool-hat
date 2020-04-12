@@ -36,10 +36,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rToken = IRToken(_rToken);
         rDai = rDAI(_rDai);
         allocationStrategy = IAllocationStrategy(_allocationStrategy);
-
-        //@dev - Transfer ether from deployer's address to contract
-        uint256 etherAmount = 1;
-        address(this).transfer(etherAmount.div(10**1));
     }
 
     function testFunc() public returns (bool) {
@@ -55,6 +51,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
         return McConstants.CONFIRMED;
     }
+
+    function transferEtherToContract() public payable returns (bool) {
+        //@dev - Transfer ether from caller's address to contract
+        uint256 etherAmount = msg.value;
+        address(uint160(address(this))).transfer(etherAmount.div(10**1));
+    }
+    
 
 
     function rTokenInfo() public view returns (string memory _name, string memory _symbol, uint256 _decimals) {
