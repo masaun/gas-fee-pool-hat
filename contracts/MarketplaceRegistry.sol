@@ -111,5 +111,14 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
         return rDai.interestPayableOf(_owner);
     }
+
+    function _redeem(uint256 _redeemTokens) public returns (bool) {
+        rDai.redeem(_redeemTokens);
+    }
+    
+    function _redeemAll() public returns (bool) {
+        rDai.redeemAll();
+    }
+
     
 }
