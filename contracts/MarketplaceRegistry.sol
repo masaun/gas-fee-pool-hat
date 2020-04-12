@@ -13,9 +13,9 @@ import "./storage/McStorage.sol";
 import "./storage/McConstants.sol";
 
 // rDAI
-import "./rtoken-contracts/contracts/IRToken.sol";
+//import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
-import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
+//import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 
 
 /***
@@ -107,5 +107,26 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
         //rToken.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
     }
+    
+    function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
+        return rDai.interestPayableOf(_owner);
+    }
+
+    function _redeem(uint256 _redeemTokens) public returns (bool) {
+        rDai.redeem(_redeemTokens);
+    }
+    
+    function _redeemAll() public returns (bool) {
+        rDai.redeemAll();
+    }
+
+    function _redeemAndTransfer(address _redeemTo, uint256 _redeemTokens) public returns (bool) {
+        rDai.redeemAndTransfer(_redeemTo, _redeemTokens);
+    }
+    
+    function _redeemAndTransferAll(address _redeemTo) public returns (bool) {
+        rDai.redeemAndTransferAll(_redeemTo);
+    }
+    
     
 }

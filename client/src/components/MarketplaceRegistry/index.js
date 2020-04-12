@@ -122,6 +122,52 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of mintWithNewHat() function ===', response);     
     }
 
+    interestPayableOf = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _owner = walletAddressList["addressList"]["address1"];
+
+        let response = await marketplace_registry.methods._interestPayableOf(_owner).call();
+        console.log('=== response of _interestPayableOf() function ===', response);   
+    }
+
+    redeem = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _redeemTokens = 1;
+
+        let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
+        console.log('=== response of _redeem() function ===', response);           
+    }
+
+    redeemAll = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        let response = await marketplace_registry.methods._redeemAll().send({ from: accounts[0] });
+        console.log('=== response of _redeemAll() function ===', response);           
+    }
+
+    redeemAndTransfer = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const recipient1 = walletAddressList["addressList"]["address1"];
+
+        const _redeemTo = recipient1;
+        const _redeemTokens = 1;
+
+        let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
+        console.log('=== response of _redeemAndTransfer() function ===', response);           
+    }
+
+    redeemAndTransferAll = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const recipient1 = walletAddressList["addressList"]["address1"];
+        const _redeemTo = recipient1;
+
+        let response = await marketplace_registry.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
+        console.log('=== response of _redeemAndTransferAll() function ===', response);           
+    }
 
 
 
@@ -268,6 +314,16 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button> <br />
                         </Card>
                     </Grid>
 
