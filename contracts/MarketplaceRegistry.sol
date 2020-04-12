@@ -27,13 +27,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
 
     IERC20 public erc20;
-    IRToken public rToken;
+    //IRToken public rToken;
     rDAI public rDai;
     IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rToken, address _rDai, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
-        rToken = IRToken(_rToken);
+        //rToken = IRToken(_rToken);
         rDai = rDAI(_rDai);
         allocationStrategy = IAllocationStrategy(_allocationStrategy);
 
@@ -64,7 +64,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
 
     function rTokenInfo() public view returns (string memory _name, string memory _symbol, uint256 _decimals) {
-        return (rToken.name(), rToken.symbol(), rToken.decimals());
+        return (rDai.name(), rDai.symbol(), rDai.decimals());
+        //return (rToken.name(), rToken.symbol(), rToken.decimals());
     }
 
     function _createHat(
@@ -72,7 +73,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         uint32[] memory _proportions,
         bool _doChangeHat
     ) public returns (uint256 _hatID) {
-        uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
+        uint256 _hatID = rDai.createHat(_recipients, _proportions, _doChangeHat);
+        //uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
         return _hatID;
     }
 
@@ -80,20 +82,24 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         public
         view
         returns (address[] memory _recipients, uint32[] memory _proportions) {
-        return rToken.getHatByID(_hatID);
+        return rDai.getHatByID(_hatID);
+        //return rToken.getHatByID(_hatID);
     }
 
     function _approve(address _spender, uint256 _amount) public returns (bool) {
         //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
-        rToken.approve(_spender, _amount.div(10**18));
+        rDai.approve(_spender, _amount.div(10**18));
+        //rToken.approve(_spender, _amount.div(10**18));
     }
     
     function _allowance(address _owner, address _spender) external view returns (uint256) {
-        return rToken.allowance(_owner, _spender);
+        return rDai.allowance(_owner, _spender);
+        //return rToken.allowance(_owner, _spender);
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
-        rToken.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
+        rDai.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
+        //rToken.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
     }
     
     function _mintWithNewHat(
@@ -101,7 +107,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address[] memory _recipients,
         uint32[] memory _proportions
     ) public returns (bool) {
-        rToken.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
+        rDai.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
+        //rToken.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
     }
     
 }
