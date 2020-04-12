@@ -13,9 +13,9 @@ import "./storage/McStorage.sol";
 import "./storage/McConstants.sol";
 
 // rDAI
-import "./rtoken-contracts/contracts/IRToken.sol";
+//import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
-import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
+//import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 
 
 /***
