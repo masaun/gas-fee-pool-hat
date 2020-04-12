@@ -120,5 +120,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.redeemAll();
     }
 
+    function _redeemAndTransfer(address _redeemTo, uint256 _redeemTokens) public returns (bool) {
+        rDai.redeemAndTransfer(_redeemTo, _redeemTokens);
+    }
+    
+    function _redeemAndTransferAll(address _redeemTo) public returns (bool) {
+        rDai.redeemAndTransferAll(_redeemTo);
+    }
+    
     
 }
