@@ -29,13 +29,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     IERC20 public erc20;
     //IRToken public rToken;
     rDAI public rDai;
-    IAllocationStrategy public allocationStrategy;
+    //IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rToken, address _rDai, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
         //rToken = IRToken(_rToken);
         rDai = rDAI(_rDai);
-        allocationStrategy = IAllocationStrategy(_allocationStrategy);
+        //allocationStrategy = IAllocationStrategy(_allocationStrategy);
     }
 
     function testFunc() public returns (bool) {
