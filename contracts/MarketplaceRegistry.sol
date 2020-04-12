@@ -108,4 +108,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         //rToken.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
     }
     
+    function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
+        return rDai.interestPayableOf(_owner);
+    }
+    
 }

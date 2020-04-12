@@ -122,7 +122,14 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of mintWithNewHat() function ===', response);     
     }
 
+    interestPayableOf = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
 
+        const _owner = walletAddressList["addressList"]["address1"];
+
+        let response = await marketplace_registry.methods._interestPayableOf(_owner).call();
+        console.log('=== response of _interestPayableOf() function ===', response);   
+    }
 
 
     //////////////////////////////////// 
@@ -268,6 +275,8 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
                         </Card>
                     </Grid>
 
