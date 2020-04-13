@@ -136,5 +136,10 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     function _getHatStats(uint256 _hatID) public view returns (RTokenStructs.HatStatsView memory _stats) {
         return rDai.getHatStats(_hatID);
     }
+
+    function _balanceOf(address _owner) public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
+        return rDai.balanceOf(_owner);
+    }
+    
     
 }
