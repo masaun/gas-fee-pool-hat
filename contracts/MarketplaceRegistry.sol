@@ -42,14 +42,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         allocationStrategy = IAllocationStrategy(_ias);
     }
 
-    function testFunc() public returns (bool) {
+    function testFunc(uint256 _mintAmount) public returns (bool) {
         uint256 _id = 1;
         uint256 _exchangeRateCurrent = McConstants.onePercent;
 
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
-        uint256 _amount = 1;
 
-        erc20.transfer(_to, _amount.div(10**1));        
+        erc20.transfer(_to, _amount.div(10**2));        
 
         emit Example(_id, _exchangeRateCurrent);
 
