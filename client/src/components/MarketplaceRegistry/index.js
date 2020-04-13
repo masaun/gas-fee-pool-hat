@@ -55,8 +55,10 @@ export default class MarketplaceRegistry extends Component {
         const { accounts, marketplace_registry, web3 } = this.state;
         console.log('=== accounts ===', accounts);
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
-        const recipient2 = walletAddressList["addressList"]["address2"];
+        const recipient1 = accounts[0];
+        //const recipient1 = walletAddressList["addressList"]["address1"];
+        const recipient2 = "0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3";
+        //const recipient2 = walletAddressList["addressList"]["address2"];
 
         const _recipients = [recipient1, recipient2];
         //const _recipients = [accounts[0], accounts[1]]; 
@@ -76,6 +78,16 @@ export default class MarketplaceRegistry extends Component {
 
         let response = await marketplace_registry.methods._getHatByID(_hatID).call();
         console.log('=== response of _getHatByID() function ===', response);          
+    }
+
+    getHatByAddress = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const recipient1 = walletAddressList["addressList"]["address1"];
+        const _owner = recipient1;
+
+        let response = await marketplace_registry.methods._getHatByAddress(_owner).call();
+        console.log('=== response of _getHatByAddress() function ===', response);
     }
 
     approve = async () => {
@@ -334,6 +346,8 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
 

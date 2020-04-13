@@ -87,6 +87,18 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         //return rToken.getHatByID(_hatID);
     }
 
+    function _getHatByAddress(address _owner)
+        public
+        view
+        returns (
+            uint256 _hatID,
+            address[] memory _recipients,
+            uint32[] memory _proportions
+        ) {
+        rDai.getHatByAddress(_owner);
+    }
+    
+
     function _approve(address _spender, uint256 _amount) public returns (bool) {
         //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
         rDai.approve(_spender, _amount.div(10**18));
