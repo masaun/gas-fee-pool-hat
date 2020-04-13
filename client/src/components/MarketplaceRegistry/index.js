@@ -36,7 +36,7 @@ export default class MarketplaceRegistry extends Component {
 
         const _mintAmount = 105;  // 1.05 DAI（= 1050000000000000000 Wei）;
 
-        let response = await marketplace_registry.methods.testFunc().send({ from: accounts[0] })
+        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
         console.log('=== response of testFunc() function ===', response);
     }
 
