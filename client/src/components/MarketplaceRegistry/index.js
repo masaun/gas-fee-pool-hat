@@ -55,10 +55,10 @@ export default class MarketplaceRegistry extends Component {
         const { accounts, marketplace_registry, web3 } = this.state;
         console.log('=== accounts ===', accounts);
 
-        const recipient1 = accounts[0];
-        //const recipient1 = walletAddressList["addressList"]["address1"];
-        const recipient2 = "0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3";
-        //const recipient2 = walletAddressList["addressList"]["address2"];
+        //const recipient1 = accounts[0];
+        const recipient1 = walletAddressList["addressList"]["address1"];
+        //const recipient2 = "0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3";
+        const recipient2 = walletAddressList["addressList"]["address2"];
 
         const _recipients = [recipient1, recipient2];
         //const _recipients = [accounts[0], accounts[1]]; 
@@ -83,7 +83,7 @@ export default class MarketplaceRegistry extends Component {
     getHatByAddress = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
+        const recipient1 = "0x9492510BbCB93B6992d8b7Bb67888558E12DCac4";
         const _owner = recipient1;
 
         let response = await marketplace_registry.methods._getHatByAddress(_owner).call();
@@ -94,7 +94,7 @@ export default class MarketplaceRegistry extends Component {
         const { accounts, marketplace_registry, web3 } = this.state;
 
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI
-        const _amount = 5;
+        const _amount = 1050000000000000000;  // 1.05 DAI（= 1050000000000000000 Wei）
 
         let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
         console.log('=== response of _approve() function ===', response);     
@@ -115,7 +115,7 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _mintAmount = 1;
+        const _mintAmount = 1050000000000000000;  // 1.05 DAI（= 1050000000000000000 Wei）;
         const _hatID = 1;
 
         let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
@@ -128,7 +128,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
         const recipient2 = walletAddressList["addressList"]["address2"];
 
-        const _mintAmount = 1;
+        const _mintAmount = 1050000000000000000;  // 1.05 DAI（= 1050000000000000000 Wei）;
         const _recipients = [recipient1, recipient2];
         const _proportions = [214748364, 4080218930];
 
@@ -148,7 +148,7 @@ export default class MarketplaceRegistry extends Component {
     redeem = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _redeemTokens = 1;
+        const _redeemTokens = 1050000000000000000;  // 1.05 DAI（= 1050000000000000000 Wei）;
 
         let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeem() function ===', response);           
@@ -167,7 +167,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
 
         const _redeemTo = recipient1;
-        const _redeemTokens = 1;
+        const _redeemTokens = 1050000000000000000;  // 1.05 DAI（= 1050000000000000000 Wei）;
 
         let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransfer() function ===', response);           
