@@ -16,6 +16,7 @@ import "./storage/McConstants.sol";
 //import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
 //import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
+//import "./rtoken-contracts/contracts/RTokenStructs.sol";
 
 
 /***
@@ -128,5 +129,12 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.redeemAndTransferAll(_redeemTo);
     }
     
+    
+    /***
+     * @dev - Hat Status
+     **/
+    function _getHatStats(uint256 _hatID) public view returns (HatStatsView memory _stats) {
+        return rDai.getHatStats(_hatID);
+    }
     
 }
