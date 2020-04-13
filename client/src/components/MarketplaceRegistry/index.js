@@ -53,7 +53,7 @@ export default class MarketplaceRegistry extends Component {
 
     createHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
-        //console.log('=== accounts ===', accounts);
+        console.log('=== accounts ===', accounts);
 
         const recipient1 = walletAddressList["addressList"]["address1"];
         const recipient2 = walletAddressList["addressList"]["address2"];
@@ -82,7 +82,7 @@ export default class MarketplaceRegistry extends Component {
         const { accounts, marketplace_registry, web3 } = this.state;
 
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI
-        const _amount = 1;
+        const _amount = 5;
 
         let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
         console.log('=== response of _approve() function ===', response);     
@@ -101,7 +101,7 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _mintAmount = 1;
+        const _mintAmount = 5;
         const _hatID = 1;
 
         let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
@@ -114,7 +114,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
         const recipient2 = walletAddressList["addressList"]["address2"];
 
-        const _mintAmount = 1;
+        const _mintAmount = 5;
         const _recipients = [recipient1, recipient2];
         const _proportions = [214748364, 4080218930];
 
@@ -134,7 +134,7 @@ export default class MarketplaceRegistry extends Component {
     redeem = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _redeemTokens = 1;
+        const _redeemTokens = 5;
 
         let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeem() function ===', response);           
@@ -153,7 +153,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
 
         const _redeemTo = recipient1;
-        const _redeemTokens = 1;
+        const _redeemTokens = 5;
 
         let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransfer() function ===', response);           
@@ -167,6 +167,17 @@ export default class MarketplaceRegistry extends Component {
 
         let response = await marketplace_registry.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransferAll() function ===', response);           
+    }
+
+
+    /***
+     * @dev - Hat Status
+     **/
+    getHatStats = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+        const _hatID = 1;
+        let response = await marketplace_registry.methods._getHatStats(_hatID).call();
+        console.log('=== response of _getHatStats() function ===', response);           
     }
 
 
@@ -324,6 +335,10 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button> <br />
+
+                            <hr />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
                         </Card>
                     </Grid>
 
