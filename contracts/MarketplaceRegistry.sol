@@ -25,7 +25,7 @@ import "./rtoken-contracts/contracts/RTokenStructs.sol";
 contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     using SafeMath for uint;
 
-    address _ias;
+    address _ias;  //@dev - _ias is from rDAI.sol
     //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
 
     IERC20 public erc20;
@@ -33,7 +33,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     rDAI public rDai;
     IAllocationStrategy public allocationStrategy;
 
-    constructor(address _erc20, address _rToken, address _rDai, address _allocationStrategy) public {
+    constructor(address _erc20, address _rDai) public {
         erc20 = IERC20(_erc20);
         //rToken = IRToken(_rToken);
         rDai = rDAI(_rDai);
