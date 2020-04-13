@@ -48,7 +48,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
 
-        erc20.transfer(_to, _amount.div(10**2));        
+        erc20.transfer(_to, _mintAmount.div(10**2));        
 
         emit Example(_id, _exchangeRateCurrent);
 
