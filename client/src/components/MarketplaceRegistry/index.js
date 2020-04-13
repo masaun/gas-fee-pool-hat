@@ -34,7 +34,9 @@ export default class MarketplaceRegistry extends Component {
     getTestData = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        let response = await marketplace_registry.methods.testFunc().send({ from: accounts[0] })
+        const _mintAmount = 105;  // 1.05 DAI（= 1050000000000000000 Wei）;
+
+        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
         console.log('=== response of testFunc() function ===', response);
     }
 
@@ -55,7 +57,9 @@ export default class MarketplaceRegistry extends Component {
         const { accounts, marketplace_registry, web3 } = this.state;
         console.log('=== accounts ===', accounts);
 
+        //const recipient1 = accounts[0];
         const recipient1 = walletAddressList["addressList"]["address1"];
+        //const recipient2 = "0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3";
         const recipient2 = walletAddressList["addressList"]["address2"];
 
         const _recipients = [recipient1, recipient2];
@@ -78,11 +82,21 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _getHatByID() function ===', response);          
     }
 
+    getHatByAddress = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const recipient1 = "0x9492510BbCB93B6992d8b7Bb67888558E12DCac4";
+        const _owner = recipient1;
+
+        let response = await marketplace_registry.methods._getHatByAddress(_owner).call();
+        console.log('=== response of _getHatByAddress() function ===', response);
+    }
+
     approve = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI
-        const _amount = 5;
+        const _amount = 105;  // 1.05 DAI（= 1050000000000000000 Wei）
 
         let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
         console.log('=== response of _approve() function ===', response);     
@@ -91,7 +105,9 @@ export default class MarketplaceRegistry extends Component {
     allowance = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _owner = contractAddressList["Kovan"]["rtoken-contract"]["Underlying-token"];  // DAI
+        const recipient1 = walletAddressList["addressList"]["address1"];
+
+        const _owner = recipient1;  // Wallet Address
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];      // rDAI
 
         let response = await marketplace_registry.methods._allowance(_owner, _spender).send({ from: accounts[0] });
@@ -101,7 +117,7 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _mintAmount = 5;
+        const _mintAmount = 105;  // 1.05 DAI（= 1050000000000000000 Wei）;
         const _hatID = 1;
 
         let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
@@ -114,7 +130,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
         const recipient2 = walletAddressList["addressList"]["address2"];
 
-        const _mintAmount = 5;
+        const _mintAmount = 105;  // 1.05 DAI（= 1050000000000000000 Wei）;
         const _recipients = [recipient1, recipient2];
         const _proportions = [214748364, 4080218930];
 
@@ -134,7 +150,7 @@ export default class MarketplaceRegistry extends Component {
     redeem = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _redeemTokens = 5;
+        const _redeemTokens = 105;  // 1.05 DAI（= 1050000000000000000 Wei）;
 
         let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeem() function ===', response);           
@@ -153,7 +169,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
 
         const _redeemTo = recipient1;
-        const _redeemTokens = 5;
+        const _redeemTokens = 105;  // 1.05 DAI（= 1050000000000000000 Wei）;
 
         let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransfer() function ===', response);           
@@ -178,6 +194,21 @@ export default class MarketplaceRegistry extends Component {
         const _hatID = 1;
         let response = await marketplace_registry.methods._getHatStats(_hatID).call();
         console.log('=== response of _getHatStats() function ===', response);           
+    }
+
+    balanceOf = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const recipient1 = walletAddressList["addressList"]["address1"];
+
+        let response = await marketplace_registry.methods._balanceOf(recipient1).call();
+        console.log('=== response of _balanceOf() function ===', response);               
+    }
+
+    underlying = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+        let response = await marketplace_registry.methods._underlying().call();
+        console.log('=== response of _underlying() function ===', response);
     }
 
 
@@ -318,6 +349,8 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
 
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
+
                             <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
@@ -339,6 +372,10 @@ export default class MarketplaceRegistry extends Component {
                             <hr />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
                     </Grid>
 
