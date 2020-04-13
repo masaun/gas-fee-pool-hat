@@ -91,7 +91,9 @@ export default class MarketplaceRegistry extends Component {
     allowance = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _owner = contractAddressList["Kovan"]["rtoken-contract"]["Underlying-token"];  // DAI
+        const recipient1 = walletAddressList["addressList"]["address1"];
+
+        const _owner = recipient1;  // Wallet Address
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];      // rDAI
 
         let response = await marketplace_registry.methods._allowance(_owner, _spender).send({ from: accounts[0] });
@@ -101,7 +103,7 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _mintAmount = 5;
+        const _mintAmount = 1;
         const _hatID = 1;
 
         let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
@@ -114,7 +116,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
         const recipient2 = walletAddressList["addressList"]["address2"];
 
-        const _mintAmount = 5;
+        const _mintAmount = 1;
         const _recipients = [recipient1, recipient2];
         const _proportions = [214748364, 4080218930];
 
@@ -134,7 +136,7 @@ export default class MarketplaceRegistry extends Component {
     redeem = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _redeemTokens = 5;
+        const _redeemTokens = 1;
 
         let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeem() function ===', response);           
@@ -153,7 +155,7 @@ export default class MarketplaceRegistry extends Component {
         const recipient1 = walletAddressList["addressList"]["address1"];
 
         const _redeemTo = recipient1;
-        const _redeemTokens = 5;
+        const _redeemTokens = 1;
 
         let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransfer() function ===', response);           
