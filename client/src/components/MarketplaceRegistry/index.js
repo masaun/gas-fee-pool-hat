@@ -191,6 +191,12 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _balanceOf() function ===', response);               
     }
 
+    underlying = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+        let response = await marketplace_registry.methods._underlying().call();
+        console.log('=== response of _underlying() function ===', response);
+    }
+
 
 
     //////////////////////////////////// 
@@ -352,6 +358,8 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
                     </Grid>
 

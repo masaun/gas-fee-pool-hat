@@ -15,7 +15,7 @@ import "./storage/McConstants.sol";
 // rDAI
 //import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
-//import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
+import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 import "./rtoken-contracts/contracts/RTokenStructs.sol";
 
 
@@ -30,13 +30,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     IERC20 public erc20;
     //IRToken public rToken;
     rDAI public rDai;
-    //IAllocationStrategy public allocationStrategy;
+    IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rToken, address _rDai, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
         //rToken = IRToken(_rToken);
         rDai = rDAI(_rDai);
-        //allocationStrategy = IAllocationStrategy(_allocationStrategy);
+        allocationStrategy = IAllocationStrategy(_allocationStrategy);
     }
 
     function testFunc() public returns (bool) {
@@ -139,6 +139,15 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
     function _balanceOf(address _owner) public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
         return rDai.balanceOf(_owner);
+    }
+    
+
+    /**
+     * @notice Underlying asset for the strategy
+     * @return address Underlying asset address
+     */
+    function _underlying() public view returns (address _underlyingAssetAddress) {
+        return allocationStrategy.underlying();
     }
     
     
