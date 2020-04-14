@@ -34,6 +34,7 @@ export default class MarketplaceRegistry extends Component {
     getTestData = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
+        const _currentAccount = accounts[0];
         let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
         console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
  

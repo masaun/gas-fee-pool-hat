@@ -51,7 +51,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
 
-        address _owner = msg.sender;
+        address _owner = address(this);
+        //address _owner = msg.sender;
         address _spender = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan
         //address _spender = 0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB;  // rDAI-proxy
 
