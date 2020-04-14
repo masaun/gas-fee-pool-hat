@@ -85,17 +85,17 @@ export default class MarketplaceRegistry extends Component {
     getHatByAddress = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const recipient1 = "0x9492510BbCB93B6992d8b7Bb67888558E12DCac4";
-        const _owner = recipient1;
+        const _owner = accounts[0];  // owner is Wallet Address
 
         let response = await marketplace_registry.methods._getHatByAddress(_owner).call();
         console.log('=== response of _getHatByAddress() function ===', response);
     }
 
     approve = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, web3 } = this.state;    
 
-        const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI
+        const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
+        //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
         const _amount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
         let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
@@ -107,8 +107,9 @@ export default class MarketplaceRegistry extends Component {
 
         const recipient1 = walletAddressList["addressList"]["address1"];
 
-        const _owner = recipient1;  // Wallet Address
-        const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];      // rDAI
+        const _owner = accounts[0];  // owner is Wallet Address
+        const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
+        //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
 
         let response = await marketplace_registry.methods._allowance(_owner, _spender).call();
         console.log('=== response of _allowance() function ===', response);
@@ -141,7 +142,7 @@ export default class MarketplaceRegistry extends Component {
     interestPayableOf = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _owner = walletAddressList["addressList"]["address1"];
+        const _owner = accounts[0];  // owner is Wallet Address
 
         let response = await marketplace_registry.methods._interestPayableOf(_owner).call();
         console.log('=== response of _interestPayableOf() function ===', response);   

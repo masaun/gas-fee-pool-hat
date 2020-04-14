@@ -48,6 +48,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
 
+        //@dev - Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         erc20.transfer(_to, _mintAmount.mul(10**18).div(10**2));        
 
         emit Example(_id, _exchangeRateCurrent);
