@@ -125,7 +125,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.approve(_spender, _amount.mul(10**18));
     }
     
-    function _allowance(address _owner, address _spender) public view returns (uint256) {
+    function _allowance(address _spender) public view returns (uint256) {
+        address _owner = address(this);  //@dev - contract address which do delegate call
         return rDai.allowance(_owner, _spender);
     }
 
@@ -145,7 +146,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
     }
     
-    function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
+    function _interestPayableOf() public view returns (uint256 _amount) {
+        address _owner = address(this);  //@dev - contract address which do delegate call
         return rDai.interestPayableOf(_owner);
     }
 
