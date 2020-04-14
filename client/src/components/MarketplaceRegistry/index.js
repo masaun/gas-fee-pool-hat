@@ -110,7 +110,7 @@ export default class MarketplaceRegistry extends Component {
         const _owner = recipient1;  // Wallet Address
         const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];      // rDAI
 
-        let response = await marketplace_registry.methods._allowance(_owner, _spender).send({ from: accounts[0] });
+        let response = await marketplace_registry.methods._allowance(_owner, _spender).call();
         console.log('=== response of _allowance() function ===', response);
     }
 
