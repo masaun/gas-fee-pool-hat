@@ -127,8 +127,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.approve(_spender, _amount.mul(10**18));
     }
     
-    function _allowance(address _spender) public view returns (uint256) {
-        address _owner = address(this);  //@dev - contract address which do delegate call
+    function _allowance() public view returns (uint256) {
+        address _spender = address(this);  //@dev - contract address which do delegate access to current user's asset
+        address _owner = address(this);    //@dev - contract address which do delegate call
         return rDai.allowance(_owner, _spender);
     }
 

@@ -111,10 +111,7 @@ export default class MarketplaceRegistry extends Component {
     allowance = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
-        //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
-
-        let response = await marketplace_registry.methods._allowance(_spender).call();
+        let response = await marketplace_registry.methods._allowance().call();
         console.log('=== response of _allowance() function ===', response);
     }
 
