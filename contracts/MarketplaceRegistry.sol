@@ -65,7 +65,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
     function rTokenInfo() public view returns (string memory _name, string memory _symbol, uint256 _decimals) {
         return (rDai.name(), rDai.symbol(), rDai.decimals());
-        //return (rToken.name(), rToken.symbol(), rToken.decimals());
     }
 
     function _createHat(
@@ -74,7 +73,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         bool _doChangeHat
     ) public returns (uint256 _hatID) {
         uint256 _hatID = rDai.createHat(_recipients, _proportions, _doChangeHat);
-        //uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
         return _hatID;
     }
 
@@ -83,7 +81,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         view
         returns (address[] memory _recipients, uint32[] memory _proportions) {
         return rDai.getHatByID(_hatID);
-        //return rToken.getHatByID(_hatID);
     }
 
     function _getHatByAddress(address _owner)
@@ -101,17 +98,14 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     function _approve(address _spender, uint256 _amount) public returns (bool) {
         //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
         rDai.approve(_spender, _amount.mul(10**18).div(10**2));
-        //rToken.approve(_spender, _amount.div(10**18));
     }
     
     function _allowance(address _owner, address _spender) external view returns (uint256) {
         return rDai.allowance(_owner, _spender);
-        //return rToken.allowance(_owner, _spender);
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
         rDai.mintWithSelectedHat(_mintAmount.mul(10**18).div(10**2), _hatID);
-        //rToken.mintWithSelectedHat(_mintAmount.div(10**18), _hatID);
     }
     
     function _mintWithNewHat(
@@ -120,7 +114,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         uint32[] memory _proportions
     ) public returns (bool) {
         rDai.mintWithNewHat(_mintAmount.mul(10**18).div(10**2), _recipients, _proportions);
-        //rToken.mintWithNewHat(_mintAmount.div(10**18), _recipients, _proportions);
     }
     
     function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
