@@ -112,12 +112,10 @@ export default class MarketplaceRegistry extends Component {
     allowance = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _owner = accounts[0];  // owner is Wallet Address
-        //const _spender = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"                    // underlying token (DAI)
         const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
         //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
 
-        let response = await marketplace_registry.methods._allowance(_owner, _spender).call();
+        let response = await marketplace_registry.methods._allowance(_spender).call();
         console.log('=== response of _allowance() function ===', response);
     }
 
@@ -149,9 +147,7 @@ export default class MarketplaceRegistry extends Component {
     interestPayableOf = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _owner = accounts[0];  // owner is Wallet Address
-
-        let response = await marketplace_registry.methods._interestPayableOf(_owner).call();
+        let response = await marketplace_registry.methods._interestPayableOf().call();
         console.log('=== response of _interestPayableOf() function ===', response);   
     }
 
