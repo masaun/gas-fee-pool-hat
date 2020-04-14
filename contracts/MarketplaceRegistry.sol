@@ -139,7 +139,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
-        //rToken.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
         rDai.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
     }
     
@@ -149,7 +148,6 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         uint32[] memory _proportions
     ) public returns (bool) {
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
-        //rToken.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
         rDai.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
     }
     
@@ -159,22 +157,18 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
     function _redeem(uint256 _redeemTokens) public returns (bool) {
-        //rToken.redeem(_redeemTokens);
         rDai.redeem(_redeemTokens);
     }
     
     function _redeemAll() public returns (bool) {
-        //rToken.redeemAll();
         rDai.redeemAll();
     }
 
     function _redeemAndTransfer(address _redeemTo, uint256 _redeemTokens) public returns (bool) {
-        //rToken.redeemAndTransfer(_redeemTo, _redeemTokens);
         rDai.redeemAndTransfer(_redeemTo, _redeemTokens);
     }
     
     function _redeemAndTransferAll(address _redeemTo) public returns (bool) {
-        //rToken.redeemAndTransferAll(_redeemTo);
         rDai.redeemAndTransferAll(_redeemTo);
     }
     
@@ -183,12 +177,10 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
      * @dev - Hat Status
      **/
     function _getHatStats(uint256 _hatID) public view returns (RTokenStructs.HatStatsView memory _stats) {
-        //return rToken.getHatStats(_hatID);
         return rDai.getHatStats(_hatID);
     }
 
     function _balanceOf(address _owner) public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
-        //return rToken.balanceOf(_owner);
         return rDai.balanceOf(_owner);
     }
     
