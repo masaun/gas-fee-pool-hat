@@ -8,7 +8,7 @@ contract McEvents {
     event Example(
         uint256 indexed Id, 
         uint256 exchangeRateCurrent,
-        uint256 approvedValue
+        uint256 approvedValue    
     );
 
 }

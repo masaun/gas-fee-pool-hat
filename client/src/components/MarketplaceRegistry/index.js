@@ -34,10 +34,15 @@ export default class MarketplaceRegistry extends Component {
     getTestData = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-
+        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
+ 
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
         let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
         console.log('=== response of testFunc() function ===', response);
+
+        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
     }
 
     transferEtherToContract = async () => {
@@ -94,6 +99,7 @@ export default class MarketplaceRegistry extends Component {
     approve = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;    
 
+        //const _spender = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"                    // underlying token (DAI)
         const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
         //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
         const _amount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
@@ -106,6 +112,7 @@ export default class MarketplaceRegistry extends Component {
         const { accounts, marketplace_registry, web3 } = this.state;
 
         const _owner = accounts[0];  // owner is Wallet Address
+        //const _spender = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"                    // underlying token (DAI)
         const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
         //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
 
@@ -116,8 +123,8 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _mintAmount = 0;
-        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        //const _mintAmount = 0;
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         const _hatID = 1;
 
         let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });

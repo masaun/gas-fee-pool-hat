@@ -52,7 +52,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
 
         address _owner = msg.sender;
-        address _spender = 0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB;  // rDAI-proxy
+        address _spender = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan
+        //address _spender = 0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB;  // rDAI-proxy
 
         //@dev - Allow _spender to withdraw from your account, multiple times, up to the _value amount. 
         erc20.approve(_spender, _mintAmount.mul(10**18));
@@ -67,6 +68,11 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
         return (McConstants.CONFIRMED, _approvedValue);
     }
+
+    function balanceOfCurrentAccount(address _currentAccount) public view returns (uint256 balanceOfCurrentAccount) {
+        return erc20.balanceOf(_currentAccount);
+    }
+    
 
     function transferEtherToContract() public payable returns (bool) {
         //@dev - Transfer ether from caller's address to contract
