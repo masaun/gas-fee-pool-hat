@@ -105,7 +105,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
-        rDai.mintWithSelectedHat(_mintAmount.mul(10**18).div(10**2), _hatID);
+        //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
+        rDai.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
     }
     
     function _mintWithNewHat(
@@ -113,7 +114,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address[] memory _recipients,
         uint32[] memory _proportions
     ) public returns (bool) {
-        rDai.mintWithNewHat(_mintAmount.mul(10**18).div(10**2), _recipients, _proportions);
+        //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
+        rDai.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
     }
     
     function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
