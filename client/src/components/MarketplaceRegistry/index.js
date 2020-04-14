@@ -99,13 +99,12 @@ export default class MarketplaceRegistry extends Component {
 
     approve = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;    
-
         //const _spender = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"                    // underlying token (DAI)
-        const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                     // rDAI-proxy
+        //const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                   // rDAI-proxy
         //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
         const _amount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
-        let response = await marketplace_registry.methods._approve(_spender, _amount).send({ from: accounts[0] });
+        let response = await marketplace_registry.methods._approve(_amount).send({ from: accounts[0] });
         console.log('=== response of _approve() function ===', response);     
     }
 
