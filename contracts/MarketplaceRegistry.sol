@@ -55,7 +55,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _spender = 0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB;  // rDAI-proxy
 
         //@dev - Allow _spender to withdraw from your account, multiple times, up to the _value amount. 
-        erc20.approve(_spender, _mintAmount);
+        erc20.approve(_spender, _mintAmount.mul(10**18));
             
         //@dev - Returns the amount which _spender is still allowed to withdraw from _owner
         uint256 _approvedValue = erc20.allowance(_owner, _spender);
