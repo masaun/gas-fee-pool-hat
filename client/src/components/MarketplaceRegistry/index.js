@@ -91,9 +91,7 @@ export default class MarketplaceRegistry extends Component {
     getHatByAddress = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const _owner = accounts[0];  // owner is Wallet Address
-
-        let response = await marketplace_registry.methods._getHatByAddress(_owner).call();
+        let response = await marketplace_registry.methods._getHatByAddress().call();
         console.log('=== response of _getHatByAddress() function ===', response);
     }
 

@@ -106,7 +106,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         return rDai.getHatByID(_hatID);
     }
 
-    function _getHatByAddress(address _owner)
+    function _getHatByAddress()
         public
         view
         returns (
@@ -114,6 +114,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
             address[] memory _recipients,
             uint32[] memory _proportions
         ) {
+        address _owner = address(this);    //@dev - contract address which do delegate call
         //rToken.getHatByAddress(_owner);
         rDai.getHatByAddress(_owner);
     }
