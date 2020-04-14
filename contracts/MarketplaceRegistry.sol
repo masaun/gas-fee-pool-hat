@@ -180,7 +180,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         return rDai.getHatStats(_hatID);
     }
 
-    function _balanceOf(address _owner) public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
+    function _balanceOf() public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
+        address _owner = address(this); //@dev - contract address which do delegate call
         return rDai.balanceOf(_owner);
     }
     

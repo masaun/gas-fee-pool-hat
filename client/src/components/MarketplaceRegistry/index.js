@@ -197,9 +197,7 @@ export default class MarketplaceRegistry extends Component {
     balanceOf = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
-
-        let response = await marketplace_registry.methods._balanceOf(recipient1).call();
+        let response = await marketplace_registry.methods._balanceOf().call();
         console.log('=== response of _balanceOf() function ===', response);               
     }
 
