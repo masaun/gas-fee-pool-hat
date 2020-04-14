@@ -15,7 +15,8 @@ import "./storage/McConstants.sol";
 // rDAI
 //import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
-import "./rtoken-contracts/contracts/IRToken.sol";
+import "./rtoken-contracts/contracts/RToken.sol";
+//import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 import "./rtoken-contracts/contracts/RTokenStructs.sol";
 
@@ -30,14 +31,17 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
 
     IERC20 public erc20;
-    IRToken public rToken;
+    RToken public rToken;
+    //IRToken public rToken;
     rDAI public rDai;
     IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rDai, address _rToken, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
-        rDai = rDAI(_rDai);
-        rToken = IRToken(_rDai);       //@dev - Assign rDAI-Proxy address into RToken.sol
+        rDai = RToken(_rDai);       //@dev - Assign rDAI-Proxy address into RToken.sol
+        //rDai = rDAI(_rDai);       //@dev - Original
+        //rToken = IRToken(_rDai);  //@dev - Assign rDAI-Proxy address into IRToken.sol
+
         //rToken = IRToken(_rToken);
         //allocationStrategy = IAllocationStrategy(_allocationStrategy);
 
