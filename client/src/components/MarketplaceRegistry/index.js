@@ -116,7 +116,6 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        //const _mintAmount = 0;
         const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         const _hatID = 222;
 
@@ -189,7 +188,7 @@ export default class MarketplaceRegistry extends Component {
      **/
     getHatStats = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
-        const _hatID = 1;
+        const _hatID = 222;
         let response = await marketplace_registry.methods._getHatStats(_hatID).call();
         console.log('=== response of _getHatStats() function ===', response);           
     }
