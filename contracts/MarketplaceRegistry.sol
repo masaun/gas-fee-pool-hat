@@ -101,7 +101,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.approve(_spender, _amount.mul(10**18));
     }
     
-    function _allowance(address _owner, address _spender) external view returns (uint256) {
+    function _allowance(address _owner, address _spender) public view returns (uint256) {
         return rDai.allowance(_owner, _spender);
     }
 
