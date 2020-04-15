@@ -134,17 +134,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     
 
     function _approve(uint256 _amount) public returns (bool) {
-        //@dev - Allow _spender to withdraw from your account, multiple times, up to the _value amount
         address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"). 
-        erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
-        //erc20.approve(_spender, _amount.mul(10**18));
-            
-
-        //@dev - contract address which do delegate access to current user's asset
         address _spenderRDai = rDaiAddress;    
         //address _spender = address(this);
 
-        //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
+        //@dev - contract address which do delegate access to current user's asset
+        erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
+        erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI  
         rDai.approve(_spenderRDai, _amount.mul(10**18));
         //rDai.approve(_spender, _amount.mul(10**18));
     }
