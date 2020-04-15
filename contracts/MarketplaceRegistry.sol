@@ -145,7 +145,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         //rDai.approve(_spender, _amount.mul(10**18));
     }
     
-    function _allowance() public view returns (uint256 rDaiAllowance, uint256 underlyingERC20Allowance) {
+    function _allowance() public view returns (uint256 rDaiAllowance, uint256 underlyingERC20Allowance, uint256 rDAI_and_UnderlyingERC20_Allowance) {
         //@dev - contract address which do delegate access to current user's asset
         address _owner = address(this);      //@dev - contract address which do delegate call
         address _spenderRDai = rDaiAddress;
@@ -153,7 +153,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         //address _spender = address(this);
 
         //return rToken.allowance(_owner, _spender);
-        return (rDai.allowance(_owner, _spenderRDai), erc20.allowance(_owner, _spenderUnderlyingERC20));
+        return (rDai.allowance(_owner, _spenderRDai), erc20.allowance(_owner, _spenderUnderlyingERC20), erc20.allowance(_spenderUnderlyingERC20, _spenderRDai));
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
