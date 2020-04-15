@@ -134,25 +134,30 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     
 
     function _approve(uint256 _amount) public returns (bool) {
+        //@dev - Allow _spender to withdraw from your account, multiple times, up to the _value amount
+        address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"). 
+        erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
+        //erc20.approve(_spender, _amount.mul(10**18));
+            
+
         //@dev - contract address which do delegate access to current user's asset
-        address _spender = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa")
-        //address _spender = rDaiAddress;    
+        address _spenderRDai = rDaiAddress;    
         //address _spender = address(this);
 
         //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
-        //rToken.approve(_spender, _amount.mul(10**18));
-        rDai.approve(_spender, _amount.mul(10**18));
+        rDai.approve(_spenderRDai, _amount.mul(10**18));
+        //rDai.approve(_spender, _amount.mul(10**18));
     }
     
-    function _allowance() public view returns (uint256) {
+    function _allowance() public view returns (uint256 rDaiAllowance, uint256 underlyingERC20Allowance) {
         //@dev - contract address which do delegate access to current user's asset
         address _owner = address(this);      //@dev - contract address which do delegate call
-        address _spender = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa")
-        //address _spender = rDaiAddress;
+        address _spenderRDai = rDaiAddress;
+        address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa")
         //address _spender = address(this);
 
         //return rToken.allowance(_owner, _spender);
-        return rDai.allowance(_owner, _spender);
+        return (rDai.allowance(_owner, _spenderRDai), erc20.allowance(_owner, _spenderUnderlyingERC20));
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
