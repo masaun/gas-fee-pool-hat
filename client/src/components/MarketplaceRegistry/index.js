@@ -338,23 +338,23 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.transferEtherToContract}> transfer Ether To Contract </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
 
@@ -366,11 +366,11 @@ export default class MarketplaceRegistry extends Component {
 
                             <hr />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
                     </Grid>
 
