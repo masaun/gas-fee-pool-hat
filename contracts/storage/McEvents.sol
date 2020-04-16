@@ -8,7 +8,13 @@ contract McEvents {
     event CreateHat(
         uint256 hatID
     );
-    
+
+
+    event TransferDaiToRDai(
+        address transferToAddress,
+        uint256 transferredAmount
+    );
+
 
     event Example(
         uint256 indexed Id, 

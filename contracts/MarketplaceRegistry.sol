@@ -139,11 +139,17 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _spender = address(this);
 
         //@dev - contract address which do delegate access to current user's asset
+        erc20.approve(_spender, _amount.mul(10**18));      //@dev - Allow contract which does delegate call of rDAI to access DAI 
         erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
         erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI 
-        //erc20.approve(_spender, _amount.mul(10**18));      //@dev - Allow rDAI to access DAI  
+
+        rDai.approve(_spender, _amount.mul(10**18));
+        rDai.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
         rDai.approve(_spenderRDai, _amount.mul(10**18));
-        //rDai.approve(_spender, _amount.mul(10**18));
+
+        //@dev - transfer DAI from this contract to rDAI address;
+        erc20.transfer(_spenderRDai, _amount.mul(10**18));
+        emit TransferDaiToRDai(_spenderRDai, _amount.mul(10**18));
     }
     
     function _allowance() 
@@ -160,9 +166,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _spender = address(this);
 
         //return rToken.allowance(_owner, _spender);
-        return (rDai.allowance(_owner, _spenderRDai),
-                erc20.allowance(_owner, _spenderUnderlyingERC20), 
-                erc20.allowance(_spenderUnderlyingERC20, _spenderRDai));
+        return (rDai.allowance(_owner, _spenderRDai),                     
+                erc20.allowance(_owner, _spenderUnderlyingERC20),
+                erc20.allowance(_spenderUnderlyingERC20, _spenderRDai));  //@dev - Allow rDAI to access DAI
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
