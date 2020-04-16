@@ -15,7 +15,8 @@ import "./storage/McConstants.sol";
 // rDAI
 //import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
-import "./rtoken-contracts/contracts/IRToken.sol";
+//import "./rtoken-contracts/contracts/RToken.sol";
+//import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 import "./rtoken-contracts/contracts/RTokenStructs.sol";
 
@@ -27,19 +28,27 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     using SafeMath for uint;
 
     address _ias;  //@dev - _ias is from rDAI.sol
-    //address _erc20 = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;  // DAI address on Kovan;
+    address underlyingERC20;
+    address rDaiAddress;
+    address rTokenAddress;
 
     IERC20 public erc20;
-    IRToken public rToken;
+    //RToken public rToken;
+    //IRToken public rToken;
     rDAI public rDai;
     IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rDai, address _rToken, address _allocationStrategy) public {
         erc20 = IERC20(_erc20);
-        rDai = rDAI(_rDai);
-        rToken = IRToken(_rDai);       //@dev - Assign rDAI-Proxy address into RToken.sol
+        rDai = rDAI(_rDai);           //@dev - Assign rDAI-Proxy address into rDAI.sol
+        //rToken = RToken(_rDai);     //@dev - Assign rDAI-Proxy address into RToken.sol
+        //rToken = IRToken(_rDai);    //@dev - Assign rDAI-Proxy address into IRToken.sol
         //rToken = IRToken(_rToken);
         //allocationStrategy = IAllocationStrategy(_allocationStrategy);
+
+        underlyingERC20 = _erc20;
+        rDaiAddress = _rDai;
+        rTokenAddress = _rToken;
 
         _ias = rDai.getCurrentSavingStrategy();
         allocationStrategy = IAllocationStrategy(_ias);
@@ -95,6 +104,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     ) public returns (uint256 _hatID) {
         //uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
         uint256 _hatID = rDai.createHat(_recipients, _proportions, _doChangeHat);
+        
+        emit CreateHat(_hatID);
+
         return _hatID;
     }
 
@@ -102,11 +114,12 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         public
         view
         returns (address[] memory _recipients, uint32[] memory _proportions) {
+        
         //return rToken.getHatByID(_hatID);
         return rDai.getHatByID(_hatID);
     }
 
-    function _getHatByAddress(address _owner)
+    function _getHatByAddress()
         public
         view
         returns (
@@ -114,19 +127,33 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
             address[] memory _recipients,
             uint32[] memory _proportions
         ) {
+        address _owner = address(this);    //@dev - contract address which do delegate call
         //rToken.getHatByAddress(_owner);
         rDai.getHatByAddress(_owner);
     }
     
 
-    function _approve(address _spender, uint256 _amount) public returns (bool) {
-        //@dev - IRToken.sol inherit IERC20.sol (So that instance of IRToken.sol can access to approve function)
-        //rToken.approve(_spender, _amount.mul(10**18));
-        rDai.approve(_spender, _amount.mul(10**18));
+    function _approve(uint256 _amount) public returns (bool) {
+        address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"). 
+        address _spenderRDai = rDaiAddress;    
+        //address _spender = address(this);
+
+        //@dev - contract address which do delegate access to current user's asset
+        erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
+        erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI  
+        rDai.approve(_spenderRDai, _amount.mul(10**18));
+        //rDai.approve(_spender, _amount.mul(10**18));
     }
     
-    function _allowance(address _owner, address _spender) public view returns (uint256) {
-        return rDai.allowance(_owner, _spender);
+    function _allowance() public view returns (uint256 rDaiAllowance, uint256 underlyingERC20Allowance, uint256 rDAI_and_UnderlyingERC20_Allowance) {
+        //@dev - contract address which do delegate access to current user's asset
+        address _owner = address(this);      //@dev - contract address which do delegate call
+        address _spenderRDai = rDaiAddress;
+        address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa")
+        //address _spender = address(this);
+
+        //return rToken.allowance(_owner, _spender);
+        return (rDai.allowance(_owner, _spenderRDai), erc20.allowance(_owner, _spenderUnderlyingERC20), erc20.allowance(_spenderUnderlyingERC20, _spenderRDai));
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
@@ -145,7 +172,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
     }
     
-    function _interestPayableOf(address _owner) public view returns (uint256 _amount) {
+    function _interestPayableOf() public view returns (uint256 _amount) {
+        address _owner = address(this);  //@dev - contract address which do delegate call
+        //return rToken.interestPayableOf(_owner);
         return rDai.interestPayableOf(_owner);
     }
 
@@ -178,7 +207,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         return rDai.getHatStats(_hatID);
     }
 
-    function _balanceOf(address _owner) public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
+    function _balanceOf() public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
+        address _owner = address(this); //@dev - contract address which do delegate call
         //return rToken.balanceOf(_owner);
         return rDai.balanceOf(_owner);
     }
@@ -189,6 +219,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
      * @return address Underlying asset address
      */
     function _underlying() public view returns (address _underlyingAssetAddress) {
+        //return rToken.underlying();
+        //return rDai.underlying();
         return allocationStrategy.underlying();
     }
     

@@ -5,6 +5,11 @@ import "./McObjects.sol";
 
 contract McEvents {
 
+    event CreateHat(
+        uint256 hatID
+    );
+    
+
     event Example(
         uint256 indexed Id, 
         uint256 exchangeRateCurrent,
