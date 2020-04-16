@@ -148,7 +148,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         rDai.approve(_spenderRDai, _amount.mul(10**18));
 
         //@dev - transfer DAI from this contract to rDAI address;
-        erc20.transfer(_spenderRDai, _amount.mul(10**18));
+        erc20.transfer(_spenderRDai, _amount.mul(10**18).div(10**2));
         emit TransferDaiToRDai(_spenderRDai, _amount.mul(10**18));
     }
     
