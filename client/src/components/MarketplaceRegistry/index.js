@@ -15,8 +15,6 @@ import styles from '../../App.module.scss';
 import { walletAddressList } from '../../data/testWalletAddress.js'
 import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
-import { bigNumber } from 'bignumber.js';
-
 
 export default class MarketplaceRegistry extends Component {
     constructor(props) {    
@@ -278,9 +276,6 @@ export default class MarketplaceRegistry extends Component {
             balance = web3.utils.fromWei(balance, 'ether');
 
             let instanceMarketplaceRegistry = null;
-            let instanceDai = null;
-            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
-            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa";
             let deployedNetwork = null;
 
             // Create instance of contracts
@@ -295,6 +290,10 @@ export default class MarketplaceRegistry extends Component {
               }
             }
 
+            //@dev - Create instance of DAI-contract
+            let instanceDai = null;
+            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
+            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa";
             instanceDai = new web3.eth.Contract(
               Dai.abi,
               DaiAddress,
