@@ -20,6 +20,10 @@ import "./rtoken-contracts/contracts/tokens/rDAI.sol";
 import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 import "./rtoken-contracts/contracts/RTokenStructs.sol";
 
+// DAI
+import "./DAI/dai.sol";
+
+
 
 /***
  * @notice - This contract is that ...
@@ -32,6 +36,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     address rDaiAddress;
     address rTokenAddress;
 
+
+    Dai public dai;  //@dev - dai.sol
+
     IERC20 public erc20;
     //RToken public rToken;
     //IRToken public rToken;
@@ -39,6 +46,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     IAllocationStrategy public allocationStrategy;
 
     constructor(address _erc20, address _rDai, address _rToken, address _allocationStrategy) public {
+        dai = Dai(_erc20);
+
         erc20 = IERC20(_erc20);
         rDai = rDAI(_rDai);           //@dev - Assign rDAI-Proxy address into rDAI.sol
         //rToken = RToken(_rDai);     //@dev - Assign rDAI-Proxy address into RToken.sol
@@ -145,13 +154,13 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _spender = address(this);
 
         //@dev - contract address which do delegate access to current user's asset
-        erc20.approve(_spender, _amount.mul(10**18));      //@dev - Allow contract which does delegate call of rDAI to access DAI 
-        erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
+        //erc20.approve(_spender, _amount.mul(10**18));      //@dev - Allow contract which does delegate call of rDAI to access DAI 
+        //erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
         erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI 
 
-        rDai.approve(_spender, _amount.mul(10**18));
-        rDai.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
-        rDai.approve(_spenderRDai, _amount.mul(10**18));
+        //rDai.approve(_spender, _amount.mul(10**18));
+        //rDai.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
+        //rDai.approve(_spenderRDai, _amount.mul(10**18));
 
         //@dev - transfer DAI from this contract to rDAI address;
         erc20.transfer(_spenderRDai, _amount.mul(10**18).div(10**2));
@@ -178,8 +187,15 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
+        address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"). 
+        address _spenderRDai = rDaiAddress;
+        address _spender = address(this);
+
+        //@dev - Approve rDAI for DAI
+        dai.approve(_spenderRDai, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI 
+        //erc20.approve(_spenderRDai, _mintAmountt.mul(10**18));  //@dev - Allow rDAI to access DAI 
+
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
-        //rToken.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
         rDai.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
     }
     
