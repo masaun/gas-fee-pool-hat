@@ -74,7 +74,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         //@dev - Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         erc20.transfer(_to, _mintAmount.mul(10**18).div(10**2));        
 
-        emit Example(_id, _exchangeRateCurrent, _approvedValue);
+        emit Example(_id, _exchangeRateCurrent, msg.sender, _approvedValue);
 
         return (McConstants.CONFIRMED, _approvedValue);
     }
@@ -85,8 +85,9 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     
 
     function transferDAIFromUserToContract(uint256 _mintAmount) public returns (bool) {
-        address _from = msg.sender;
-        address _to = address(this);
+        address _from = 0x718E3ea0B8C2911C5e54Cb4b9B2075fdd87B55a7;
+        address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
+        //address _to = address(this);
 
         erc20.approve(_from, _mintAmount.mul(10**18));
         uint256 _allowanceAmount = erc20.allowance(underlyingERC20, _from);

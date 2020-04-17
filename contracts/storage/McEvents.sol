@@ -27,6 +27,7 @@ contract McEvents {
     event Example(
         uint256 indexed Id, 
         uint256 exchangeRateCurrent,
+        address msgSender,
         uint256 approvedValue    
     );
 
