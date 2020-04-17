@@ -46,11 +46,21 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
     }
 
-    transferEtherToContract = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+    transferDAIFromUserToContract = async () => {
+        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
 
-        let response = await marketplace_registry.methods.transferEtherToContract().send({ from: accounts[0], value: 100000000000000000 });  // wei
-        console.log('=== response of transferEtherToContract() function ===', response);
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
+
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        console.log('=== _amount ===', _amount);
+        const _to = marketplaceRegistryAddress;
+        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
+
+        //@dev - Transfer DAI from DAI-contract to Logic-contract
+        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
+        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
     }
 
     rTokenInfo = async () => {
@@ -235,8 +245,10 @@ export default class MarketplaceRegistry extends Component {
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
      
         let MarketplaceRegistry = {};
+        let Dai = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");          // Load artifact-file of MarketplaceRegistry
+          Dai = require("../../../../build/contracts/Dai.json");
         } catch (e) {
           console.log(e);
         }
@@ -278,6 +290,17 @@ export default class MarketplaceRegistry extends Component {
               }
             }
 
+            //@dev - Create instance of DAI-contract
+            let instanceDai = null;
+            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
+            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa";
+            instanceDai = new web3.eth.Contract(
+              Dai.abi,
+              DaiAddress,
+            );
+            console.log('=== instanceDai ===', instanceDai);
+ 
+
             if (MarketplaceRegistry) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
@@ -290,7 +313,9 @@ export default class MarketplaceRegistry extends Component {
                 networkType, 
                 hotLoaderDisabled,
                 isMetaMask, 
-                marketplace_registry: instanceMarketplaceRegistry
+                marketplace_registry: instanceMarketplaceRegistry,
+                dai: instanceDai,
+                marketplaceRegistryAddress: MarketplaceRegistryAddress
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
@@ -336,25 +361,25 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.transferEtherToContract}> transfer Ether To Contract </Button> <br />
+                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
 
@@ -366,11 +391,11 @@ export default class MarketplaceRegistry extends Component {
 
                             <hr />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
                     </Grid>
 

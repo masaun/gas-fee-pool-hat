@@ -74,7 +74,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         //@dev - Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         erc20.transfer(_to, _mintAmount.mul(10**18).div(10**2));        
 
-        emit Example(_id, _exchangeRateCurrent, _approvedValue);
+        emit Example(_id, _exchangeRateCurrent, msg.sender, _approvedValue);
 
         return (McConstants.CONFIRMED, _approvedValue);
     }
@@ -84,10 +84,16 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     }
     
 
-    function transferEtherToContract() public payable returns (bool) {
-        //@dev - Transfer ether from caller's address to contract
-        uint256 etherAmount = msg.value;
-        address(uint160(address(this))).transfer(etherAmount.div(10**1));
+    function transferDAIFromUserToContract(uint256 _mintAmount) public returns (bool) {
+        address _from = address(this);
+        address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
+
+        erc20.approve(underlyingERC20, _mintAmount.mul(10**18));
+        uint256 _allowanceAmount = erc20.allowance(address(this), underlyingERC20);
+        //uint256 _allowanceAmount = erc20.allowance(msg.sender, address(this));
+        erc20.transferFrom(_from, _to, _mintAmount.mul(10**18).div(10**2));
+
+        emit _TransferFrom(_from, _to, _mintAmount.mul(10**18), _allowanceAmount);
     }
     
 
@@ -135,25 +141,40 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
 
     function _approve(uint256 _amount) public returns (bool) {
         address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"). 
-        address _spenderRDai = rDaiAddress;    
-        //address _spender = address(this);
+        address _spenderRDai = rDaiAddress;
+        address _spender = address(this);
 
         //@dev - contract address which do delegate access to current user's asset
+        erc20.approve(_spender, _amount.mul(10**18));      //@dev - Allow contract which does delegate call of rDAI to access DAI 
         erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
-        erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI  
+        erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI 
+
+        rDai.approve(_spender, _amount.mul(10**18));
+        rDai.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
         rDai.approve(_spenderRDai, _amount.mul(10**18));
-        //rDai.approve(_spender, _amount.mul(10**18));
+
+        //@dev - transfer DAI from this contract to rDAI address;
+        erc20.transfer(_spenderRDai, _amount.mul(10**18).div(10**2));
+        emit TransferDaiToRDai(_spenderRDai, _amount.mul(10**18));
     }
     
-    function _allowance() public view returns (uint256 rDaiAllowance, uint256 underlyingERC20Allowance, uint256 rDAI_and_UnderlyingERC20_Allowance) {
+    function _allowance() 
+        public 
+        view 
+        returns (uint256 rDaiAllowance,
+                 uint256 underlyingERC20Allowance, 
+                 uint256 rDAI_and_UnderlyingERC20_Allowance) 
+    {
         //@dev - contract address which do delegate access to current user's asset
         address _owner = address(this);      //@dev - contract address which do delegate call
         address _spenderRDai = rDaiAddress;
         address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa")
-        //address _spender = address(this);
+        address _spender = address(this);
 
         //return rToken.allowance(_owner, _spender);
-        return (rDai.allowance(_owner, _spenderRDai), erc20.allowance(_owner, _spenderUnderlyingERC20), erc20.allowance(_spenderUnderlyingERC20, _spenderRDai));
+        return (rDai.allowance(_owner, _spenderRDai),                     
+                erc20.allowance(_owner, _spenderUnderlyingERC20),
+                erc20.allowance(_spenderUnderlyingERC20, _spenderRDai));  //@dev - Allow rDAI to access DAI
     }
 
     function _mintWithSelectedHat(uint256 _mintAmount, uint256 _hatID) public returns (bool) {
