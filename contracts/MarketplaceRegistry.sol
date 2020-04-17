@@ -85,19 +85,15 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     
 
     function transferDAIFromUserToContract(uint256 _mintAmount) public returns (bool) {
-        address _from = 0x718E3ea0B8C2911C5e54Cb4b9B2075fdd87B55a7;
+        address _from = address(this);
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
-        //address _to = address(this);
 
-        erc20.approve(_from, _mintAmount.mul(10**18));
-        uint256 _allowanceAmount = erc20.allowance(underlyingERC20, _from);
+        erc20.approve(underlyingERC20, _mintAmount.mul(10**18));
+        uint256 _allowanceAmount = erc20.allowance(address(this), underlyingERC20);
+        //uint256 _allowanceAmount = erc20.allowance(msg.sender, address(this));
         erc20.transferFrom(_from, _to, _mintAmount.mul(10**18).div(10**2));
 
         emit _TransferFrom(_from, _to, _mintAmount.mul(10**18), _allowanceAmount);
-
-        //@dev - Transfer ether from caller's address to contract
-        // uint256 etherAmount = msg.value;
-        // address(uint160(address(this))).transfer(etherAmount.div(10**1));
     }
     
 
