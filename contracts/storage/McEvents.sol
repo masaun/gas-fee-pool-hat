@@ -16,6 +16,13 @@ contract McEvents {
     );
 
 
+    event _TransferFrom(
+        address from,
+        address to,
+        uint256 transferredAmount
+    );
+
+
     event Example(
         uint256 indexed Id, 
         uint256 exchangeRateCurrent,

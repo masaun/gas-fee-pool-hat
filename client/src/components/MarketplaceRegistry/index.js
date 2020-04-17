@@ -46,11 +46,13 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
     }
 
-    transferEtherToContract = async () => {
+    transferDAIFromUserToContract = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
-        let response = await marketplace_registry.methods.transferEtherToContract().send({ from: accounts[0], value: 100000000000000000 });  // wei
-        console.log('=== response of transferEtherToContract() function ===', response);
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
+
+        let response = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
+        console.log('=== response of transferDAIFromUserToContract() function ===', response);
     }
 
     rTokenInfo = async () => {
@@ -336,7 +338,7 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.transferEtherToContract}> transfer Ether To Contract </Button> <br />
+                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
