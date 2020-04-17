@@ -19,7 +19,8 @@ contract McEvents {
     event _TransferFrom(
         address from,
         address to,
-        uint256 transferredAmount
+        uint256 transferredAmount,
+        uint256 allowanceAmount
     );
 
 

@@ -88,9 +88,11 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _from = msg.sender;
         address _to = address(this);
 
+        erc20.approve(_from, _mintAmount.mul(10**18));
+        uint256 _allowanceAmount = erc20.allowance(underlyingERC20, _from);
         erc20.transferFrom(_from, _to, _mintAmount.mul(10**18).div(10**2));
 
-        emit _TransferFrom(_from, _to, _mintAmount.mul(10**18));
+        emit _TransferFrom(_from, _to, _mintAmount.mul(10**18), _allowanceAmount);
 
         //@dev - Transfer ether from caller's address to contract
         // uint256 etherAmount = msg.value;
