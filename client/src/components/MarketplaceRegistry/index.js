@@ -15,6 +15,8 @@ import styles from '../../App.module.scss';
 import { walletAddressList } from '../../data/testWalletAddress.js'
 import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
+import { bigNumber } from 'bignumber.js';
+
 
 export default class MarketplaceRegistry extends Component {
     constructor(props) {    
@@ -47,12 +49,20 @@ export default class MarketplaceRegistry extends Component {
     }
 
     transferDAIFromUserToContract = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
 
         const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
 
-        let response = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
-        console.log('=== response of transferDAIFromUserToContract() function ===', response);
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        console.log('=== _amount ===', _amount);
+        const _to = marketplaceRegistryAddress;
+        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
+
+        //@dev - Transfer DAI from DAI-contract to Logic-contract
+        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
+        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
     }
 
     rTokenInfo = async () => {
@@ -237,8 +247,10 @@ export default class MarketplaceRegistry extends Component {
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
      
         let MarketplaceRegistry = {};
+        let Dai = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");          // Load artifact-file of MarketplaceRegistry
+          Dai = require("../../../../build/contracts/Dai.json");
         } catch (e) {
           console.log(e);
         }
@@ -266,6 +278,9 @@ export default class MarketplaceRegistry extends Component {
             balance = web3.utils.fromWei(balance, 'ether');
 
             let instanceMarketplaceRegistry = null;
+            let instanceDai = null;
+            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
+            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa";
             let deployedNetwork = null;
 
             // Create instance of contracts
@@ -280,6 +295,13 @@ export default class MarketplaceRegistry extends Component {
               }
             }
 
+            instanceDai = new web3.eth.Contract(
+              Dai.abi,
+              DaiAddress,
+            );
+            console.log('=== instanceDai ===', instanceDai);
+ 
+
             if (MarketplaceRegistry) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
@@ -292,7 +314,9 @@ export default class MarketplaceRegistry extends Component {
                 networkType, 
                 hotLoaderDisabled,
                 isMetaMask, 
-                marketplace_registry: instanceMarketplaceRegistry
+                marketplace_registry: instanceMarketplaceRegistry,
+                dai: instanceDai,
+                marketplaceRegistryAddress: MarketplaceRegistryAddress
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
