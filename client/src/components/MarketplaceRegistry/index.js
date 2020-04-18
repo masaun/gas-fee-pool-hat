@@ -131,18 +131,17 @@ export default class MarketplaceRegistry extends Component {
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
-        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
-        console.log('=== _amount ===', _amount);
+        let mintAmount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        console.log('=== mintAmount ===', mintAmount);
         const _spender = rDAI_address;
-        //const _spender = marketplaceRegistryAddress;
 
-        let approved = await dai.methods.approve(_spender, _amount).send({ from: accounts[0] });
+        let approved = await dai.methods.approve(_spender, mintAmount).send({ from: accounts[0] });
         console.log('=== dai.sol of approve() function ===', approved);
 
         let allowance = await dai.methods.allowance(accounts[0], _spender).call();
         console.log('=== dai.sol of allowance() function ===', allowance);
 
-        let response = await rDAI.methods.mintWithSelectedHat(_amount, _hatID).send({ from: accounts[0] });
+        let response = await rDAI.methods.mintWithSelectedHat(mintAmount, _hatID).send({ from: accounts[0] });
         console.log('=== response of mintWithSelectedHat() function ===', response);     
 
         //let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
