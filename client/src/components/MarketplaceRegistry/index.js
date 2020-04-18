@@ -126,12 +126,14 @@ export default class MarketplaceRegistry extends Component {
     mintWithSelectedHat = async () => {
         const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         const _hatID = 222;
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
-        let mintAmount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        let mintAmount = web3.utils.toWei(_mintAmount.toString(), 'ether');
+        //let mintAmount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
         console.log('=== mintAmount ===', mintAmount);
         const _spender = rDAI_address;
 
