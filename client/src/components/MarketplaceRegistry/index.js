@@ -165,10 +165,14 @@ export default class MarketplaceRegistry extends Component {
     }
 
     interestPayableOf = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
 
-        let response = await marketplace_registry.methods._interestPayableOf().call();
-        console.log('=== response of _interestPayableOf() function ===', response);   
+        const _owner = walletAddressList["addressList"]["address1"];
+
+        let interestPayableOfAmount = await rDAI.methods.interestPayableOf(_owner).call();
+        console.log('=== rDAI.sol of interestPayableOf() function ===', interestPayableOfAmount);
+        //let response = await marketplace_registry.methods._interestPayableOf().call();
+        //console.log('=== response of _interestPayableOf() function ===', response);   
     }
 
     redeem = async () => {
