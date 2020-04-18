@@ -144,7 +144,7 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== dai.sol of allowance() function ===', allowance);
 
         let response = await rDAI.methods.mintWithSelectedHat(mintAmount, _hatID).send({ from: accounts[0] });
-        console.log('=== response of mintWithSelectedHat() function ===', response);     
+        console.log('=== rDAI.sol     of mintWithSelectedHat() function ===', response);     
 
         //let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
         //console.log('=== response of _mintWithSelectedHat() function ===', response);     
@@ -265,9 +265,9 @@ export default class MarketplaceRegistry extends Component {
         let Dai = {};
         let rDAI = {};
         try {
-          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");          // Load artifact-file of MarketplaceRegistry
-          Dai = require("../../../../build/contracts/Dai.json");
-          rDAI = require("../../../../build/contracts/rDAI.json");
+          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
+          Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
+          rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
         } catch (e) {
           console.log(e);
         }
@@ -312,7 +312,7 @@ export default class MarketplaceRegistry extends Component {
             //@dev - Create instance of DAI-contract
             let instanceDai = null;
             let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
-            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa";
+            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"; //@dev - DAI（Underlying asset）
             instanceDai = new web3.eth.Contract(
               Dai.abi,
               DaiAddress,
@@ -321,7 +321,7 @@ export default class MarketplaceRegistry extends Component {
 
             //@dev - Create instance of rDAI-contract
             let instanceRDai = null;
-            let rDaiAddress = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";  //@dev - rDAI proxy 
+            let rDaiAddress = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB"; //@dev - rDAI（rDAI proxy contract）
             instanceRDai = new web3.eth.Contract(
               rDAI.abi,
               rDaiAddress,
