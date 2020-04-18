@@ -176,12 +176,21 @@ export default class MarketplaceRegistry extends Component {
     }
 
     redeem = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
 
-        const _redeemTokens = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        //const _redeemTokens = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
-        let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
-        console.log('=== response of _redeem() function ===', response);           
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let redeemTokens = web3.utils.toWei(_redeemTokens.toString(), 'ether');
+        console.log('=== redeemTokens ===', redeemTokens);
+        const _spender = rDAI_address;
+
+        let response = await rDAI.methods.redeem(redeemTokens).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeem() function ===', response);    
+        //let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
+        //console.log('=== response of _redeem() function ===', response);           
     }
 
     redeemAll = async () => {
