@@ -190,9 +190,11 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         address _spenderUnderlyingERC20 = underlyingERC20;  // DAI address on kovan ("0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"). 
         address _spenderRDai = rDaiAddress;
         address _spender = address(this);
+        address _msgSender = msg.sender;
 
         //@dev - Approve rDAI for DAI
         dai.approve(_spenderRDai, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI 
+        dai.approve(_spender, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI
         //erc20.approve(_spenderRDai, _mintAmountt.mul(10**18));  //@dev - Allow rDAI to access DAI 
 
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
