@@ -124,13 +124,30 @@ export default class MarketplaceRegistry extends Component {
     }
 
     mintWithSelectedHat = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
         const _hatID = 222;
 
-        let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
-        console.log('=== response of _mintWithSelectedHat() function ===', response);     
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let mintAmount = web3.utils.toWei(_mintAmount.toString(), 'ether');
+        //let mintAmount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        console.log('=== mintAmount ===', mintAmount);
+        const _spender = rDAI_address;
+
+        let approved = await dai.methods.approve(_spender, mintAmount).send({ from: accounts[0] });
+        console.log('=== dai.sol of approve() function ===', approved);
+
+        let allowance = await dai.methods.allowance(accounts[0], _spender).call();
+        console.log('=== dai.sol of allowance() function ===', allowance);
+
+        let response = await rDAI.methods.mintWithSelectedHat(mintAmount, _hatID).send({ from: accounts[0] });
+        console.log('=== rDAI.sol     of mintWithSelectedHat() function ===', response);     
+
+        //let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
+        //console.log('=== response of _mintWithSelectedHat() function ===', response);     
     }
   
     mintWithNewHat = async () => {
@@ -246,9 +263,11 @@ export default class MarketplaceRegistry extends Component {
      
         let MarketplaceRegistry = {};
         let Dai = {};
+        let rDAI = {};
         try {
-          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");          // Load artifact-file of MarketplaceRegistry
-          Dai = require("../../../../build/contracts/Dai.json");
+          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
+          Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
+          rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
         } catch (e) {
           console.log(e);
         }
@@ -293,13 +312,21 @@ export default class MarketplaceRegistry extends Component {
             //@dev - Create instance of DAI-contract
             let instanceDai = null;
             let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
-            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa";
+            let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"; //@dev - DAI（Underlying asset）
             instanceDai = new web3.eth.Contract(
               Dai.abi,
               DaiAddress,
             );
             console.log('=== instanceDai ===', instanceDai);
- 
+
+            //@dev - Create instance of rDAI-contract
+            let instanceRDai = null;
+            let rDaiAddress = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB"; //@dev - rDAI（rDAI proxy contract）
+            instanceRDai = new web3.eth.Contract(
+              rDAI.abi,
+              rDaiAddress,
+            );
+            console.log('=== instanceRDai ===', instanceRDai); 
 
             if (MarketplaceRegistry) {
               // Set web3, accounts, and contract to the state, and then proceed with an
@@ -315,7 +342,9 @@ export default class MarketplaceRegistry extends Component {
                 isMetaMask, 
                 marketplace_registry: instanceMarketplaceRegistry,
                 dai: instanceDai,
-                marketplaceRegistryAddress: MarketplaceRegistryAddress
+                rDAI: instanceRDai,
+                marketplace_registry_address: MarketplaceRegistryAddress,
+                rDAI_address: rDaiAddress
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
