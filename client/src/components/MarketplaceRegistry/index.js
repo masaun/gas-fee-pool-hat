@@ -401,7 +401,7 @@ export default class MarketplaceRegistry extends Component {
                 marketplace_registry_address: MarketplaceRegistryAddress,
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
-                relayer_manager: RelayerManager
+                relayer_manager: instanceRelayerManager
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
