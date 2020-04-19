@@ -165,19 +165,32 @@ export default class MarketplaceRegistry extends Component {
     }
 
     interestPayableOf = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
 
-        let response = await marketplace_registry.methods._interestPayableOf().call();
-        console.log('=== response of _interestPayableOf() function ===', response);   
+        const _owner = walletAddressList["addressList"]["address1"];
+
+        let interestPayableOfAmount = await rDAI.methods.interestPayableOf(_owner).call();
+        console.log('=== rDAI.sol of interestPayableOf() function ===', interestPayableOfAmount);
+        //let response = await marketplace_registry.methods._interestPayableOf().call();
+        //console.log('=== response of _interestPayableOf() function ===', response);   
     }
 
     redeem = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
 
-        const _redeemTokens = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        //const _redeemTokens = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
-        let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
-        console.log('=== response of _redeem() function ===', response);           
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let redeemTokens = web3.utils.toWei(_redeemTokens.toString(), 'ether');
+        console.log('=== redeemTokens ===', redeemTokens);
+        const _spender = rDAI_address;
+
+        let response = await rDAI.methods.redeem(redeemTokens).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeem() function ===', response);    
+        //let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
+        //console.log('=== response of _redeem() function ===', response);           
     }
 
     redeemAll = async () => {
@@ -209,7 +222,6 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _redeemAndTransferAll() function ===', response);           
     }
 
-
     /***
      * @dev - Hat Status
      **/
@@ -233,6 +245,18 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _underlying() function ===', response);
     }
 
+    /***
+     * @dev - Meta-Tx by using Biconomy
+     **/
+    addRelayer = async () => {
+        const { accounts, relay_hub, relayer_manager, web3 } = this.state;
+
+        const _relayerAddress = walletAddressList["addressList"]["address1"];
+
+        let relayer = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
+        //let relayer = await relay_hub.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
+        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);         
+    }
 
 
     //////////////////////////////////// 
@@ -264,10 +288,14 @@ export default class MarketplaceRegistry extends Component {
         let MarketplaceRegistry = {};
         let Dai = {};
         let rDAI = {};
+        let RelayHub = {};
+        let RelayerManager = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
+          RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
+          RelayerManager = require("../../../../build/contracts/RelayerManager.json");  //@dev - Artifact of RelayerManager contract
         } catch (e) {
           console.log(e);
         }
@@ -328,6 +356,33 @@ export default class MarketplaceRegistry extends Component {
             );
             console.log('=== instanceRDai ===', instanceRDai); 
 
+            //@dev - Create instance of RelayHub
+            let instanceRelayHub = null;
+            if (RelayHub.networks) {
+              deployedNetwork = RelayHub.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instanceRelayHub = new web3.eth.Contract(
+                  RelayHub.abi,
+                  deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instanceRelayHub ===', instanceRelayHub);
+              }
+            }
+            
+            //@dev - Create instance of RelayerManager
+            let instanceRelayerManager = null;
+            if (RelayerManager.networks) {
+              deployedNetwork = RelayerManager.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instanceRelayerManager = new web3.eth.Contract(
+                   RelayerManager.abi,
+                   deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instanceRelayerManager ===', instanceRelayerManager);
+              }
+            }
+
+
             if (MarketplaceRegistry) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
@@ -344,7 +399,9 @@ export default class MarketplaceRegistry extends Component {
                 dai: instanceDai,
                 rDAI: instanceRDai,
                 marketplace_registry_address: MarketplaceRegistryAddress,
-                rDAI_address: rDaiAddress
+                rDAI_address: rDaiAddress,
+                relay_hub: instanceRelayHub,
+                relayer_manager: instanceRelayerManager
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
@@ -376,6 +433,18 @@ export default class MarketplaceRegistry extends Component {
                 <Grid container style={{ marginTop: 32 }}>
                     <Grid item xs={12}>
                         <h4>Gas Fee Pool</h4> <br />
+
+                        <Card width={"auto"} 
+                              maxWidth={"420px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
+                            <h4>Register RelayerAddress</h4>
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
+                        </Card>
 
                         <Card width={"auto"} 
                               maxWidth={"420px"} 
