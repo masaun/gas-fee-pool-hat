@@ -222,7 +222,6 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _redeemAndTransferAll() function ===', response);           
     }
 
-
     /***
      * @dev - Hat Status
      **/
@@ -246,6 +245,17 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of _underlying() function ===', response);
     }
 
+    /***
+     * @dev - Meta-Tx by using Biconomy
+     **/
+    addRelayer = async () => {
+        const { accounts, relay_hub, web3 } = this.state;
+
+        const _relayerAddress = walletAddressList["addressList"]["address1"];
+
+        let relayer = await relay_hub.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
+        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);         
+    }
 
 
     //////////////////////////////////// 
@@ -277,10 +287,12 @@ export default class MarketplaceRegistry extends Component {
         let MarketplaceRegistry = {};
         let Dai = {};
         let rDAI = {};
+        let RelayHub = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
+          RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
         } catch (e) {
           console.log(e);
         }
@@ -341,6 +353,20 @@ export default class MarketplaceRegistry extends Component {
             );
             console.log('=== instanceRDai ===', instanceRDai); 
 
+            //@dev - Create instance of RelayHub
+            let instanceRelayHub = null;
+            if (RelayHub.networks) {
+              deployedNetwork = RelayHub.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instanceRelayHub = new web3.eth.Contract(
+                  RelayHub.abi,
+                  deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instanceRelayHub ===', instanceRelayHub);
+              }
+            }
+            
+
             if (MarketplaceRegistry) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
@@ -357,7 +383,8 @@ export default class MarketplaceRegistry extends Component {
                 dai: instanceDai,
                 rDAI: instanceRDai,
                 marketplace_registry_address: MarketplaceRegistryAddress,
-                rDAI_address: rDaiAddress
+                rDAI_address: rDaiAddress,
+                relay_hub: instanceRelayHub
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
@@ -438,6 +465,10 @@ export default class MarketplaceRegistry extends Component {
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
+
+                            <hr />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
                         </Card>
                     </Grid>
 
