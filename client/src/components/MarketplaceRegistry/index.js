@@ -441,6 +441,18 @@ export default class MarketplaceRegistry extends Component {
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
+                            <h4>Register RelayerAddress</h4>
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
+                        </Card>
+
+                        <Card width={"auto"} 
+                              maxWidth={"420px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
                             <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
                             <h4>↓</h4> <br />
                             <h4>Proportions<br />10%: GasFeePool<br />90%: Owner</h4> <br />
@@ -482,10 +494,6 @@ export default class MarketplaceRegistry extends Component {
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
-
-                            <hr />
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
                         </Card>
                     </Grid>
 
