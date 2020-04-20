@@ -251,7 +251,8 @@ export default class MarketplaceRegistry extends Component {
     addRelayer = async () => {
         const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
 
-        let owner = await gas_fee_pool.methods.ownerOfRelayerManager().call();
+        let owner = await relayer_manager.methods.owner().call();
+        //let owner = await gas_fee_pool.methods.ownerOfRelayerManager().call();
         console.log('=== GasFeePool.sol of owner() function ===', relayer);         
 
         const _relayerAddress = walletAddressList["addressList"]["address1"];
@@ -293,6 +294,7 @@ export default class MarketplaceRegistry extends Component {
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
+        let GasFeePool = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）

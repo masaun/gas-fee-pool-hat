@@ -10,7 +10,7 @@ import "./DAI/dai.sol";
 
 // Mexa
 import "./mexa/contracts/RelayHub.sol";
-import "./mexa/contracts/RelayerManager.sol";
+//import "./mexa/contracts/RelayerManager.sol";
 
 
 /***
@@ -21,20 +21,22 @@ contract GasFeePool is Ownable, McStorage, McConstants {
 
     Dai public dai;  //@dev - dai.sol
     IERC20 public erc20;
-    RelayerManager public relayerManager;
+    RelayHub public relayHub;
+    //RelayerManager public relayerManager;
 
-    constructor(address _erc20, address _relayerManager) public {
+    constructor(address _erc20, address _relayHub) public {
         dai = Dai(_erc20);
         erc20 = IERC20(_erc20);
 
-        relayerManager = RelayerManager(_relayerManager);
+        relayHub = RelayHub(_relayHub);
+        //relayerManager = RelayerManager(_relayerManager);
     }
 
     /***
      * @dev - Biconomy RelayerManager.sol
      **/
     function ownerOfRelayerManager() public view returns (address _owner) {
-        return relayerManager.owner();
+        return relayHub.owner();
     }
     
 }
