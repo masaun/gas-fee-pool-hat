@@ -251,6 +251,9 @@ export default class MarketplaceRegistry extends Component {
     addRelayer = async () => {
         const { accounts, relay_hub, relayer_manager, web3 } = this.state;
 
+        let owner = await relayer_manager.methods.ownerOfRelayerManager().call();
+        console.log('=== RelayerManager.sol of owner() function ===', relayer);         
+
         const _relayerAddress = walletAddressList["addressList"]["address1"];
 
         let relayer = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
@@ -381,6 +384,13 @@ export default class MarketplaceRegistry extends Component {
                 console.log('=== instanceRelayerManager ===', instanceRelayerManager);
               }
             }
+            // let instanceRelayerManager = null;
+            // let RelayerManagerAddress = "0x6651360Ff49cD68c783D4cdC16D7A9C1f13873Eb"; //@dev - RelayerManager.sol address
+            // instanceRelayerManager = new web3.eth.Contract(
+            //   RelayerManager.abi,
+            //   RelayerManagerAddress,
+            // );
+            // console.log('=== instanceRelayerManager ===', instanceRelayerManager); 
 
 
             if (MarketplaceRegistry) {
