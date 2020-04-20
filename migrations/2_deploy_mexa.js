@@ -6,7 +6,8 @@ var SafeMath = artifacts.require("SafeMath");
 
 module.exports = function (deployer) {
 	// Initialize owner address if you want to transfer ownership of contract to some other address
-	let ownerAddress = "0x7f3B192Ab3220940D66236792F3EBDB0e4E74138";
+    let ownerAddress = "0x718E3ea0B8C2911C5e54Cb4b9B2075fdd87B55a7";    // New Address
+	//let ownerAddress = "0x7f3B192Ab3220940D66236792F3EBDB0e4E74138";  // Original Address
 
 	deployer.deploy(SafeMath, { overwrite: false });
 	deployer.link(SafeMath, RelayHub);
@@ -18,7 +19,7 @@ module.exports = function (deployer) {
 				return deployer.deploy(RelayHub, RelayerManager.address, ProxyManager.address).then(async function (relayHub) {
 					await proxyManager.upgradeRelayHub(RelayHub.address);
 					if(ownerAddress && ownerAddress!="") {
-						console.log(`Transfering ownerhip to address ${ownerAddress}`)
+						console.log(`Transfering ownership to address ${ownerAddress}`)
 						await proxyManager.transferOwnership(ownerAddress);
 						await relayHub.transferOwnership(ownerAddress);
 						await relayerManager.transferOwnership(ownerAddress);

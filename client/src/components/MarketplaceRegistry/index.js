@@ -249,7 +249,11 @@ export default class MarketplaceRegistry extends Component {
      * @dev - Meta-Tx by using Biconomy
      **/
     addRelayer = async () => {
-        const { accounts, relay_hub, relayer_manager, web3 } = this.state;
+        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
+
+        let owner = await relayer_manager.methods.owner().call();
+        //let owner = await gas_fee_pool.methods.ownerOfRelayerManager().call();
+        console.log('=== GasFeePool.sol of owner() function ===', relayer);         
 
         const _relayerAddress = walletAddressList["addressList"]["address1"];
 
@@ -290,12 +294,14 @@ export default class MarketplaceRegistry extends Component {
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
+        let GasFeePool = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
           RelayerManager = require("../../../../build/contracts/RelayerManager.json");  //@dev - Artifact of RelayerManager contract
+          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  
         } catch (e) {
           console.log(e);
         }
@@ -381,6 +387,26 @@ export default class MarketplaceRegistry extends Component {
                 console.log('=== instanceRelayerManager ===', instanceRelayerManager);
               }
             }
+            // let instanceRelayerManager = null;
+            // let RelayerManagerAddress = "0x6651360Ff49cD68c783D4cdC16D7A9C1f13873Eb"; //@dev - RelayerManager.sol address
+            // instanceRelayerManager = new web3.eth.Contract(
+            //   RelayerManager.abi,
+            //   RelayerManagerAddress,
+            // );
+            // console.log('=== instanceRelayerManager ===', instanceRelayerManager); 
+
+            //@dev - Create instance of GasFeePool.sol
+            let instanceGasFeePool = null;
+            if (GasFeePool.networks) {
+              deployedNetwork = GasFeePool.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instanceGasFeePool = new web3.eth.Contract(
+                   GasFeePool.abi,
+                   deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
+              }
+            }
 
 
             if (MarketplaceRegistry) {
@@ -401,7 +427,8 @@ export default class MarketplaceRegistry extends Component {
                 marketplace_registry_address: MarketplaceRegistryAddress,
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
-                relayer_manager: instanceRelayerManager
+                relayer_manager: instanceRelayerManager,
+                gas_fee_pool: instanceGasFeePool
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
