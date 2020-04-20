@@ -24,8 +24,8 @@ import "./rtoken-contracts/contracts/RTokenStructs.sol";
 import "./DAI/dai.sol";
 
 // Mexa
-import "./mexa/contracts/RelayHub.sol";
-import "./mexa/contracts/RelayerManager.sol";
+// import "./mexa/contracts/RelayHub.sol";
+// import "./mexa/contracts/RelayerManager.sol";
 
 
 
@@ -49,7 +49,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     rDAI public rDai;
     IAllocationStrategy public allocationStrategy;
 
-    RelayerManager public relayerManager;
+    //RelayerManager public relayerManager;
 
 
     constructor(address _erc20, address _rDai, address _rToken, address _allocationStrategy, address _relayerManager) public {
@@ -69,7 +69,7 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
         _ias = rDai.getCurrentSavingStrategy();
         allocationStrategy = IAllocationStrategy(_ias);
 
-        relayerManager = RelayerManager(_relayerManager);
+        //relayerManager = RelayerManager(_relayerManager);
     }
 
     function testFunc(uint256 _mintAmount) public returns (bool, uint256 _approvedValue) {
@@ -277,8 +277,8 @@ contract MarketplaceRegistry is Ownable, McStorage, McConstants {
     /***
      * @dev - Biconomy RelayerManager.sol
      **/
-    function ownerOfRelayerManager() public view returns (address _owner) {
-        return relayerManager.owner();
-    }
+    // function ownerOfRelayerManager() public view returns (address _owner) {
+    //     return relayerManager.owner();
+    // }
     
 }
