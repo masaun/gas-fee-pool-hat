@@ -249,10 +249,10 @@ export default class MarketplaceRegistry extends Component {
      * @dev - Meta-Tx by using Biconomy
      **/
     addRelayer = async () => {
-        const { accounts, relay_hub, relayer_manager, web3 } = this.state;
+        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
 
-        let owner = await relayer_manager.methods.ownerOfRelayerManager().call();
-        console.log('=== RelayerManager.sol of owner() function ===', relayer);         
+        let owner = await gas_fee_pool.methods.ownerOfRelayerManager().call();
+        console.log('=== GasFeePool.sol of owner() function ===', relayer);         
 
         const _relayerAddress = walletAddressList["addressList"]["address1"];
 
@@ -299,6 +299,7 @@ export default class MarketplaceRegistry extends Component {
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
           RelayerManager = require("../../../../build/contracts/RelayerManager.json");  //@dev - Artifact of RelayerManager contract
+          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  
         } catch (e) {
           console.log(e);
         }
@@ -392,6 +393,19 @@ export default class MarketplaceRegistry extends Component {
             // );
             // console.log('=== instanceRelayerManager ===', instanceRelayerManager); 
 
+            //@dev - Create instance of GasFeePool.sol
+            let instanceGasFeePool = null;
+            if (GasFeePool.networks) {
+              deployedNetwork = GasFeePool.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instanceGasFeePool = new web3.eth.Contract(
+                   GasFeePool.abi,
+                   deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
+              }
+            }
+
 
             if (MarketplaceRegistry) {
               // Set web3, accounts, and contract to the state, and then proceed with an
@@ -411,7 +425,8 @@ export default class MarketplaceRegistry extends Component {
                 marketplace_registry_address: MarketplaceRegistryAddress,
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
-                relayer_manager: instanceRelayerManager
+                relayer_manager: instanceRelayerManager,
+                gas_fee_pool: instanceGasFeePool
               }, () => {
                 this.refreshValues(
                   instanceMarketplaceRegistry
