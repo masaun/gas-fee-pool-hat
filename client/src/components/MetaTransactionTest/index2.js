@@ -28,10 +28,10 @@ export default class MarketplaceRegistry extends Component {
             route: window.location.pathname.replace("/", "")
         };
 
-        this.getTestData = this.getTestData.bind(this);
+        this.executeMetaTransactionTest = this.executeMetaTransactionTest.bind(this);
     }
 
-    getTestData = async () => {
+    executeMetaTransactionTest = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
         const _currentAccount = accounts[0];
@@ -252,7 +252,7 @@ export default class MarketplaceRegistry extends Component {
                         >
                             <h4>Meta-Transaction Test</h4> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+                            <Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button> <br />
                         </Card>
                     </Grid>
 
