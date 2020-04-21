@@ -39,6 +39,14 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of executeMetaTransactionTest() ===', response);
     }
 
+    setQuote = async () => {
+        const { accounts, gas_fee_pool, web3 } = this.state;
+
+        const _newQuote = "Write new quote for Test Meta-Transaction";
+        let response = await gas_fee_pool.methods.setQuote(_newQuote).send({ from: accounts[0] });
+        console.log('=== response of setQuote() ===', response);
+    }
+
 
     //////////////////////////////////// 
     ///// Refresh Values
@@ -246,6 +254,8 @@ export default class MarketplaceRegistry extends Component {
                             <h4>Meta-Transaction Test</h4> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.setQuote}> Set Quote </Button> <br />
                         </Card>
                     </Grid>
 
