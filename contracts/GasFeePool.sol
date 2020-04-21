@@ -50,7 +50,8 @@ contract GasFeePool is McStorage, McConstants, EIP712MetaTransaction("TestContra
 
     function setQuote(string memory newQuote) public {
         quote = newQuote;
-        owner = msgSender();
+        owner = msgRelayer();
+        //owner = msgSender();
     }
 
     function getQuote() view public returns(string memory currentQuote, address currentOwner) {
