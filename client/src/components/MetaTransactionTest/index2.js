@@ -32,18 +32,11 @@ export default class MarketplaceRegistry extends Component {
     }
 
     executeMetaTransactionTest = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
-        const _currentAccount = accounts[0];
-        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
- 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
-        console.log('=== response of testFunc() function ===', response);
-
-        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
+        const _newQuote = "Write new quote for Test Meta-Transaction";
+        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newQuote).send({ from: accounts[0] });
+        console.log('=== response of executeMetaTransactionTest() ===', response);
     }
 
 
