@@ -9,7 +9,8 @@ import Web3Info from "./components/Web3Info/index.js";
 import MarketplaceRegistry from "./components/MarketplaceRegistry/index.js";
 
 // MetaTransactionTest
-import MetaTransactionTest from "./components/MetaTransactionTest/index.js";
+import MetaTransactionTest from "./components/MetaTransactionTest/index2.js";
+//import MetaTransactionTest from "./components/MetaTransactionTest/index.js";
 
 import { Typography, Grid, TextField } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
