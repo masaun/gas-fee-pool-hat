@@ -8,6 +8,9 @@ import Web3Info from "./components/Web3Info/index.js";
 // MarketplaceRegistry
 import MarketplaceRegistry from "./components/MarketplaceRegistry/index.js";
 
+// MetaTransactionTest
+import MetaTransactionTest from "./components/MetaTransactionTest/index.js";
+
 import { Typography, Grid, TextField } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { theme } from './utils/theme';
@@ -184,12 +187,21 @@ class App extends Component {
     );
   }
 
+  renderMetaTransactionTest() {
+    return (
+      <div className={styles.wrapper}>
+        <MetaTransactionTest />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className={styles.App}>
         <Header />
           {this.state.route === '' && this.renderInstructions()}
           {this.state.route === 'gas-fee-pool' && this.renderGasFeePool()} 
+          {this.state.route === 'meta-transaction-test' && this.renderMetaTransactionTest()} 
         <Footer />
       </div>
     );
