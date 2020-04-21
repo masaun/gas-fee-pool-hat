@@ -262,6 +262,22 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);         
     }
 
+    getAllRelayers = async () => {
+        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
+
+        let relayers = await relayer_manager.methods.getAllRelayers().call();
+        console.log('=== RelayerManager.sol of getAllRelayers() function ===', relayers);
+    }
+
+    getRelayerStatus = async () => {
+        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
+
+        let relayers = await relayer_manager.methods.getAllRelayers().call();
+
+        let relayerStatus = await relayer_manager.methods.getRelayerStatus(relayers[0]).call();
+        console.log('=== RelayerManager.sol of getRelayerStatus() function ===', relayerStatus);
+    }    
+
 
     //////////////////////////////////// 
     ///// Refresh Values
@@ -471,6 +487,10 @@ export default class MarketplaceRegistry extends Component {
                             <h4>Register RelayerAddress</h4>
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getAllRelayers}> Get All Relayers </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getRelayerStatus}> Get Relayer Status </Button> <br />
                         </Card>
 
                         <Card width={"auto"} 
