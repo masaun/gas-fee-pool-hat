@@ -21,6 +21,8 @@ import {
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
+let sigUtil = require("eth-sig-util");
+
 
 /***
  * @dev - Global Variable
@@ -56,55 +58,55 @@ export default class MetaTransactionTest extends Component {
     }
 
     executeMetaTransactionTest = async () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
 
-        // console.log("Sending meta transaction");
-        // let userAddress = selectedAddress;
-        // let nonce = await contract.methods.getNonce(userAddress).call();
-        // let functionSignature = contract.methods.setQuote(newQuote).encodeABI();
-        // let message = {};
-        // message.nonce = parseInt(nonce);
-        // message.from = userAddress;
-        // message.functionSignature = functionSignature;
+        console.log("Sending meta transaction");
+        let userAddress = selectedAddress;
+        let nonce = await gas_fee_pool.methods.getNonce(userAddress).call();
+        let functionSignature = gas_fee_pool.methods.setQuote(newQuote).encodeABI();
+        let message = {};
+        message.nonce = parseInt(nonce);
+        message.from = userAddress;
+        message.functionSignature = functionSignature;
 
-        // const dataToSign = JSON.stringify({
-        //   types: {
-        //     EIP712Domain: domainType,
-        //     MetaTransaction: metaTransactionType
-        //   },
-        //   domain: domainData,
-        //   primaryType: "MetaTransaction",
-        //   message: message
-        // });
-        // console.log(domainData);
-        // console.log();
-        // web3.currentProvider.send(
-        //   {
-        //     jsonrpc: "2.0",
-        //     id: 999999999999,
-        //     method: "eth_signTypedData_v4",
-        //     params: [userAddress, dataToSign]
-        //   },
-        //   function(error, response) {
-        //     console.info(`User signature is ${response.result}`);
-        //     if (error || (response && response.error)) {
-        //       showErrorMessage("Could not get user signature");
-        //     } else if (response && response.result) {
-        //       let { r, s, v } = getSignatureParameters(response.result);
-        //       console.log(userAddress);
-        //       console.log(JSON.stringify(message));
-        //       console.log(message);
-        //       console.log(getSignatureParameters(response.result));
+        const dataToSign = JSON.stringify({
+          types: {
+            EIP712Domain: domainType,
+            MetaTransaction: metaTransactionType
+          },
+          domain: domainData,
+          primaryType: "MetaTransaction",
+          message: message
+        });
+        console.log(domainData);
+        console.log();
+        web3.currentProvider.send(
+          {
+            jsonrpc: "2.0",
+            id: 999999999999,
+            method: "eth_signTypedData_v4",
+            params: [userAddress, dataToSign]
+          },
+          function(error, response) {
+            console.info(`User signature is ${response.result}`);
+            if (error || (response && response.error)) {
+              this.showErrorMessage("Could not get user signature");
+            } else if (response && response.result) {
+              let { r, s, v } = this.getSignatureParameters(response.result);
+              console.log(userAddress);
+              console.log(JSON.stringify(message));
+              console.log(message);
+              console.log(this.getSignatureParameters(response.result));
 
-        //       const recovered = sigUtil.recoverTypedSignature_v4({
-        //         data: JSON.parse(dataToSign),
-        //         sig: response.result
-        //       });
-        //       console.log(`Recovered ${recovered}`);
-        //       sendTransaction(userAddress, functionSignature, r, s, v);
-        //     }
-        //   }
-        // );
+              const recovered = sigUtil.recoverTypedSignature_v4({
+                data: JSON.parse(dataToSign),
+                sig: response.result
+              });
+              console.log(`Recovered ${recovered}`);
+              this.sendTransaction(userAddress, functionSignature, r, s, v);
+            }
+          }
+        );
 
         //@dev - Execute function
         const _newQuote = "Write new quote for Test Meta-Transaction";
@@ -367,39 +369,6 @@ export default class MetaTransactionTest extends Component {
               }
             }
 
-
-            if (MarketplaceRegistry) {
-              // Set web3, accounts, and contract to the state, and then proceed with an
-              // example of interacting with the contract's methods.
-              this.setState({ 
-                web3, 
-                ganacheAccounts, 
-                accounts, 
-                balance, 
-                networkId, 
-                networkType, 
-                hotLoaderDisabled,
-                isMetaMask, 
-                marketplace_registry: instanceMarketplaceRegistry,
-                dai: instanceDai,
-                rDAI: instanceRDai,
-                marketplace_registry_address: MarketplaceRegistryAddress,
-                rDAI_address: rDaiAddress,
-                relay_hub: instanceRelayHub,
-                relayer_manager: instanceRelayerManager,
-                gas_fee_pool: instanceGasFeePool
-              }, () => {
-                this.refreshValues(
-                  instanceMarketplaceRegistry
-                );
-                setInterval(() => {
-                  this.refreshValues(instanceMarketplaceRegistry);
-                }, 5000);
-              });
-            } else {
-              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
-            }
-
             /***
              * @dev - Definition for Meta-Transaction test
              **/
@@ -422,6 +391,41 @@ export default class MetaTransactionTest extends Component {
               verifyingContract: instanceGasFeePool.address,
               verifyingContract: instanceGasFeePool.address
             };
+
+            if (MarketplaceRegistry || Dai || rDAI || RelayHub || RelayerManager || GasFeePool) {
+              // Set web3, accounts, and contract to the state, and then proceed with an
+              // example of interacting with the contract's methods.
+              this.setState({ 
+                web3, 
+                ganacheAccounts, 
+                accounts, 
+                balance, 
+                networkId, 
+                networkType, 
+                hotLoaderDisabled,
+                isMetaMask, 
+                marketplace_registry: instanceMarketplaceRegistry,
+                dai: instanceDai,
+                rDAI: instanceRDai,
+                marketplace_registry_address: MarketplaceRegistryAddress,
+                rDAI_address: rDaiAddress,
+                relay_hub: instanceRelayHub,
+                relayer_manager: instanceRelayerManager,
+                gas_fee_pool: instanceGasFeePool,
+                domainType: domainType,
+                metaTransactionType: metaTransactionType,
+                domainData: domainData
+              }, () => {
+                this.refreshValues(
+                  instanceMarketplaceRegistry
+                );
+                setInterval(() => {
+                  this.refreshValues(instanceMarketplaceRegistry);
+                }, 5000);
+              });
+            } else {
+              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+            }
           }
         } catch (error) {
           // Catch any errors for any of the above operations.
