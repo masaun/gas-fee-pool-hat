@@ -15,8 +15,32 @@ import styles from '../../App.module.scss';
 import { walletAddressList } from '../../data/testWalletAddress.js'
 import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
+import {
+  NotificationContainer,
+  NotificationManager
+} from "react-notifications";
+import "react-notifications/lib/notifications.css";
 
-export default class MarketplaceRegistry extends Component {
+
+/***
+ * @dev - Global Variable
+ **/
+const quote = "This is a default quote";
+const setQuote = "This is a default quote";
+const owner = "Default Owner Address";
+const setOwner = "Default Owner Address";
+const newQuote = "";
+const setNewQuote = "";
+const selectedAddress = "";
+const setSelectedAddress = "";
+const metaTxEnabled = true;
+const setMetaTxEnabled = true;
+
+
+/***
+ * @dev - Method
+ **/
+export default class MetaTransactionTest extends Component {
     constructor(props) {    
         super(props);
 
@@ -34,6 +58,55 @@ export default class MarketplaceRegistry extends Component {
     executeMetaTransactionTest = async () => {
         const { accounts, gas_fee_pool, web3 } = this.state;
 
+        // console.log("Sending meta transaction");
+        // let userAddress = selectedAddress;
+        // let nonce = await contract.methods.getNonce(userAddress).call();
+        // let functionSignature = contract.methods.setQuote(newQuote).encodeABI();
+        // let message = {};
+        // message.nonce = parseInt(nonce);
+        // message.from = userAddress;
+        // message.functionSignature = functionSignature;
+
+        // const dataToSign = JSON.stringify({
+        //   types: {
+        //     EIP712Domain: domainType,
+        //     MetaTransaction: metaTransactionType
+        //   },
+        //   domain: domainData,
+        //   primaryType: "MetaTransaction",
+        //   message: message
+        // });
+        // console.log(domainData);
+        // console.log();
+        // web3.currentProvider.send(
+        //   {
+        //     jsonrpc: "2.0",
+        //     id: 999999999999,
+        //     method: "eth_signTypedData_v4",
+        //     params: [userAddress, dataToSign]
+        //   },
+        //   function(error, response) {
+        //     console.info(`User signature is ${response.result}`);
+        //     if (error || (response && response.error)) {
+        //       showErrorMessage("Could not get user signature");
+        //     } else if (response && response.result) {
+        //       let { r, s, v } = getSignatureParameters(response.result);
+        //       console.log(userAddress);
+        //       console.log(JSON.stringify(message));
+        //       console.log(message);
+        //       console.log(getSignatureParameters(response.result));
+
+        //       const recovered = sigUtil.recoverTypedSignature_v4({
+        //         data: JSON.parse(dataToSign),
+        //         sig: response.result
+        //       });
+        //       console.log(`Recovered ${recovered}`);
+        //       sendTransaction(userAddress, functionSignature, r, s, v);
+        //     }
+        //   }
+        // );
+
+        //@dev - Execute function
         const _newQuote = "Write new quote for Test Meta-Transaction";
         let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newQuote).send({ from: accounts[0] });
         console.log('=== response of executeMetaTransactionTest() ===', response);
@@ -46,6 +119,104 @@ export default class MarketplaceRegistry extends Component {
         let response = await gas_fee_pool.methods.setQuote(_newQuote).send({ from: accounts[0] });
         console.log('=== response of setQuote() ===', response);
     }
+
+
+    ////////////////////////////////////
+    ///// Internal function 
+    ////////////////////////////////////
+    getSignatureParameters = signature => {
+        const { accounts, gas_fee_pool, web3 } = this.state;
+
+        if (!web3.utils.isHexStrict(signature)) {
+          throw new Error(
+            'Given value "'.concat(signature, '" is not a valid hex string.')
+          );
+        }
+        var r = signature.slice(0, 66);
+        var s = "0x".concat(signature.slice(66, 130));
+        var v = "0x".concat(signature.slice(130, 132));
+        v = web3.utils.hexToNumber(v);
+        if (![27, 28].includes(v)) v += 27;
+        return {
+          r: r,
+          s: s,
+          v: v
+        };
+    };
+
+    getQuoteFromNetwork = () => {
+        const { accounts, gas_fee_pool, web3 } = this.state;
+
+        if (web3 && gas_fee_pool) {
+          gas_fee_pool.methods
+            .getQuote()
+            .call()
+            .then(function(result) {
+              console.log(result);
+              if (
+                result &&
+                result.currentQuote != undefined &&
+                result.currentOwner != undefined
+              ) {
+                if (result.currentQuote == "") {
+                  this.showErrorMessage("No quotes set on blockchain yet");
+                } else {
+                  setQuote(result.currentQuote);
+                  setOwner(result.currentOwner);
+                }
+              } else {
+                this.showErrorMessage("Not able to get quote information from Network");
+              }
+            });
+        }
+    };
+
+    showErrorMessage = message => {
+        NotificationManager.error(message, "Error", 5000);
+    };
+
+    showSuccessMessage = message => {
+        NotificationManager.success(message, "Message", 3000);
+    };
+
+    showInfoMessage = message => {
+        NotificationManager.info(message, "Info", 3000);
+    };
+
+    sendTransaction = async (userAddress, functionData, r, s, v) => {
+        const { accounts, gas_fee_pool, web3 } = this.state;
+
+        if (web3 && gas_fee_pool) {
+          try {
+            let gasLimit = await gas_fee_pool.methods
+              .executeMetaTransaction(userAddress, functionData, r, s, v)
+              .estimateGas({ from: userAddress });
+            let gasPrice = await web3.eth.getGasPrice();
+            console.log(gasLimit);
+            console.log(gasPrice);
+            let tx = gas_fee_pool.methods
+              .executeMetaTransaction(userAddress, functionData, r, s, v)
+              .send({
+                from: userAddress,
+                gasPrice: web3.utils.toHex(gasPrice),
+                gasLimit: web3.utils.toHex(gasLimit)
+              });
+
+            tx.on("transactionHash", function(hash) {
+              console.log(`Transaction hash is ${hash}`);
+              this.showInfoMessage(`Transaction sent by relayer with hash ${hash}`);
+            }).once("confirmation", function(confirmationNumber, receipt) {
+              console.log(receipt);
+              this.showSuccessMessage("Transaction confirmed on chain");
+              this.getQuoteFromNetwork();
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+    };
+
+
 
 
     //////////////////////////////////// 
@@ -72,6 +243,9 @@ export default class MarketplaceRegistry extends Component {
     }
 
     componentDidMount = async () => {
+        /***
+         * @dev - General Definition
+         **/
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
      
         let MarketplaceRegistry = {};
@@ -222,10 +396,32 @@ export default class MarketplaceRegistry extends Component {
                   this.refreshValues(instanceMarketplaceRegistry);
                 }, 5000);
               });
-            }
-            else {
+            } else {
               this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
             }
+
+            /***
+             * @dev - Definition for Meta-Transaction test
+             **/
+            const domainType = [
+              { name: "name", type: "string" },
+              { name: "version", type: "string" },
+              { name: "chainId", type: "uint256" },
+              { name: "verifyingContract", type: "address" }
+            ];
+
+            const metaTransactionType = [
+              { name: "nonce", type: "uint256" },
+              { name: "from", type: "address" },
+              { name: "functionSignature", type: "bytes" }
+            ];
+
+            let domainData = {
+              name: "TestContract",
+              version: "1",
+              verifyingContract: instanceGasFeePool.address,
+              verifyingContract: instanceGasFeePool.address
+            };
           }
         } catch (error) {
           // Catch any errors for any of the above operations.
