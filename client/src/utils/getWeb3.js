@@ -1,6 +1,6 @@
 import Web3 from "web3";
-// require('dotenv').config();
-// const INFURA_API_KEY = process.env.INFURA_API_KEY;
+require('dotenv').config();
+const INFURA_API_KEY = process.env.INFURA_API_KEY;
 
 //const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'https://rinkeby.infura.io/v3/' + INFURA_API_KEY;    // Rinkeby
 const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'http://0.0.0.0:7545';                                 // Ganache-GUI
@@ -48,8 +48,8 @@ const getGanacheWeb3 = () => {
     return null;
   }
   const provider = new Web3.providers.HttpProvider(
-    //'https://rinkeby.infura.io/v3/' + INFURA_API_KEY  // Rinkeby
-    'http://0.0.0.0:7545'  // Ganache-GUI
+    'https://kovan.infura.io/v3/' + INFURA_API_KEY  // Rinkeby
+    //'http://0.0.0.0:7545'  // Ganache-GUI
     //'http://0.0.0.0:8545'  // Ganache-CLI
   );
   const web3 = new Web3(provider);
