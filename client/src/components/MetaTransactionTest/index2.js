@@ -25,21 +25,6 @@ let sigUtil = require("eth-sig-util");
 
 
 /***
- * @dev - Global Variable
- **/
-const quote = "This is a default quote";
-const setQuote = "This is a default quote";
-const owner = "Default Owner Address";
-const setOwner = "Default Owner Address";
-const newQuote = "";
-const setNewQuote = "";
-const selectedAddress = "";
-const setSelectedAddress = "";
-const metaTxEnabled = true;
-const setMetaTxEnabled = true;
-
-
-/***
  * @dev - Method
  **/
 export default class MetaTransactionTest extends Component {
@@ -60,7 +45,31 @@ export default class MetaTransactionTest extends Component {
     executeMetaTransactionTest = async () => {
         const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
 
-        console.log("Sending meta transaction");
+        //@dev - Execute function
+        const _newQuote = "Write new quote for Test Meta-Transaction";
+        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newQuote).send({ from: accounts[0] });
+        console.log('=== response of executeMetaTransactionTest() ===', response);
+    }
+
+    setQuote = async () => {
+        const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
+
+        /***
+         * @dev - Global Variable
+         **/
+        const quote = "This is a default quote";
+        const setQuote = "This is a default quote";
+        const owner = "Default Owner Address";
+        const setOwner = "Default Owner Address";
+        const newQuote = "Test New Quote";
+        const setNewQuote = "";
+        const selectedAddress = accounts[0];
+        //const selectedAddress = "";
+        const setSelectedAddress = "";
+        const metaTxEnabled = true;
+        const setMetaTxEnabled = true;
+
+        console.log("=== Sending meta transaction ===");
         let userAddress = selectedAddress;
         let nonce = await gas_fee_pool.methods.getNonce(userAddress).call();
         let functionSignature = gas_fee_pool.methods.setQuote(newQuote).encodeABI();
@@ -68,6 +77,7 @@ export default class MetaTransactionTest extends Component {
         message.nonce = parseInt(nonce);
         message.from = userAddress;
         message.functionSignature = functionSignature;
+        console.log("=== functionSignature ===", functionSignature);
 
         const dataToSign = JSON.stringify({
           types: {
@@ -108,18 +118,9 @@ export default class MetaTransactionTest extends Component {
           }
         );
 
-        //@dev - Execute function
-        const _newQuote = "Write new quote for Test Meta-Transaction";
-        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newQuote).send({ from: accounts[0] });
-        console.log('=== response of executeMetaTransactionTest() ===', response);
-    }
-
-    setQuote = async () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
-
-        const _newQuote = "Write new quote for Test Meta-Transaction";
-        let response = await gas_fee_pool.methods.setQuote(_newQuote).send({ from: accounts[0] });
-        console.log('=== response of setQuote() ===', response);
+        // const _newQuote = "Write new quote for Test Meta-Transaction";
+        // let response = await gas_fee_pool.methods.setQuote(_newQuote).send({ from: accounts[0] });
+        // console.log('=== response of setQuote() ===', response);
     }
 
 
@@ -163,8 +164,8 @@ export default class MetaTransactionTest extends Component {
                 if (result.currentQuote == "") {
                   this.showErrorMessage("No quotes set on blockchain yet");
                 } else {
-                  setQuote(result.currentQuote);
-                  setOwner(result.currentOwner);
+                  gas_fee_pool.methods.setQuote(result.currentQuote);
+                  gas_fee_pool.methods.setOwner(result.currentOwner);
                 }
               } else {
                 this.showErrorMessage("Not able to get quote information from Network");
@@ -173,12 +174,12 @@ export default class MetaTransactionTest extends Component {
         }
     };
 
-    showErrorMessage = message => {
-        NotificationManager.error(message, "Error", 5000);
+    showErrorMessage = async (message) => {
+        await NotificationManager.error(message, "Error", 5000);
     };
 
-    showSuccessMessage = message => {
-        NotificationManager.success(message, "Message", 3000);
+    showSuccessMessage = async (message) => {
+        await NotificationManager.success(message, "Message", 3000);
     };
 
     showInfoMessage = message => {
@@ -386,7 +387,7 @@ export default class MetaTransactionTest extends Component {
             ];
 
             let domainData = {
-              name: "TestContract",
+              name: "GasFeePool",
               version: "1",
               verifyingContract: instanceGasFeePool.address,
               verifyingContract: instanceGasFeePool.address
