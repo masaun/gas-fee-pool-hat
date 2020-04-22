@@ -88,7 +88,7 @@ export default class MetaTransactionTest extends Component {
           primaryType: "MetaTransaction",
           message: message
         });
-        console.log(domainData);
+        console.log("=== domainData ===", domainData);
         console.log();
         web3.currentProvider.send(
           {
@@ -98,9 +98,11 @@ export default class MetaTransactionTest extends Component {
             params: [userAddress, dataToSign]
           },
           function(error, response) {
-            console.info(`User signature is ${response.result}`);
+            console.info(`=== User signature is ${response.result} ===`);
             if (error || (response && response.error)) {
-              this.showErrorMessage("Could not get user signature");
+              console.log("=== Could not get user signature ===");
+              console.log("=== error ===", error);
+              //this.showErrorMessage("Could not get user signature");
             } else if (response && response.result) {
               let { r, s, v } = this.getSignatureParameters(response.result);
               console.log(userAddress);
@@ -174,8 +176,8 @@ export default class MetaTransactionTest extends Component {
         }
     };
 
-    showErrorMessage = async (message) => {
-        await NotificationManager.error(message, "Error", 5000);
+    showErrorMessage = (message) => {
+        NotificationManager.error(message, "Error", 5000);
     };
 
     showSuccessMessage = async (message) => {
@@ -359,6 +361,7 @@ export default class MetaTransactionTest extends Component {
 
             //@dev - Create instance of GasFeePool.sol
             let instanceGasFeePool = null;
+            let GasFeePoolAddress = "";
             if (GasFeePool.networks) {
               deployedNetwork = GasFeePool.networks[networkId.toString()];
               if (deployedNetwork) {
@@ -367,8 +370,11 @@ export default class MetaTransactionTest extends Component {
                    deployedNetwork && deployedNetwork.address,
                 );
                 console.log('=== instanceGasFeePool ===', instanceGasFeePool);
+
+                GasFeePoolAddress = deployedNetwork.address;
               }
             }
+            console.log('=== GasFeePoolAddress ===', GasFeePoolAddress);
 
             /***
              * @dev - Definition for Meta-Transaction test
@@ -389,8 +395,8 @@ export default class MetaTransactionTest extends Component {
             let domainData = {
               name: "GasFeePool",
               version: "1",
-              verifyingContract: instanceGasFeePool.address,
-              verifyingContract: instanceGasFeePool.address
+              verifyingContract: GasFeePoolAddress,
+              verifyingContract: GasFeePoolAddress
             };
 
             if (MarketplaceRegistry || Dai || rDAI || RelayHub || RelayerManager || GasFeePool) {
