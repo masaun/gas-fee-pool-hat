@@ -509,10 +509,6 @@ export default class MarketplaceRegistry extends Component {
                             <h4>↓</h4> <br />
                             <h4>Proportions<br />10%: GasFeePool (To RelayerAddress)<br />90%: Owner</h4> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
-
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
@@ -547,6 +543,20 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
+
+                        <Card width={"auto"} 
+                              maxWidth={"1280px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
+                            <h4>Testing Function</h4>
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
+                        </Card>
+
                     </Grid>
 
                     <Grid item xs={4}>
