@@ -29,6 +29,11 @@ export default class MarketplaceRegistry extends Component {
         };
 
         this.getTestData = this.getTestData.bind(this);
+        this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
+    }
+
+    handleInputAddRelayer({ target: { value } }) {
+        this.setState({ valueOfAddRelayer: value });
     }
 
     getTestData = async () => {
@@ -249,17 +254,13 @@ export default class MarketplaceRegistry extends Component {
      * @dev - Meta-Tx by using Biconomy
      **/
     addRelayer = async () => {
-        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
+        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3, valueOfAddRelayer } = this.state;
 
-        let owner = await relayer_manager.methods.owner().call();
-        //let owner = await gas_fee_pool.methods.ownerOfRelayerManager().call();
-        console.log('=== GasFeePool.sol of owner() function ===', relayer);         
-
-        const _relayerAddress = walletAddressList["addressList"]["address1"];
-
+        const _relayerAddress = valueOfAddRelayer;
         let relayer = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
-        //let relayer = await relay_hub.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
-        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);         
+        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);
+
+        this.setState({ valueOfAddRelayer: '' });
     }
 
     getAllRelayers = async () => {
@@ -478,15 +479,19 @@ export default class MarketplaceRegistry extends Component {
                         <h4>Gas Fee Pool</h4> <br />
 
                         <Card width={"auto"} 
-                              maxWidth={"420px"} 
+                              maxWidth={"1280px"} 
                               mx={"auto"} 
                               my={5} 
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
                             <h4>Register RelayerAddress</h4>
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><Input type="text" placeholder="Please input relayer address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button></td>
+                                </tr>
+                            </Table>
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getAllRelayers}> Get All Relayers </Button> <br />
 
@@ -494,7 +499,7 @@ export default class MarketplaceRegistry extends Component {
                         </Card>
 
                         <Card width={"auto"} 
-                              maxWidth={"420px"} 
+                              maxWidth={"1280px"} 
                               mx={"auto"} 
                               my={5} 
                               p={20} 
