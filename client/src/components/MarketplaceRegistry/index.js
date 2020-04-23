@@ -30,11 +30,22 @@ export default class MarketplaceRegistry extends Component {
 
         this.getTestData = this.getTestData.bind(this);
         this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
+        this.handleInputMintAmount = this.handleInputMintAmount.bind(this);
+        this.handleInputHatID = this.handleInputHatID.bind(this);
     }
 
     handleInputAddRelayer({ target: { value } }) {
         this.setState({ valueOfAddRelayer: value });
     }
+
+    handleInputMintAmount({ target: { value } }) {
+        this.setState({ valueOfMintAmount: value });  //@dev - Already specified "input type"="number"
+    }
+
+    handleInputHatID({ target: { value } }) {
+        this.setState({ valueOfHatID: Number(value) });
+    }
+
 
     getTestData = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
@@ -129,11 +140,12 @@ export default class MarketplaceRegistry extends Component {
     }
 
     mintWithSelectedHat = async () => {
-        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address,  valueOfMintAmount, valueOfHatID } = this.state;
 
-        const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        const _hatID = 222;
+        const _mintAmount = valueOfMintAmount;
+        //const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _hatID = valueOfHatID;
+        //const _hatID = 222;
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
@@ -149,10 +161,9 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== dai.sol of allowance() function ===', allowance);
 
         let response = await rDAI.methods.mintWithSelectedHat(mintAmount, _hatID).send({ from: accounts[0] });
-        console.log('=== rDAI.sol     of mintWithSelectedHat() function ===', response);     
+        console.log('=== rDAI.sol of mintWithSelectedHat() function ===', response);     
 
-        //let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
-        //console.log('=== response of _mintWithSelectedHat() function ===', response);     
+        this.setState({ valueOfMintAmount: '', valueOfHatID: '' });
     }
   
     mintWithNewHat = async () => {
@@ -527,10 +538,22 @@ export default class MarketplaceRegistry extends Component {
                                 </tr>
                             </Table>
 
+                            <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintAmount} onChange={this.handleInputMintAmount} /></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Hat ID</p></td>
+                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfHatID} onChange={this.handleInputHatID} /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
+                                </tr>
+                            </Table>
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
 
@@ -574,6 +597,8 @@ export default class MarketplaceRegistry extends Component {
                             <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
                         </Card>
 
                     </Grid>
