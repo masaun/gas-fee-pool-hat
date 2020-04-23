@@ -512,7 +512,21 @@ export default class MarketplaceRegistry extends Component {
                             <hr /> <br />
                             <h4>Write Functions</h4>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Recipients</p></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Proportions</p></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
+                                </tr>
+                            </Table>
+
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
 
