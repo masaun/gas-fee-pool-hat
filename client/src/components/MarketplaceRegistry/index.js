@@ -650,26 +650,6 @@ export default class MarketplaceRegistry extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Mint Amount</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><p>Hat ID</p></td>
-                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
-
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Mint Amount</p></td>
                                     <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithNewHatMintAmount} onChange={this.handleInputMintWithNewHatMintAmount} /></td>
                                     <td></td>
                                 </tr>
@@ -689,6 +669,36 @@ export default class MarketplaceRegistry extends Component {
                                     <td></td>
                                 </tr>
                             </Table>
+
+                            <br />
+
+                            <h4>↓</h4> 
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Hat ID</p></td>
+                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <h4>↓</h4> 
+
+                            <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
 
