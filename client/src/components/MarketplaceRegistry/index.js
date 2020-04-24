@@ -71,7 +71,7 @@ export default class MarketplaceRegistry extends Component {
     }
 
     handleInputMintWithNewHatMintAmount({ target: { value } }) {
-        this.setState({ valueOfMintAmount: value });  //@dev - Already specified "input type"="number"
+        this.setState({ valueOfMintWithNewHatMintAmount: value });  //@dev - Already specified "input type"="number"
     }
 
     handleInputMintWithNewHatRecipients({ target: { value } }) {
@@ -194,41 +194,58 @@ export default class MarketplaceRegistry extends Component {
     }
   
     mintWithNewHatAddRecipients = async () => {
-        const { accounts, web3, createHatRecipientsList, valueOfCreateHatRecipients } = this.state;
+        const { accounts, web3, mintWithNewHatRecipientsList, valueOfMintWithNewHatRecipients } = this.state;
 
-        //const createHatRecipientsList = [];
-        createHatRecipientsList.push(valueOfCreateHatRecipients);
-        console.log('=== createHatRecipientsList ===', createHatRecipientsList);
+        mintWithNewHatRecipientsList.push(valueOfMintWithNewHatRecipients);
+        console.log('=== mintWithNewHatRecipientsList ===', mintWithNewHatRecipientsList);
 
-        this.setState({ valueOfCreateHatRecipients: '' });
+        this.setState({ valueOfMintWithNewHatRecipients: '' });
 
-        return createHatRecipientsList;
+        return mintWithNewHatRecipientsList;
     }
 
     mintWithNewHatAddProportions = async () => {
-        const { accounts, web3, createHatProportionsList, valueOfCreateHatProportions } = this.state;
+        const { accounts, web3, mintWithNewHatProportionsList, valueOfMintWithNewHatProportions } = this.state;
 
-        //const createHatProportions = [];
-        createHatProportionsList.push(valueOfCreateHatProportions);
-        console.log('=== createHatProportionsList ===', createHatProportionsList);
+        mintWithNewHatProportionsList.push(valueOfMintWithNewHatProportions);
+        console.log('=== mintWithNewHatProportionsList ===', mintWithNewHatProportionsList);
 
-        this.setState({ valueOfCreateHatProportions: '' });
+        this.setState({ valueOfMintWithNewHatProportions: '' });
 
-        return createHatProportionsList;
+        return mintWithNewHatProportionsList;
     }
 
     mintWithNewHat = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, valueOfMintWithNewHatMintAmount, mintWithNewHatRecipientsList, mintWithNewHatProportionsList } = this.state;
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
-        const recipient2 = walletAddressList["addressList"]["address2"];
+        const _mintAmount = valueOfMintWithNewHatMintAmount;
+        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _recipients = mintWithNewHatRecipientsList;
+        //const _recipients = [recipient1, recipient2];
+        const _proportions = mintWithNewHatProportionsList;
+        //const _proportions = [214748364, 4080218930];
 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        const _recipients = [recipient1, recipient2];
-        const _proportions = [214748364, 4080218930];
+        //@dev - Convert _mintAmount to transferred amount unit
+        let decimals = 18;
+        let mintAmount = web3.utils.toWei(_mintAmount.toString(), 'ether');
 
-        let response = await marketplace_registry.methods._mintWithNewHat(_mintAmount, _recipients, _proportions).send({ from: accounts[0] });
-        console.log('=== response of mintWithNewHat() function ===', response);     
+        console.log('=== _recipients ===', _recipients);
+        console.log('=== _proportions ===', _proportions);
+        console.log('=== mintAmount ===', mintAmount);
+
+        //@dev - Approve and Allowance
+        const _spender = rDAI_address;
+        let approved = await dai.methods.approve(_spender, mintAmount).send({ from: accounts[0] });
+        let allowance = await dai.methods.allowance(accounts[0], _spender).call();
+        console.log('=== dai.sol of allowance() function ===', allowance);
+
+        //@dev - Execute mintWithNewHat() function via rDAI.sol
+        let response = await rDAI.methods.mintWithNewHat(mintAmount, _recipients, _proportions).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of of mintWithNewHat() function ===', response);
+
+        this.setState({ valueOfMintWithNewHatMintAmount: '', 
+                        mintWithNewHatRecipientsList: [], 
+                        mintWithNewHatProportionsList: [] });     
     }
 
     interestPayableOf = async () => {
