@@ -29,7 +29,11 @@ export default class MarketplaceRegistry extends Component {
 
             /////// createHat() function 
             createHatRecipientsList: [],
-            createHatProportionsList: []
+            createHatProportionsList: [],
+
+            /////// mintWithNewHat() function 
+            mintWithNewHatRecipientsList: [],
+            mintWithNewHatProportionsList: []
         };
 
         this.getTestData = this.getTestData.bind(this);
@@ -40,6 +44,10 @@ export default class MarketplaceRegistry extends Component {
 
         this.handleInputMintAmount = this.handleInputMintAmount.bind(this);
         this.handleInputHatID = this.handleInputHatID.bind(this);
+
+        this.handleInputMintWithNewHatMintAmount = this.handleInputMintWithNewHatMintAmount.bind(this);
+        this.handleInputMintWithNewHatRecipients = this.handleInputMintWithNewHatRecipients.bind(this);
+        this.handleInputMintWithNewHatProportions = this.handleInputMintWithNewHatProportions.bind(this);
     }
 
     handleInputAddRelayer({ target: { value } }) {
@@ -61,6 +69,19 @@ export default class MarketplaceRegistry extends Component {
     handleInputHatID({ target: { value } }) {
         this.setState({ valueOfHatID: Number(value) });
     }
+
+    handleInputMintWithNewHatMintAmount({ target: { value } }) {
+        this.setState({ valueOfMintAmount: value });  //@dev - Already specified "input type"="number"
+    }
+
+    handleInputMintWithNewHatRecipients({ target: { value } }) {
+        this.setState({ valueOfMintWithNewHatRecipients: value });
+    }
+
+    handleInputMintWithNewHatProportions({ target: { value } }) {
+        this.setState({ valueOfMintWithNewHatProportions: Number(value) });
+    }
+
 
     rTokenInfo = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
@@ -172,6 +193,30 @@ export default class MarketplaceRegistry extends Component {
         this.setState({ valueOfMintAmount: '', valueOfHatID: '' });
     }
   
+    mintWithNewHatAddRecipients = async () => {
+        const { accounts, web3, createHatRecipientsList, valueOfCreateHatRecipients } = this.state;
+
+        //const createHatRecipientsList = [];
+        createHatRecipientsList.push(valueOfCreateHatRecipients);
+        console.log('=== createHatRecipientsList ===', createHatRecipientsList);
+
+        this.setState({ valueOfCreateHatRecipients: '' });
+
+        return createHatRecipientsList;
+    }
+
+    mintWithNewHatAddProportions = async () => {
+        const { accounts, web3, createHatProportionsList, valueOfCreateHatProportions } = this.state;
+
+        //const createHatProportions = [];
+        createHatProportionsList.push(valueOfCreateHatProportions);
+        console.log('=== createHatProportionsList ===', createHatProportionsList);
+
+        this.setState({ valueOfCreateHatProportions: '' });
+
+        return createHatProportionsList;
+    }
+
     mintWithNewHat = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
 
@@ -605,19 +650,23 @@ export default class MarketplaceRegistry extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Mint Amount</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintAmount} onChange={this.handleInputMintAmount} /></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithNewHatMintAmount} onChange={this.handleInputMintWithNewHatMintAmount} /></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td><p>Recipients</p></td>
-                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfMintWithNewHatRecipients} onChange={this.handleInputMintWithNewHatRecipients} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHatAddRecipients}> Add Recipients </Button></td>
                                 </tr>
                                 <tr>
                                     <td><p>Proportions</p></td>
-                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfMintWithNewHatProportions} onChange={this.handleInputMintWithNewHatProportions} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHatAddProportions}> Add Proportions </Button></td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button></td>
+                                    <td></td>
                                 </tr>
                             </Table>
 
