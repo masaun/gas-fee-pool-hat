@@ -27,6 +27,7 @@ export default class MarketplaceRegistry extends Component {
             accounts: null,
             route: window.location.pathname.replace("/", ""),
 
+            /////// createHat() function 
             createHatRecipientsList: [],
             createHatProportionsList: []
         };
