@@ -25,17 +25,32 @@ export default class MarketplaceRegistry extends Component {
             storageValue: 0,
             web3: null,
             accounts: null,
-            route: window.location.pathname.replace("/", "")
+            route: window.location.pathname.replace("/", ""),
+
+            createHatRecipientsList: [],
+            createHatProportionsList: []
         };
 
         this.getTestData = this.getTestData.bind(this);
         this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
+
+        this.handleInputCreateHatRecipients = this.handleInputCreateHatRecipients.bind(this);
+        this.handleInputCreateHatProportions = this.handleInputCreateHatProportions.bind(this);
+
         this.handleInputMintAmount = this.handleInputMintAmount.bind(this);
         this.handleInputHatID = this.handleInputHatID.bind(this);
     }
 
     handleInputAddRelayer({ target: { value } }) {
         this.setState({ valueOfAddRelayer: value });
+    }
+
+    handleInputCreateHatRecipients({ target: { value } }) {
+        this.setState({ valueOfCreateHatRecipients: value });
+    }
+
+    handleInputCreateHatProportions({ target: { value } }) {
+        this.setState({ valueOfCreateHatProportions: Number(value) });
     }
 
     handleInputMintAmount({ target: { value } }) {
@@ -85,24 +100,47 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of rTokenInfo() function ===', response);
     }
 
+    createHatAddRecipients = async () => {
+        const { accounts, web3, createHatRecipientsList, valueOfCreateHatRecipients } = this.state;
+
+        //const createHatRecipientsList = [];
+        createHatRecipientsList.push(valueOfCreateHatRecipients);
+        console.log('=== createHatRecipientsList ===', createHatRecipientsList);
+
+        this.setState({ valueOfCreateHatRecipients: '' });
+
+        return createHatRecipientsList;
+    }
+
+    createHatAddProportions = async () => {
+        const { accounts, web3, createHatProportionsList, valueOfCreateHatProportions } = this.state;
+
+        //const createHatProportions = [];
+        createHatProportionsList.push(valueOfCreateHatProportions);
+        console.log('=== createHatProportionsList ===', createHatProportionsList);
+
+        this.setState({ valueOfCreateHatProportions: '' });
+
+        return createHatProportionsList;
+    }
+
     createHat = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
-        console.log('=== accounts ===', accounts);
+        const { accounts, web3, marketplace_registry, createHatRecipientsList, createHatProportionsList } = this.state;
 
-        //const recipient1 = accounts[0];
-        const recipient1 = walletAddressList["addressList"]["address1"];
-        //const recipient2 = "0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3";
-        const recipient2 = walletAddressList["addressList"]["address2"];
-
-        const _recipients = [recipient1, recipient2];
-        //const _recipients = [accounts[0], accounts[1]]; 
-        const _proportions = [70, 30];
+        const _recipients = createHatRecipientsList; 
+        //const _recipients = [recipient1, recipient2];
+        const _proportions = createHatProportionsList;
+        //const _proportions = [70, 30];
         const _doChangeHat = true;
+        console.log('=== _recipients ===', _recipients);
+        console.log('=== _proportions ===', _proportions);
 
         let response = await marketplace_registry.methods._createHat(_recipients, 
                                                                      _proportions, 
                                                                      _doChangeHat).send({ from: accounts[0] })
-        console.log('=== response of _createHat() function ===', response);                
+        console.log('=== response of _createHat() function ===', response);
+
+        this.setState({ createHatRecipientsList: [], createHatProportionsList: [] });              
     }
 
     getHatByID = async () => {
@@ -526,15 +564,18 @@ export default class MarketplaceRegistry extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Recipients</p></td>
-                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
                                 </tr>
                                 <tr>
                                     <td><p>Proportions</p></td>
-                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
+                                    <td></td>
                                 </tr>
                             </Table>
 
@@ -555,7 +596,26 @@ export default class MarketplaceRegistry extends Component {
                                 </tr>
                             </Table>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintAmount} onChange={this.handleInputMintAmount} /></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Recipients</p></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Proportions</p></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button></td>
+                                </tr>
+                            </Table>
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
 
