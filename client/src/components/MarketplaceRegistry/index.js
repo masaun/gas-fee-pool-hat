@@ -25,43 +25,63 @@ export default class MarketplaceRegistry extends Component {
             storageValue: 0,
             web3: null,
             accounts: null,
-            route: window.location.pathname.replace("/", "")
+            route: window.location.pathname.replace("/", ""),
+
+            /////// createHat() function 
+            createHatRecipientsList: [],
+            createHatProportionsList: [],
+
+            /////// mintWithNewHat() function 
+            mintWithNewHatRecipientsList: [],
+            mintWithNewHatProportionsList: []
         };
 
         this.getTestData = this.getTestData.bind(this);
+        this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
+
+        this.handleInputCreateHatRecipients = this.handleInputCreateHatRecipients.bind(this);
+        this.handleInputCreateHatProportions = this.handleInputCreateHatProportions.bind(this);
+
+        this.handleInputMintWithSelectedHatMintAmount = this.handleInputMintWithSelectedHatMintAmount.bind(this);
+        this.handleInputMintWithSelectedHatHatID = this.handleInputMintWithSelectedHatHatID.bind(this);
+
+        this.handleInputMintWithNewHatMintAmount = this.handleInputMintWithNewHatMintAmount.bind(this);
+        this.handleInputMintWithNewHatRecipients = this.handleInputMintWithNewHatRecipients.bind(this);
+        this.handleInputMintWithNewHatProportions = this.handleInputMintWithNewHatProportions.bind(this);
     }
 
-    getTestData = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
-
-        const _currentAccount = accounts[0];
-        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
- 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
-        console.log('=== response of testFunc() function ===', response);
-
-        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
+    handleInputAddRelayer({ target: { value } }) {
+        this.setState({ valueOfAddRelayer: value });
     }
 
-    transferDAIFromUserToContract = async () => {
-        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
-
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-
-        //@dev - Transfer DAI from UserWallet to DAI-contract
-        let decimals = 18;
-        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
-        console.log('=== _amount ===', _amount);
-        const _to = marketplaceRegistryAddress;
-        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
-
-        //@dev - Transfer DAI from DAI-contract to Logic-contract
-        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
-        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
+    handleInputCreateHatRecipients({ target: { value } }) {
+        this.setState({ valueOfCreateHatRecipients: value });
     }
+
+    handleInputCreateHatProportions({ target: { value } }) {
+        this.setState({ valueOfCreateHatProportions: Number(value) });
+    }
+
+    handleInputMintWithSelectedHatMintAmount({ target: { value } }) {
+        this.setState({ valueOfMintWithSelectedHatMintAmount: value });  //@dev - Already specified "input type"="number"
+    }
+
+    handleInputMintWithSelectedHatHatID({ target: { value } }) {
+        this.setState({ valueOfMintWithSelectedHatHatID: Number(value) });
+    }
+
+    handleInputMintWithNewHatMintAmount({ target: { value } }) {
+        this.setState({ valueOfMintWithNewHatMintAmount: value });  //@dev - Already specified "input type"="number"
+    }
+
+    handleInputMintWithNewHatRecipients({ target: { value } }) {
+        this.setState({ valueOfMintWithNewHatRecipients: value });
+    }
+
+    handleInputMintWithNewHatProportions({ target: { value } }) {
+        this.setState({ valueOfMintWithNewHatProportions: Number(value) });
+    }
+
 
     rTokenInfo = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
@@ -69,24 +89,47 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== response of rTokenInfo() function ===', response);
     }
 
+    createHatAddRecipients = async () => {
+        const { accounts, web3, createHatRecipientsList, valueOfCreateHatRecipients } = this.state;
+
+        //const createHatRecipientsList = [];
+        createHatRecipientsList.push(valueOfCreateHatRecipients);
+        console.log('=== createHatRecipientsList ===', createHatRecipientsList);
+
+        this.setState({ valueOfCreateHatRecipients: '' });
+
+        return createHatRecipientsList;
+    }
+
+    createHatAddProportions = async () => {
+        const { accounts, web3, createHatProportionsList, valueOfCreateHatProportions } = this.state;
+
+        //const createHatProportions = [];
+        createHatProportionsList.push(valueOfCreateHatProportions);
+        console.log('=== createHatProportionsList ===', createHatProportionsList);
+
+        this.setState({ valueOfCreateHatProportions: '' });
+
+        return createHatProportionsList;
+    }
+
     createHat = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
-        console.log('=== accounts ===', accounts);
+        const { accounts, web3, marketplace_registry, createHatRecipientsList, createHatProportionsList } = this.state;
 
-        //const recipient1 = accounts[0];
-        const recipient1 = walletAddressList["addressList"]["address1"];
-        //const recipient2 = "0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3";
-        const recipient2 = walletAddressList["addressList"]["address2"];
-
-        const _recipients = [recipient1, recipient2];
-        //const _recipients = [accounts[0], accounts[1]]; 
-        const _proportions = [70, 30];
+        const _recipients = createHatRecipientsList; 
+        //const _recipients = [recipient1, recipient2];
+        const _proportions = createHatProportionsList;
+        //const _proportions = [70, 30];
         const _doChangeHat = true;
+        console.log('=== _recipients ===', _recipients);
+        console.log('=== _proportions ===', _proportions);
 
         let response = await marketplace_registry.methods._createHat(_recipients, 
                                                                      _proportions, 
                                                                      _doChangeHat).send({ from: accounts[0] })
-        console.log('=== response of _createHat() function ===', response);                
+        console.log('=== response of _createHat() function ===', response);
+
+        this.setState({ createHatRecipientsList: [], createHatProportionsList: [] });              
     }
 
     getHatByID = async () => {
@@ -124,11 +167,12 @@ export default class MarketplaceRegistry extends Component {
     }
 
     mintWithSelectedHat = async () => {
-        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address,  valueOfMintWithSelectedHatMintAmount, valueOfMintWithSelectedHatHatID } = this.state;
 
-        const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        const _hatID = 222;
+        const _mintAmount = valueOfMintWithSelectedHatMintAmount;
+        //const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _hatID = valueOfMintWithSelectedHatHatID;
+        //const _hatID = 222;
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
@@ -144,24 +188,64 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== dai.sol of allowance() function ===', allowance);
 
         let response = await rDAI.methods.mintWithSelectedHat(mintAmount, _hatID).send({ from: accounts[0] });
-        console.log('=== rDAI.sol     of mintWithSelectedHat() function ===', response);     
+        console.log('=== rDAI.sol of mintWithSelectedHat() function ===', response);     
 
-        //let response = await marketplace_registry.methods._mintWithSelectedHat(_mintAmount, _hatID).send({ from: accounts[0] });
-        //console.log('=== response of _mintWithSelectedHat() function ===', response);     
+        this.setState({ valueOfMintWithSelectedHatMintAmount: '', valueOfMintWithSelectedHatHatID: '' });
     }
   
+    mintWithNewHatAddRecipients = async () => {
+        const { accounts, web3, mintWithNewHatRecipientsList, valueOfMintWithNewHatRecipients } = this.state;
+
+        mintWithNewHatRecipientsList.push(valueOfMintWithNewHatRecipients);
+        console.log('=== mintWithNewHatRecipientsList ===', mintWithNewHatRecipientsList);
+
+        this.setState({ valueOfMintWithNewHatRecipients: '' });
+
+        return mintWithNewHatRecipientsList;
+    }
+
+    mintWithNewHatAddProportions = async () => {
+        const { accounts, web3, mintWithNewHatProportionsList, valueOfMintWithNewHatProportions } = this.state;
+
+        mintWithNewHatProportionsList.push(valueOfMintWithNewHatProportions);
+        console.log('=== mintWithNewHatProportionsList ===', mintWithNewHatProportionsList);
+
+        this.setState({ valueOfMintWithNewHatProportions: '' });
+
+        return mintWithNewHatProportionsList;
+    }
+
     mintWithNewHat = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, valueOfMintWithNewHatMintAmount, mintWithNewHatRecipientsList, mintWithNewHatProportionsList } = this.state;
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
-        const recipient2 = walletAddressList["addressList"]["address2"];
+        const _mintAmount = valueOfMintWithNewHatMintAmount;
+        //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _recipients = mintWithNewHatRecipientsList;
+        //const _recipients = [recipient1, recipient2];
+        const _proportions = mintWithNewHatProportionsList;
+        //const _proportions = [214748364, 4080218930];
 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        const _recipients = [recipient1, recipient2];
-        const _proportions = [214748364, 4080218930];
+        //@dev - Convert _mintAmount to transferred amount unit
+        let decimals = 18;
+        let mintAmount = web3.utils.toWei(_mintAmount.toString(), 'ether');
 
-        let response = await marketplace_registry.methods._mintWithNewHat(_mintAmount, _recipients, _proportions).send({ from: accounts[0] });
-        console.log('=== response of mintWithNewHat() function ===', response);     
+        console.log('=== _recipients ===', _recipients);
+        console.log('=== _proportions ===', _proportions);
+        console.log('=== mintAmount ===', mintAmount);
+
+        //@dev - Approve and Allowance
+        const _spender = rDAI_address;
+        let approved = await dai.methods.approve(_spender, mintAmount).send({ from: accounts[0] });
+        let allowance = await dai.methods.allowance(accounts[0], _spender).call();
+        console.log('=== dai.sol of allowance() function ===', allowance);
+
+        //@dev - Execute mintWithNewHat() function via rDAI.sol
+        let response = await rDAI.methods.mintWithNewHat(mintAmount, _recipients, _proportions).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of of mintWithNewHat() function ===', response);
+
+        this.setState({ valueOfMintWithNewHatMintAmount: '', 
+                        mintWithNewHatRecipientsList: [], 
+                        mintWithNewHatProportionsList: [] });     
     }
 
     interestPayableOf = async () => {
@@ -249,17 +333,13 @@ export default class MarketplaceRegistry extends Component {
      * @dev - Meta-Tx by using Biconomy
      **/
     addRelayer = async () => {
-        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3 } = this.state;
+        const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3, valueOfAddRelayer } = this.state;
 
-        let owner = await relayer_manager.methods.owner().call();
-        //let owner = await gas_fee_pool.methods.ownerOfRelayerManager().call();
-        console.log('=== GasFeePool.sol of owner() function ===', relayer);         
-
-        const _relayerAddress = walletAddressList["addressList"]["address1"];
-
+        const _relayerAddress = valueOfAddRelayer;
         let relayer = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
-        //let relayer = await relay_hub.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
-        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);         
+        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);
+
+        this.setState({ valueOfAddRelayer: '' });
     }
 
     getAllRelayers = async () => {
@@ -279,12 +359,48 @@ export default class MarketplaceRegistry extends Component {
     }    
 
 
+    /***
+     * @dev - Test Functions
+     **/
+    getTestData = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _currentAccount = accounts[0];
+        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
+ 
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
+        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
+        console.log('=== response of testFunc() function ===', response);
+
+        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
+    }
+
+    transferDAIFromUserToContract = async () => {
+        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
+
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
+
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        console.log('=== _amount ===', _amount);
+        const _to = marketplaceRegistryAddress;
+        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
+
+        //@dev - Transfer DAI from DAI-contract to Logic-contract
+        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
+        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
+    }
+
+
     //////////////////////////////////// 
     ///// Refresh Values
     ////////////////////////////////////
     refreshValues = (instanceMarketplaceRegistry) => {
         if (instanceMarketplaceRegistry) {
-          console.log('refreshValues of instanceMarketplaceRegistry');
+          //console.log('refreshValues of instanceMarketplaceRegistry');
         }
     }
 
@@ -478,15 +594,19 @@ export default class MarketplaceRegistry extends Component {
                         <h4>Gas Fee Pool</h4> <br />
 
                         <Card width={"auto"} 
-                              maxWidth={"420px"} 
+                              maxWidth={"1280px"} 
                               mx={"auto"} 
                               my={5} 
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
                             <h4>Register RelayerAddress</h4>
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><Input type="text" placeholder="Please input relayer address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button></td>
+                                </tr>
+                            </Table>
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getAllRelayers}> Get All Relayers </Button> <br />
 
@@ -494,7 +614,7 @@ export default class MarketplaceRegistry extends Component {
                         </Card>
 
                         <Card width={"auto"} 
-                              maxWidth={"420px"} 
+                              maxWidth={"1280px"} 
                               mx={"auto"} 
                               my={5} 
                               p={20} 
@@ -502,29 +622,83 @@ export default class MarketplaceRegistry extends Component {
                         >
                             <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
                             <h4>↓</h4> <br />
-                            <h4>Proportions<br />10%: GasFeePool (To RelayerAddress)<br />90%: Owner</h4> <br />
+                            <h4>Proportions example<br />10%: GasFeePool (To RelayerAddress)<br />90%: Owner</h4> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+                            <hr /> <br />
+                            <h4>Write Functions</h4>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Recipients</p></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Proportions</p></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
+                            <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithNewHatMintAmount} onChange={this.handleInputMintWithNewHatMintAmount} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Recipients</p></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfMintWithNewHatRecipients} onChange={this.handleInputMintWithNewHatRecipients} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHatAddRecipients}> Add Recipients </Button></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Proportions</p></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfMintWithNewHatProportions} onChange={this.handleInputMintWithNewHatProportions} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHatAddProportions}> Add Proportions </Button></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
+                            <br />
 
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
+                            <h4>↓</h4> 
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
+                            <br />
 
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Hat ID</p></td>
+                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button> <br />
+                            <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button> <br />
+                            <h4>↓</h4> 
 
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
+                            <br />
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
 
@@ -534,14 +708,42 @@ export default class MarketplaceRegistry extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button> <br />
 
-                            <hr />
+                            <hr /> <br /> 
+
+                            <h4>Read Functions</h4>
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByAddress}> Get Hat By Address </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatStats}> Get Hat Stats </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.allowance}> Allowance rDAI Proxy Contract </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
+
+                        <Card width={"auto"} 
+                              maxWidth={"1280px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
+                            <h4>Testing Function</h4>
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
+
+                            <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
+                        </Card>
+
                     </Grid>
 
                     <Grid item xs={4}>
