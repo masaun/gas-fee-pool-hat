@@ -62,39 +62,6 @@ export default class MarketplaceRegistry extends Component {
         this.setState({ valueOfHatID: Number(value) });
     }
 
-
-    getTestData = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
-
-        const _currentAccount = accounts[0];
-        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
- 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
-        console.log('=== response of testFunc() function ===', response);
-
-        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
-    }
-
-    transferDAIFromUserToContract = async () => {
-        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
-
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-
-        //@dev - Transfer DAI from UserWallet to DAI-contract
-        let decimals = 18;
-        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
-        console.log('=== _amount ===', _amount);
-        const _to = marketplaceRegistryAddress;
-        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
-
-        //@dev - Transfer DAI from DAI-contract to Logic-contract
-        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
-        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
-    }
-
     rTokenInfo = async () => {
         const { accounts, marketplace_registry, web3 } = this.state;
         let response = await marketplace_registry.methods.rTokenInfo().call();
@@ -330,12 +297,48 @@ export default class MarketplaceRegistry extends Component {
     }    
 
 
+    /***
+     * @dev - Test Functions
+     **/
+    getTestData = async () => {
+        const { accounts, marketplace_registry, web3 } = this.state;
+
+        const _currentAccount = accounts[0];
+        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
+ 
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
+        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
+        console.log('=== response of testFunc() function ===', response);
+
+        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
+    }
+
+    transferDAIFromUserToContract = async () => {
+        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
+
+        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
+
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
+        console.log('=== _amount ===', _amount);
+        const _to = marketplaceRegistryAddress;
+        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
+
+        //@dev - Transfer DAI from DAI-contract to Logic-contract
+        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
+        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
+    }
+
+
     //////////////////////////////////// 
     ///// Refresh Values
     ////////////////////////////////////
     refreshValues = (instanceMarketplaceRegistry) => {
         if (instanceMarketplaceRegistry) {
-          console.log('refreshValues of instanceMarketplaceRegistry');
+          //console.log('refreshValues of instanceMarketplaceRegistry');
         }
     }
 
