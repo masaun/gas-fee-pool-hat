@@ -42,8 +42,8 @@ export default class MarketplaceRegistry extends Component {
         this.handleInputCreateHatRecipients = this.handleInputCreateHatRecipients.bind(this);
         this.handleInputCreateHatProportions = this.handleInputCreateHatProportions.bind(this);
 
-        this.handleInputMintAmount = this.handleInputMintAmount.bind(this);
-        this.handleInputHatID = this.handleInputHatID.bind(this);
+        this.handleInputMintWithSelectedHatMintAmount = this.handleInputMintWithSelectedHatMintAmount.bind(this);
+        this.handleInputMintWithSelectedHatHatID = this.handleInputMintWithSelectedHatHatID.bind(this);
 
         this.handleInputMintWithNewHatMintAmount = this.handleInputMintWithNewHatMintAmount.bind(this);
         this.handleInputMintWithNewHatRecipients = this.handleInputMintWithNewHatRecipients.bind(this);
@@ -62,12 +62,12 @@ export default class MarketplaceRegistry extends Component {
         this.setState({ valueOfCreateHatProportions: Number(value) });
     }
 
-    handleInputMintAmount({ target: { value } }) {
-        this.setState({ valueOfMintAmount: value });  //@dev - Already specified "input type"="number"
+    handleInputMintWithSelectedHatMintAmount({ target: { value } }) {
+        this.setState({ valueOfMintWithSelectedHatMintAmount: value });  //@dev - Already specified "input type"="number"
     }
 
-    handleInputHatID({ target: { value } }) {
-        this.setState({ valueOfHatID: Number(value) });
+    handleInputMintWithSelectedHatHatID({ target: { value } }) {
+        this.setState({ valueOfMintWithSelectedHatHatID: Number(value) });
     }
 
     handleInputMintWithNewHatMintAmount({ target: { value } }) {
@@ -167,11 +167,11 @@ export default class MarketplaceRegistry extends Component {
     }
 
     mintWithSelectedHat = async () => {
-        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address,  valueOfMintAmount, valueOfHatID } = this.state;
+        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address,  valueOfMintWithSelectedHatMintAmount, valueOfMintWithSelectedHatHatID } = this.state;
 
-        const _mintAmount = valueOfMintAmount;
+        const _mintAmount = valueOfMintWithSelectedHatMintAmount;
         //const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        const _hatID = valueOfHatID;
+        const _hatID = valueOfMintWithSelectedHatHatID;
         //const _hatID = 222;
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
@@ -190,7 +190,7 @@ export default class MarketplaceRegistry extends Component {
         let response = await rDAI.methods.mintWithSelectedHat(mintAmount, _hatID).send({ from: accounts[0] });
         console.log('=== rDAI.sol of mintWithSelectedHat() function ===', response);     
 
-        this.setState({ valueOfMintAmount: '', valueOfHatID: '' });
+        this.setState({ valueOfMintWithSelectedHatMintAmount: '', valueOfMintWithSelectedHatHatID: '' });
     }
   
     mintWithNewHatAddRecipients = async () => {
@@ -633,11 +633,11 @@ export default class MarketplaceRegistry extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Mint Amount</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintAmount} onChange={this.handleInputMintAmount} /></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
                                 </tr>
                                 <tr>
                                     <td><p>Hat ID</p></td>
-                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfHatID} onChange={this.handleInputHatID} /></td>
+                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
                                 </tr>
                                 <tr>
                                     <td></td>
