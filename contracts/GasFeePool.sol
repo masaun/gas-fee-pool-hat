@@ -33,30 +33,32 @@ contract GasFeePool is McStorage, McConstants, EIP712MetaTransaction("GasFeePool
     /***
      * @dev - Execute Meta-Transaction
      **/
-    function executeMetaTransactionTest(string memory _newQuote) 
+    function executeMetaTransactionTest(string memory _newText) 
         public 
-        returns (string memory _currentQuote, address _currentOwner) 
+        returns (string memory _currentText, address _currentOwner) 
     {
-        setQuote(_newQuote);
-        return getQuote();
+        setText(_newText);
+        return getText();
     }
 
 
     /***
      * @dev - Internal function for executing Meta-Transaction
      **/
-    string public quote;
+    string public text;
     address public owner;
 
-    function setQuote(string memory newQuote) public {
-        quote = newQuote;
+    function setText(string memory newText) public {
+        text = newText;
         owner = msgRelayer();
         //owner = msgSender();
     }
 
-    function getQuote() view public returns(string memory currentQuote, address currentOwner) {
-        currentQuote = quote;
-        currentOwner = owner;
+    function getText() view public returns (string memory _currentText, address _currentOwner) {
+        string memory currentText = text;
+        address currentOwner = owner;
+
+        return (currentText, currentOwner);
     }
     
 }

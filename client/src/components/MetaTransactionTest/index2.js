@@ -48,23 +48,23 @@ export default class MetaTransactionTest extends Component {
         const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
 
         //@dev - Execute function
-        const _newQuote = "Write new quote for Test Meta-Transaction";
-        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newQuote).send({ from: accounts[0] });
+        const _newText = "Write new text for Test Meta-Transaction";
+        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newText).send({ from: accounts[0] });
         console.log('=== response of executeMetaTransactionTest() ===', response);
     }
 
-    setQuote = async () => {
+    setText = async () => {
         const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
 
         /***
          * @dev - Global Variable
          **/
-        const quote = "This is a default quote";
-        const setQuote = "This is a default quote";
+        const text = "This is a default text";
+        const setText = "This is a default text";
         const owner = "Default Owner Address";
         const setOwner = "Default Owner Address";
-        const newQuote = "Test New Quote";
-        const setNewQuote = "";
+        const newText = "Test New Text";
+        const setNewText = "";
         const selectedAddress = accounts[0];
         //const selectedAddress = "";
         const setSelectedAddress = accounts[0];
@@ -72,13 +72,13 @@ export default class MetaTransactionTest extends Component {
         const metaTxEnabled = true;
         const setMetaTxEnabled = true;
 
-        if (newQuote != "" && gas_fee_pool) {
+        if (newText != "" && gas_fee_pool) {
           if (metaTxEnabled) {
 
             console.log("=== Sending meta transaction ===");
             let userAddress = selectedAddress;
             let nonce = await gas_fee_pool.methods.getNonce(userAddress).call();
-            let functionSignature = gas_fee_pool.methods.setQuote(newQuote).encodeABI();
+            let functionSignature = gas_fee_pool.methods.setText(newText).encodeABI();
             let message = {};
             message.nonce = parseInt(nonce);
             message.from = userAddress;
@@ -128,7 +128,7 @@ export default class MetaTransactionTest extends Component {
           } else {
             console.log("=== Sending normal transaction ===");
             gas_fee_pool.methods
-              .setQuote(newQuote)
+              .setText(newText)
               .send({ from: selectedAddress })
               .on("transactionHash", function(hash) {
                   console.log(`=== Transaction sent to blockchain with hash ${hash} ===`);
@@ -137,11 +137,11 @@ export default class MetaTransactionTest extends Component {
               .once("confirmation", function(confirmationNumber, receipt) {
                   console.log("=== Transaction confirmed ===");
                   //showSuccessMessage("Transaction confirmed");
-                  this.getQuoteFromNetwork();
+                  this.getTextFromNetwork();
               });
           }
         } else {
-            console.log("=== Please enter the quote ===");
+            console.log("=== Please enter the text ===");
             //showErrorMessage("Please enter the quote");
         }
         // const _newQuote = "Write new quote for Test Meta-Transaction";
@@ -173,29 +173,29 @@ export default class MetaTransactionTest extends Component {
         };
     };
 
-    getQuoteFromNetwork = () => {
+    getTextFromNetwork = () => {
         const { accounts, gas_fee_pool, web3 } = this.state;
 
         if (web3 && gas_fee_pool) {
           gas_fee_pool.methods
-            .getQuote()
+            .getText()
             .call()
             .then(function(result) {
               console.log("=== result ===", result);
               if (
                 result &&
-                result.currentQuote != undefined &&
+                result.currentText != undefined &&
                 result.currentOwner != undefined
               ) {
-                if (result.currentQuote == "") {
-                  console.log("=== No quotes set on blockchain yet ===");
-                  //this.showErrorMessage("No quotes set on blockchain yet");
+                if (result.currentText == "") {
+                  console.log("=== No texts set on blockchain yet ===");
+                  //this.showErrorMessage("No texts set on blockchain yet");
                 } else {
-                  gas_fee_pool.methods.setQuote(result.currentQuote);
+                  gas_fee_pool.methods.setText(result.currentText);
                   gas_fee_pool.methods.setOwner(result.currentOwner);
                 }
               } else {
-                this.showErrorMessage("Not able to get quote information from Network");
+                this.showErrorMessage("Not able to get text information from Network");
               }
             });
         }
@@ -238,7 +238,7 @@ export default class MetaTransactionTest extends Component {
             }).once("confirmation", function(confirmationNumber, receipt) {
               console.log(receipt);
               this.showSuccessMessage("Transaction confirmed on chain");
-              this.getQuoteFromNetwork();
+              this.getTextFromNetwork();
             });
           } catch (error) {
             console.log(error);
@@ -488,7 +488,7 @@ export default class MetaTransactionTest extends Component {
 
                             <Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.setQuote}> Set Quote </Button> <br />
+                            <Button size={'small'} mt={3} mb={2} onClick={this.setText}> Set Text </Button> <br />
                         </Card>
                     </Grid>
 
