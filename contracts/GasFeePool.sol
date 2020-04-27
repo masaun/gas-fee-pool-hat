@@ -9,30 +9,22 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 // Storage
-import "./storage/McStorage.sol";
-import "./storage/McConstants.sol";
+import "./storage/GpStorage.sol";
+import "./storage/GpConstants.sol";
 
 // rDAI
-//import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/tokens/rDAI.sol";
-//import "./rtoken-contracts/contracts/RToken.sol";
-//import "./rtoken-contracts/contracts/IRToken.sol";
 import "./rtoken-contracts/contracts/IAllocationStrategy.sol";
 import "./rtoken-contracts/contracts/RTokenStructs.sol";
 
 // DAI
 import "./DAI/dai.sol";
 
-// Mexa
-// import "./mexa/contracts/RelayHub.sol";
-// import "./mexa/contracts/RelayerManager.sol";
-
-
 
 /***
  * @notice - This contract is that ...
  **/
-contract GasFeePool is Ownable, McStorage, McConstants {
+contract GasFeePool is Ownable, GpStorage, GpConstants {
     using SafeMath for uint;
 
     address _ias;  //@dev - _ias is from rDAI.sol
@@ -74,7 +66,7 @@ contract GasFeePool is Ownable, McStorage, McConstants {
 
     function testFunc(uint256 _mintAmount) public returns (bool, uint256 _approvedValue) {
         uint256 _id = 1;
-        uint256 _exchangeRateCurrent = McConstants.onePercent;
+        uint256 _exchangeRateCurrent = GpConstants.onePercent;
 
         address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
 
@@ -94,7 +86,7 @@ contract GasFeePool is Ownable, McStorage, McConstants {
 
         emit Example(_id, _exchangeRateCurrent, msg.sender, _approvedValue);
 
-        return (McConstants.CONFIRMED, _approvedValue);
+        return (GpConstants.CONFIRMED, _approvedValue);
     }
 
     function balanceOfCurrentAccount(address _currentAccount) public view returns (uint256 balanceOfCurrentAccount) {

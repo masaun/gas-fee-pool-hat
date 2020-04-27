@@ -5,8 +5,8 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // Storage
-import "./storage/McStorage.sol";
-import "./storage/McConstants.sol";
+import "./storage/GpStorage.sol";
+import "./storage/GpConstants.sol";
 
 // DAI
 import "./DAI/dai.sol";
@@ -18,7 +18,7 @@ import "./metatx-standard/contracts/EIP712MetaTransaction.sol";
 /***
  * @notice - This contract is that ...
  **/
-contract MetaTransactionTest is McStorage, McConstants, EIP712MetaTransaction("MetaTransactionTest","1") {
+contract MetaTransactionTest is GpStorage, GpConstants, EIP712MetaTransaction("MetaTransactionTest","1") {
     using SafeMath for uint;
 
     Dai public dai;  //@dev - dai.sol

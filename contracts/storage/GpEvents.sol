@@ -1,9 +1,9 @@
 pragma solidity ^0.5.11;
 
-import "./McObjects.sol";
+import "./GpObjects.sol";
 
 
-contract McEvents {
+contract GpEvents {
 
     event CreateHat(
         uint256 hatID

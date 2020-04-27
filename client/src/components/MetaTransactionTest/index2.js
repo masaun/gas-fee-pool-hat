@@ -16,8 +16,8 @@ import { walletAddressList } from '../../data/testWalletAddress.js'
 import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
 import {
-  NotificationContainer,
-  NotificationManager
+    NotificationContainer,
+    NotificationManager
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
