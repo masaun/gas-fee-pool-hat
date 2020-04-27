@@ -48,6 +48,11 @@ export default class MarketplaceRegistry extends Component {
         this.handleInputMintWithNewHatMintAmount = this.handleInputMintWithNewHatMintAmount.bind(this);
         this.handleInputMintWithNewHatRecipients = this.handleInputMintWithNewHatRecipients.bind(this);
         this.handleInputMintWithNewHatProportions = this.handleInputMintWithNewHatProportions.bind(this);
+
+        this.handleInputRedeemTokens = this.handleInputRedeemTokens.bind(this);        
+        this.handleInputRedeemAndTransferRedeemTo = this.handleInputRedeemAndTransferRedeemTo.bind(this);        
+        this.handleInputRedeemAndTransferRedeemTokens = this.handleInputRedeemAndTransferRedeemTokens.bind(this);        
+        this.handleInputRedeemAndTransferAllRedeemTo = this.handleInputRedeemAndTransferAllRedeemTo.bind(this);
     }
 
     handleInputAddRelayer({ target: { value } }) {
@@ -80,6 +85,22 @@ export default class MarketplaceRegistry extends Component {
 
     handleInputMintWithNewHatProportions({ target: { value } }) {
         this.setState({ valueOfMintWithNewHatProportions: Number(value) });
+    }
+
+    handleInputRedeemTokens({ target: { value } }) {
+        this.setState({ valueOfRedeemTokens: value });  //@dev - Already specified "input type"="number"
+    }
+
+    handleInputRedeemAndTransferRedeemTo({ target: { value } }) {
+        this.setState({ valueOfRedeemAndTransferRedeemTo: value });
+    }
+
+    handleInputRedeemAndTransferRedeemTokens({ target: { value } }) {
+        this.setState({ valueOfRedeemAndTransferRedeemTokens: value });  //@dev - Already specified "input type"="number"
+    }
+
+    handleInputRedeemAndTransferAllRedeemTo({ target: { value } }) {
+        this.setState({ valueOfRedeemAndTransferAllRedeemTo: value });
     }
 
 
@@ -260,10 +281,10 @@ export default class MarketplaceRegistry extends Component {
     }
 
     redeem = async () => {
-        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, valueOfRedeemTokens } = this.state;
 
-        const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        //const _redeemTokens = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _redeemTokens = valueOfRedeemTokens;
+        //const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
@@ -272,9 +293,9 @@ export default class MarketplaceRegistry extends Component {
         const _spender = rDAI_address;
 
         let response = await rDAI.methods.redeem(redeemTokens).send({ from: accounts[0] });
-        console.log('=== rDAI.sol of redeem() function ===', response);    
-        //let response = await marketplace_registry.methods._redeem(_redeemTokens).send({ from: accounts[0] });
-        //console.log('=== response of _redeem() function ===', response);           
+        console.log('=== rDAI.sol of redeem() function ===', response);
+
+        this.setState({ valueOfRedeemTokens: '' });
     }
 
     redeemAll = async () => {
@@ -285,26 +306,28 @@ export default class MarketplaceRegistry extends Component {
     }
 
     redeemAndTransfer = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
-
-        const _redeemTo = recipient1;
-        const _redeemTokens = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
+        const _redeemTo = valueOfRedeemAndTransferRedeemTo;
+        const _redeemTokens = valueOfRedeemAndTransferRedeemTokens;
 
         let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransfer() function ===', response);           
+
+        this.setState({ valueOfRedeemAndTransferRedeemTo: '', valueOfRedeemAndTransferRedeemTokens: '' });
     }
 
     redeemAndTransferAll = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, web3, marketplace_registry, valueOfRedeemAndTransferAllRedeemTo } = this.state;
 
-        const recipient1 = walletAddressList["addressList"]["address1"];
-        const _redeemTo = recipient1;
+        const _redeemTo = valueOfRedeemAndTransferAllRedeemTo;
 
         let response = await marketplace_registry.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransferAll() function ===', response);           
+
+        this.setState({ valueOfRedeemAndTransferAllRedeemTo: '' });
     }
+
 
     /***
      * @dev - Hat Status
@@ -700,15 +723,70 @@ export default class MarketplaceRegistry extends Component {
 
                             <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemTokens} onChange={this.handleInputRedeemTokens} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button> <br />
+                            <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button> <br />
+                            <br />
 
-                            <hr /> <br /> 
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem To</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemAndTransferRedeemTokens} onChange={this.handleInputRedeemAndTransferRedeemTokens} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem To</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+                            <br />
+
+                            <hr /> 
+
+                            <br /> 
 
                             <h4>Read Functions</h4>
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
