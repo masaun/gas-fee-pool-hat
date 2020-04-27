@@ -265,9 +265,9 @@ export default class MetaTransactionTest extends Component {
     //////////////////////////////////// 
     ///// Refresh Values
     ////////////////////////////////////
-    refreshValues = (instanceMarketplaceRegistry) => {
-        if (instanceMarketplaceRegistry) {
-          console.log('refreshValues of instanceMarketplaceRegistry');
+    refreshValues = (instanceGasFeePool) => {
+        if (instanceGasFeePool) {
+          console.log('refreshValues of instanceGasFeePool');
         }
     }
 
@@ -291,14 +291,14 @@ export default class MetaTransactionTest extends Component {
          **/
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
      
-        let MarketplaceRegistry = {};
+        let GasFeePool = {};
         let Dai = {};
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
         let MetaTransactionTest = {};
         try {
-          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
+          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  // Load artifact-file of GasFeePool
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
@@ -330,24 +330,24 @@ export default class MetaTransactionTest extends Component {
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
 
-            let instanceMarketplaceRegistry = null;
+            let instanceGasFeePool = null;
             let deployedNetwork = null;
 
             // Create instance of contracts
-            if (MarketplaceRegistry.networks) {
-              deployedNetwork = MarketplaceRegistry.networks[networkId.toString()];
+            if (GasFeePool.networks) {
+              deployedNetwork = GasFeePool.networks[networkId.toString()];
               if (deployedNetwork) {
-                instanceMarketplaceRegistry = new web3.eth.Contract(
-                  MarketplaceRegistry.abi,
+                instanceGasFeePool = new web3.eth.Contract(
+                  GasFeePool.abi,
                   deployedNetwork && deployedNetwork.address,
                 );
-                console.log('=== instanceMarketplaceRegistry ===', instanceMarketplaceRegistry);
+                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
               }
             }
 
             //@dev - Create instance of DAI-contract
             let instanceDai = null;
-            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
+            let GasFeePoolRegistryAddress = GasFeePool.networks[networkId.toString()].address;
             let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"; //@dev - DAI（Underlying asset）
             instanceDai = new web3.eth.Contract(
               Dai.abi,
@@ -438,7 +438,7 @@ export default class MetaTransactionTest extends Component {
               verifyingContract: MetaTransactionTestAddress
             };
 
-            if (MarketplaceRegistry || Dai || rDAI || RelayHub || RelayerManager || MetaTransactionTest) {
+            if (GasFeePool || Dai || rDAI || RelayHub || RelayerManager || MetaTransactionTest) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
               this.setState({ 
@@ -450,10 +450,10 @@ export default class MetaTransactionTest extends Component {
                 networkType, 
                 hotLoaderDisabled,
                 isMetaMask, 
-                marketplace_registry: instanceMarketplaceRegistry,
+                gas_fee_pool: instanceGasFeePool,
                 dai: instanceDai,
                 rDAI: instanceRDai,
-                marketplace_registry_address: MarketplaceRegistryAddress,
+                gas_fee_pool_address: GasFeePoolAddress,
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
                 relayer_manager: instanceRelayerManager,
@@ -463,10 +463,10 @@ export default class MetaTransactionTest extends Component {
                 domainData: domainData
               }, () => {
                 this.refreshValues(
-                  instanceMarketplaceRegistry
+                  instanceGasFeePool
                 );
                 setInterval(() => {
-                  this.refreshValues(instanceMarketplaceRegistry);
+                  this.refreshValues(instanceGasFeePool);
                 }, 5000);
               });
             } else {
@@ -484,7 +484,7 @@ export default class MetaTransactionTest extends Component {
 
 
     render() {
-        const { accounts, marketplace_registry } = this.state;
+        const { accounts, gas_fee_pool } = this.state;
 
         return (
             <div className={styles.widgets}>

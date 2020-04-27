@@ -32,7 +32,7 @@ import "./DAI/dai.sol";
 /***
  * @notice - This contract is that ...
  **/
-contract MarketplaceRegistry is Ownable, McStorage, McConstants {
+contract GasFeePool is Ownable, McStorage, McConstants {
     using SafeMath for uint;
 
     address _ias;  //@dev - _ias is from rDAI.sol

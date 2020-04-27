@@ -16,7 +16,7 @@ import { walletAddressList } from '../../data/testWalletAddress.js'
 import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
 
-export default class MarketplaceRegistry extends Component {
+export default class GasFeePool extends Component {
     constructor(props) {    
         super(props);
 
@@ -105,8 +105,8 @@ export default class MarketplaceRegistry extends Component {
 
 
     rTokenInfo = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
-        let response = await marketplace_registry.methods.rTokenInfo().call();
+        const { accounts, gas_fee_pool, web3 } = this.state;
+        let response = await gas_fee_pool.methods.rTokenInfo().call();
         console.log('=== response of rTokenInfo() function ===', response);
     }
 
@@ -135,7 +135,7 @@ export default class MarketplaceRegistry extends Component {
     }
 
     createHat = async () => {
-        const { accounts, web3, marketplace_registry, createHatRecipientsList, createHatProportionsList } = this.state;
+        const { accounts, web3, gas_fee_pool, createHatRecipientsList, createHatProportionsList } = this.state;
 
         const _recipients = createHatRecipientsList; 
         //const _recipients = [recipient1, recipient2];
@@ -145,7 +145,7 @@ export default class MarketplaceRegistry extends Component {
         console.log('=== _recipients ===', _recipients);
         console.log('=== _proportions ===', _proportions);
 
-        let response = await marketplace_registry.methods._createHat(_recipients, 
+        let response = await gas_fee_pool.methods._createHat(_recipients, 
                                                                      _proportions, 
                                                                      _doChangeHat).send({ from: accounts[0] })
         console.log('=== response of _createHat() function ===', response);
@@ -154,41 +154,41 @@ export default class MarketplaceRegistry extends Component {
     }
 
     getHatByID = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
         const _hatID = 222;
 
-        let response = await marketplace_registry.methods._getHatByID(_hatID).call();
+        let response = await gas_fee_pool.methods._getHatByID(_hatID).call();
         console.log('=== response of _getHatByID() function ===', response);          
     }
 
     getHatByAddress = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
-        let response = await marketplace_registry.methods._getHatByAddress().call();
+        let response = await gas_fee_pool.methods._getHatByAddress().call();
         console.log('=== response of _getHatByAddress() function ===', response);
     }
 
     approve = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;    
+        const { accounts, gas_fee_pool, web3 } = this.state;    
         //const _spender = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"                    // underlying token (DAI)
         //const _spender = "0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB";                   // rDAI-proxy
         //const _spender = contractAddressList["Kovan"]["rtoken-contract"]["rDAI-proxy"];  // rDAI-proxy
         const _amount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
-        let response = await marketplace_registry.methods._approve(_amount).send({ from: accounts[0] });
+        let response = await gas_fee_pool.methods._approve(_amount).send({ from: accounts[0] });
         console.log('=== response of _approve() function ===', response);     
     }
 
     allowance = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
-        let response = await marketplace_registry.methods._allowance().call();
+        let response = await gas_fee_pool.methods._allowance().call();
         console.log('=== response of _allowance() function ===', response);
     }
 
     mintWithSelectedHat = async () => {
-        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address,  valueOfMintWithSelectedHatMintAmount, valueOfMintWithSelectedHatHatID } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address,  valueOfMintWithSelectedHatMintAmount, valueOfMintWithSelectedHatHatID } = this.state;
 
         const _mintAmount = valueOfMintWithSelectedHatMintAmount;
         //const _mintAmount = 1.05;   // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
@@ -237,7 +237,7 @@ export default class MarketplaceRegistry extends Component {
     }
 
     mintWithNewHat = async () => {
-        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, valueOfMintWithNewHatMintAmount, mintWithNewHatRecipientsList, mintWithNewHatProportionsList } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfMintWithNewHatMintAmount, mintWithNewHatRecipientsList, mintWithNewHatProportionsList } = this.state;
 
         const _mintAmount = valueOfMintWithNewHatMintAmount;
         //const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
@@ -270,18 +270,16 @@ export default class MarketplaceRegistry extends Component {
     }
 
     interestPayableOf = async () => {
-        const { accounts, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, web3 } = this.state;
+        const { accounts, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, web3 } = this.state;
 
         const _owner = walletAddressList["addressList"]["address1"];
 
         let interestPayableOfAmount = await rDAI.methods.interestPayableOf(_owner).call();
-        console.log('=== rDAI.sol of interestPayableOf() function ===', interestPayableOfAmount);
-        //let response = await marketplace_registry.methods._interestPayableOf().call();
-        //console.log('=== response of _interestPayableOf() function ===', response);   
+        console.log('=== rDAI.sol of interestPayableOf() function ===', interestPayableOfAmount); 
     }
 
     redeem = async () => {
-        const { accounts, web3, marketplace_registry, dai, rDAI, marketplace_registry_address, rDAI_address, valueOfRedeemTokens } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemTokens } = this.state;
 
         const _redeemTokens = valueOfRedeemTokens;
         //const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
@@ -299,30 +297,30 @@ export default class MarketplaceRegistry extends Component {
     }
 
     redeemAll = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
-        let response = await marketplace_registry.methods._redeemAll().send({ from: accounts[0] });
+        let response = await gas_fee_pool.methods._redeemAll().send({ from: accounts[0] });
         console.log('=== response of _redeemAll() function ===', response);           
     }
 
     redeemAndTransfer = async () => {
-        const { accounts, web3, marketplace_registry, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
+        const { accounts, web3, gas_fee_pool, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
 
         const _redeemTo = valueOfRedeemAndTransferRedeemTo;
         const _redeemTokens = valueOfRedeemAndTransferRedeemTokens;
 
-        let response = await marketplace_registry.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
+        let response = await gas_fee_pool.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransfer() function ===', response);           
 
         this.setState({ valueOfRedeemAndTransferRedeemTo: '', valueOfRedeemAndTransferRedeemTokens: '' });
     }
 
     redeemAndTransferAll = async () => {
-        const { accounts, web3, marketplace_registry, valueOfRedeemAndTransferAllRedeemTo } = this.state;
+        const { accounts, web3, gas_fee_pool, valueOfRedeemAndTransferAllRedeemTo } = this.state;
 
         const _redeemTo = valueOfRedeemAndTransferAllRedeemTo;
 
-        let response = await marketplace_registry.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
+        let response = await gas_fee_pool.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
         console.log('=== response of _redeemAndTransferAll() function ===', response);           
 
         this.setState({ valueOfRedeemAndTransferAllRedeemTo: '' });
@@ -333,22 +331,22 @@ export default class MarketplaceRegistry extends Component {
      * @dev - Hat Status
      **/
     getHatStats = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
         const _hatID = 222;
-        let response = await marketplace_registry.methods._getHatStats(_hatID).call();
+        let response = await gas_fee_pool.methods._getHatStats(_hatID).call();
         console.log('=== response of _getHatStats() function ===', response);           
     }
 
     balanceOf = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
-        let response = await marketplace_registry.methods._balanceOf().call();
+        let response = await gas_fee_pool.methods._balanceOf().call();
         console.log('=== response of _balanceOf() function ===', response);               
     }
 
     underlying = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
-        let response = await marketplace_registry.methods._underlying().call();
+        const { accounts, gas_fee_pool, web3 } = this.state;
+        let response = await gas_fee_pool.methods._underlying().call();
         console.log('=== response of _underlying() function ===', response);
     }
 
@@ -386,22 +384,22 @@ export default class MarketplaceRegistry extends Component {
      * @dev - Test Functions
      **/
     getTestData = async () => {
-        const { accounts, marketplace_registry, web3 } = this.state;
+        const { accounts, gas_fee_pool, web3 } = this.state;
 
         const _currentAccount = accounts[0];
-        let balanceOf1 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        let balanceOf1 = await gas_fee_pool.methods.balanceOfCurrentAccount(_currentAccount).call();
         console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
  
         const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-        let response = await marketplace_registry.methods.testFunc(_mintAmount).send({ from: accounts[0] })
+        let response = await gas_fee_pool.methods.testFunc(_mintAmount).send({ from: accounts[0] })
         console.log('=== response of testFunc() function ===', response);
 
-        let balanceOf2 = await marketplace_registry.methods.balanceOfCurrentAccount(_currentAccount).call();
+        let balanceOf2 = await gas_fee_pool.methods.balanceOfCurrentAccount(_currentAccount).call();
         console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
     }
 
     transferDAIFromUserToContract = async () => {
-        const { accounts, marketplace_registry, dai, marketplaceRegistryAddress, web3 } = this.state;
+        const { accounts, gas_fee_pool, dai, gasFeePoolAddress, web3 } = this.state;
 
         const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
 
@@ -409,11 +407,11 @@ export default class MarketplaceRegistry extends Component {
         let decimals = 18;
         let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
         console.log('=== _amount ===', _amount);
-        const _to = marketplaceRegistryAddress;
+        const _to = gasFeePoolAddress;
         let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
 
         //@dev - Transfer DAI from DAI-contract to Logic-contract
-        let response2 = await marketplace_registry.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
+        let response2 = await gas_fee_pool.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
         console.log('=== response of transferDAIFromUserToContract() function ===', response2);
     }
 
@@ -421,9 +419,9 @@ export default class MarketplaceRegistry extends Component {
     //////////////////////////////////// 
     ///// Refresh Values
     ////////////////////////////////////
-    refreshValues = (instanceMarketplaceRegistry) => {
-        if (instanceMarketplaceRegistry) {
-          //console.log('refreshValues of instanceMarketplaceRegistry');
+    refreshValues = (instanceGasFeePool) => {
+        if (instanceGasFeePool) {
+          //console.log('refreshValues of instanceGasFeePool');
         }
     }
 
@@ -444,14 +442,14 @@ export default class MarketplaceRegistry extends Component {
     componentDidMount = async () => {
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
      
-        let MarketplaceRegistry = {};
+        let GasFeePool = {};
         let Dai = {};
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
         let GasFeePool = {};
         try {
-          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
+          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  // Load artifact-file of GasFeePool
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
@@ -483,24 +481,24 @@ export default class MarketplaceRegistry extends Component {
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
 
-            let instanceMarketplaceRegistry = null;
+            let instanceGasFeePool = null;
             let deployedNetwork = null;
 
             // Create instance of contracts
-            if (MarketplaceRegistry.networks) {
-              deployedNetwork = MarketplaceRegistry.networks[networkId.toString()];
+            if (GasFeePool.networks) {
+              deployedNetwork = GasFeePool.networks[networkId.toString()];
               if (deployedNetwork) {
-                instanceMarketplaceRegistry = new web3.eth.Contract(
-                  MarketplaceRegistry.abi,
+                instanceGasFeePool = new web3.eth.Contract(
+                  GasFeePool.abi,
                   deployedNetwork && deployedNetwork.address,
                 );
-                console.log('=== instanceMarketplaceRegistry ===', instanceMarketplaceRegistry);
+                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
               }
             }
 
             //@dev - Create instance of DAI-contract
             let instanceDai = null;
-            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
+            let GasFeePoolAddress = GasFeePool.networks[networkId.toString()].address;
             let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"; //@dev - DAI（Underlying asset）
             instanceDai = new web3.eth.Contract(
               Dai.abi,
@@ -564,7 +562,7 @@ export default class MarketplaceRegistry extends Component {
             }
 
 
-            if (MarketplaceRegistry) {
+            if (GasFeePool) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
               this.setState({ 
@@ -576,20 +574,20 @@ export default class MarketplaceRegistry extends Component {
                 networkType, 
                 hotLoaderDisabled,
                 isMetaMask, 
-                marketplace_registry: instanceMarketplaceRegistry,
+                gas_fee_pool: instanceGasFeePool,
                 dai: instanceDai,
                 rDAI: instanceRDai,
-                marketplace_registry_address: MarketplaceRegistryAddress,
+                gas_fee_pool_address: GasFeePoolAddress,
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
                 relayer_manager: instanceRelayerManager,
                 gas_fee_pool: instanceGasFeePool
               }, () => {
                 this.refreshValues(
-                  instanceMarketplaceRegistry
+                  instanceGasFeePool
                 );
                 setInterval(() => {
-                  this.refreshValues(instanceMarketplaceRegistry);
+                  this.refreshValues(instanceGasFeePool);
                 }, 5000);
               });
             }
@@ -608,7 +606,7 @@ export default class MarketplaceRegistry extends Component {
 
 
     render() {
-        const { accounts, marketplace_registry } = this.state;
+        const { accounts, gas_fee_pool } = this.state;
 
         return (
             <div className={styles.widgets}>
