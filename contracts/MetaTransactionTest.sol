@@ -18,7 +18,7 @@ import "./metatx-standard/contracts/EIP712MetaTransaction.sol";
 /***
  * @notice - This contract is that ...
  **/
-contract GasFeePool is McStorage, McConstants, EIP712MetaTransaction("GasFeePool","1") {
+contract MetaTransactionTest is McStorage, McConstants, EIP712MetaTransaction("MetaTransactionTest","1") {
     using SafeMath for uint;
 
     Dai public dai;  //@dev - dai.sol

@@ -1,4 +1,4 @@
-const GasFeePool = artifacts.require("GasFeePool");
+const MetaTransactionTest = artifacts.require("MetaTransactionTest");
 //const RelayHub = artifacts.require("RelayHub");
 //const RelayerManager = artifacts.require("RelayerManager");
 
@@ -11,6 +11,6 @@ var _erc20 = tokenAddressList["Kovan"]["DAI"];  // DAI address on Kovan
 //var _relayerManager = RelayerManager.address;
 
 module.exports = async function (deployer, network, accounts) {
-    await deployer.deploy(GasFeePool, _erc20);
+    await deployer.deploy(MetaTransactionTest, _erc20);
     //await deployer.deploy(GasFeePool, _erc20, _relayHub);
 };

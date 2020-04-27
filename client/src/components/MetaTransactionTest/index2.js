@@ -57,18 +57,18 @@ export default class MetaTransactionTest extends Component {
     }
 
     executeMetaTransactionTest = async () => {
-        const { accounts, web3, gas_fee_pool, domainType, metaTransactionType, domainData, valueOfExecuteMetaTransactionTestNewText } = this.state;
+        const { accounts, web3, meta_transaction_test, domainType, metaTransactionType, domainData, valueOfExecuteMetaTransactionTestNewText } = this.state;
 
         //@dev - Execute function
         const _newText = valueOfExecuteMetaTransactionTestNewText;
-        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newText).send({ from: accounts[0] });
+        let response = await meta_transaction_test.methods.executeMetaTransactionTest(_newText).send({ from: accounts[0] });
         console.log('=== response of executeMetaTransactionTest() ===', response);
 
         this.setState({ valueOfExecuteMetaTransactionTestNewText: '' });
     }
 
     setText = async () => {
-        const { accounts, web3, gas_fee_pool, domainType, metaTransactionType, domainData, valueOfSetTextNewText } = this.state;
+        const { accounts, web3, meta_transaction_test, domainType, metaTransactionType, domainData, valueOfSetTextNewText } = this.state;
 
         /***
          * @dev - Global Variable
@@ -86,13 +86,13 @@ export default class MetaTransactionTest extends Component {
         const metaTxEnabled = true;
         const setMetaTxEnabled = true;
 
-        if (newText != "" && gas_fee_pool) {
+        if (newText != "" && meta_transaction_test) {
           if (metaTxEnabled) {
 
             console.log("=== Sending meta transaction ===");
             let userAddress = selectedAddress;
-            let nonce = await gas_fee_pool.methods.getNonce(userAddress).call();
-            let functionSignature = gas_fee_pool.methods.setText(newText).encodeABI();
+            let nonce = await meta_transaction_test.methods.getNonce(userAddress).call();
+            let functionSignature = meta_transaction_test.methods.setText(newText).encodeABI();
             let message = {};
             message.nonce = parseInt(nonce);
             message.from = userAddress;
@@ -141,7 +141,7 @@ export default class MetaTransactionTest extends Component {
             );
           } else {
             console.log("=== Sending normal transaction ===");
-            gas_fee_pool.methods
+            meta_transaction_test.methods
               .setText(newText)
               .send({ from: selectedAddress })
               .on("transactionHash", function(hash) {
@@ -167,7 +167,7 @@ export default class MetaTransactionTest extends Component {
     ///// Internal function 
     ////////////////////////////////////
     getSignatureParameters = signature => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, meta_transaction_test, web3 } = this.state;
 
         if (!web3.utils.isHexStrict(signature)) {
           throw new Error(
@@ -187,10 +187,10 @@ export default class MetaTransactionTest extends Component {
     };
 
     getTextFromNetwork = () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, meta_transaction_test, web3 } = this.state;
 
-        if (web3 && gas_fee_pool) {
-          gas_fee_pool.methods
+        if (web3 && meta_transaction_testl) {
+          meta_transaction_test.methods
             .getText()
             .call()
             .then(function(result) {
@@ -204,8 +204,8 @@ export default class MetaTransactionTest extends Component {
                   console.log("=== No texts set on blockchain yet ===");
                   //this.showErrorMessage("No texts set on blockchain yet");
                 } else {
-                  gas_fee_pool.methods.setText(result.currentText);
-                  gas_fee_pool.methods.setOwner(result.currentOwner);
+                  meta_transaction_test.methods.setText(result.currentText);
+                  meta_transaction_test.methods.setOwner(result.currentOwner);
                 }
               } else {
                 this.showErrorMessage("Not able to get text information from Network");
@@ -227,17 +227,17 @@ export default class MetaTransactionTest extends Component {
     };
 
     sendTransaction = async (userAddress, functionData, r, s, v) => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, meta_transaction_test, web3 } = this.state;
 
-        if (web3 && gas_fee_pool) {
+        if (web3 && meta_transaction_test) {
           try {
-            let gasLimit = await gas_fee_pool.methods
+            let gasLimit = await meta_transaction_test.methods
               .executeMetaTransaction(userAddress, functionData, r, s, v)
               .estimateGas({ from: userAddress });
             let gasPrice = await web3.eth.getGasPrice();
             console.log(gasLimit);
             console.log(gasPrice);
-            let tx = gas_fee_pool.methods
+            let tx = meta_transaction_test.methods
               .executeMetaTransaction(userAddress, functionData, r, s, v)
               .send({
                 from: userAddress,
@@ -296,14 +296,14 @@ export default class MetaTransactionTest extends Component {
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
-        let GasFeePool = {};
+        let MetaTransactionTest = {};
         try {
           MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
           RelayerManager = require("../../../../build/contracts/RelayerManager.json");  //@dev - Artifact of RelayerManager contract
-          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  
+          MetaTransactionTest = require("../../../../build/contracts/MetaTransactionTest.json");  
         } catch (e) {
           console.log(e);
         }
@@ -398,21 +398,21 @@ export default class MetaTransactionTest extends Component {
             // console.log('=== instanceRelayerManager ===', instanceRelayerManager); 
 
             //@dev - Create instance of GasFeePool.sol
-            let instanceGasFeePool = null;
-            let GasFeePoolAddress = "";
-            if (GasFeePool.networks) {
-              deployedNetwork = GasFeePool.networks[networkId.toString()];
+            let instanceMetaTransactionTest = null;
+            let MetaTransactionTestAddress = "";
+            if (MetaTransactionTest.networks) {
+              deployedNetwork = MetaTransactionTest.networks[networkId.toString()];
               if (deployedNetwork) {
-                instanceGasFeePool = new web3.eth.Contract(
-                   GasFeePool.abi,
+                instanceMetaTransactionTest = new web3.eth.Contract(
+                   MetaTransactionTest.abi,
                    deployedNetwork && deployedNetwork.address,
                 );
-                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
+                console.log('=== instanceMetaTransactionTest ===', instanceMetaTransactionTest);
 
-                GasFeePoolAddress = deployedNetwork.address;
+                MetaTransactionTestAddress = deployedNetwork.address;
               }
             }
-            console.log('=== GasFeePoolAddress ===', GasFeePoolAddress);
+            console.log('=== MetaTransactionTestAddress ===', MetaTransactionTestAddress);
 
             /***
              * @dev - Definition for Meta-Transaction test
@@ -432,13 +432,13 @@ export default class MetaTransactionTest extends Component {
             ];
 
             let domainData = {
-              name: "GasFeePool",
+              name: "MetaTransactionTest",
               version: "1",
-              verifyingContract: GasFeePoolAddress,
-              verifyingContract: GasFeePoolAddress
+              verifyingContract: MetaTransactionTestAddress,
+              verifyingContract: MetaTransactionTestAddress
             };
 
-            if (MarketplaceRegistry || Dai || rDAI || RelayHub || RelayerManager || GasFeePool) {
+            if (MarketplaceRegistry || Dai || rDAI || RelayHub || RelayerManager || MetaTransactionTest) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
               this.setState({ 
@@ -457,7 +457,7 @@ export default class MetaTransactionTest extends Component {
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
                 relayer_manager: instanceRelayerManager,
-                gas_fee_pool: instanceGasFeePool,
+                meta_transaction_test: instanceMetaTransactionTest,
                 domainType: domainType,
                 metaTransactionType: metaTransactionType,
                 domainData: domainData
