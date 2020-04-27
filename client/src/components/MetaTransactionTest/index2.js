@@ -41,20 +41,34 @@ export default class MetaTransactionTest extends Component {
             route: window.location.pathname.replace("/", "")
         };
 
+        this.handleInputExecuteMetaTransactionTestNewText = this.handleInputExecuteMetaTransactionTestNewText.bind(this);
+        this.handleInputSetTextNewText = this.handleInputSetTextNewText.bind(this);
+
         this.executeMetaTransactionTest = this.executeMetaTransactionTest.bind(this);
+        this.setText = this.setText.bind(this);
+    }
+
+    handleInputExecuteMetaTransactionTestNewText({ target: { value } }) {
+        this.setState({ valueOfExecuteMetaTransactionTestNewText: value });
+    }
+
+    handleInputSetTextNewText({ target: { value } }) {
+        this.setState({ valueOfSetTextNewText: value });
     }
 
     executeMetaTransactionTest = async () => {
-        const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
+        const { accounts, web3, gas_fee_pool, domainType, metaTransactionType, domainData, valueOfExecuteMetaTransactionTestNewText } = this.state;
 
         //@dev - Execute function
-        const _newText = "Write new text for Test Meta-Transaction";
+        const _newText = valueOfExecuteMetaTransactionTestNewText;
         let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newText).send({ from: accounts[0] });
         console.log('=== response of executeMetaTransactionTest() ===', response);
+
+        this.setState({ valueOfExecuteMetaTransactionTestNewText: '' });
     }
 
     setText = async () => {
-        const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
+        const { accounts, web3, gas_fee_pool, domainType, metaTransactionType, domainData, valueOfSetTextNewText } = this.state;
 
         /***
          * @dev - Global Variable
@@ -64,7 +78,7 @@ export default class MetaTransactionTest extends Component {
         const owner = "Default Owner Address";
         const setOwner = "Default Owner Address";
         const newText = "Test New Text";
-        const setNewText = "";
+        const setNewText = valueOfSetTextNewText;
         const selectedAddress = accounts[0];
         //const selectedAddress = "";
         const setSelectedAddress = accounts[0];
@@ -144,9 +158,8 @@ export default class MetaTransactionTest extends Component {
             console.log("=== Please enter the text ===");
             //showErrorMessage("Please enter the quote");
         }
-        // const _newQuote = "Write new quote for Test Meta-Transaction";
-        // let response = await gas_fee_pool.methods.setQuote(_newQuote).send({ from: accounts[0] });
-        // console.log('=== response of setQuote() ===', response);
+
+        this.setState({ valueOfSetTextNewText: '' });
     }
 
 
@@ -478,7 +491,7 @@ export default class MetaTransactionTest extends Component {
                 <Grid container style={{ marginTop: 32 }}>
                     <Grid item xs={12}>
                         <Card width={"auto"} 
-                              maxWidth={"420px"} 
+                              maxWidth={"960px"} 
                               mx={"auto"} 
                               my={5} 
                               p={20} 
@@ -486,9 +499,33 @@ export default class MetaTransactionTest extends Component {
                         >
                             <h4>Meta-Transaction Test</h4> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>New Text</p></td>
+                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfExecuteMetaTransactionTestNewText} onChange={this.handleInputExecuteMetaTransactionTestNewText} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.setText}> Set Text </Button> <br />
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>New Text</p></td>
+                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfSetTextNewText} onChange={this.handleInputSetTextNewText} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.setText}> Set Text </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
                         </Card>
                     </Grid>
 
