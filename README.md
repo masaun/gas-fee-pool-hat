@@ -38,12 +38,16 @@ $ npm run migrate:Kovan
 
 
 ### Setup frontend
-1. Execute command below in root directory.
+1. Add an `.env` file under the directory of `./client`.
+
+2. Add `SKIP_PREFLIGHT_CHECK=true` to an `.env` file under the directory of `./client`.
+
+3. Execute command below in root directory.
 ```
 $ npm run client
 ```
 
-2. Access to browser by using link 
+4. Access to browser by using link 
 ```
 http://127.0.0.1:3000/gas-fee-pool
 ```
