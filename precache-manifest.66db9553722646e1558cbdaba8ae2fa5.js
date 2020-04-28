@@ -20,15 +20,15 @@ self.__precacheManifest = [
     "url": "/gas-fee-pool/static/js/runtime~main.999b11c9.js"
   },
   {
-    "revision": "65cdb65f6a4e9c0e0f32",
-    "url": "/gas-fee-pool/static/js/main.cf3a7296.chunk.js"
+    "revision": "b520e6c518b6364511ff",
+    "url": "/gas-fee-pool/static/js/main.163d996b.chunk.js"
   },
   {
     "revision": "2e7fe87dbdbb1f960675",
     "url": "/gas-fee-pool/static/js/2.b56399a8.chunk.js"
   },
   {
-    "revision": "65cdb65f6a4e9c0e0f32",
+    "revision": "b520e6c518b6364511ff",
     "url": "/gas-fee-pool/static/css/main.4d49694f.chunk.css"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/gas-fee-pool/static/css/2.f5889ef7.chunk.css"
   },
   {
-    "revision": "98eb41eb2ba83e4981d1ffc86aeffd6c",
+    "revision": "6f8f0bdfba85734b8981ba0adf9040d9",
     "url": "/gas-fee-pool/index.html"
   }
 ];

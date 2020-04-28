@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/gas-fee-pool/precache-manifest.da428d788372ce97eccf57715c11ab1f.js"
+  "/gas-fee-pool/precache-manifest.66db9553722646e1558cbdaba8ae2fa5.js"
 );
 
 workbox.clientsClaim();
