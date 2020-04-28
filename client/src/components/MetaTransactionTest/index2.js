@@ -189,7 +189,7 @@ export default class MetaTransactionTest extends Component {
     getTextFromNetwork = () => {
         const { accounts, meta_transaction_test, web3 } = this.state;
 
-        if (web3 && meta_transaction_testl) {
+        if (web3 && meta_transaction_test) {
           meta_transaction_test.methods
             .getText()
             .call()
@@ -347,7 +347,7 @@ export default class MetaTransactionTest extends Component {
 
             //@dev - Create instance of DAI-contract
             let instanceDai = null;
-            let GasFeePoolRegistryAddress = GasFeePool.networks[networkId.toString()].address;
+            let GasFeePoolAddress = GasFeePool.networks[networkId.toString()].address;
             let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"; //@dev - DAI（Underlying asset）
             instanceDai = new web3.eth.Contract(
               Dai.abi,

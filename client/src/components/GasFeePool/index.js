@@ -447,14 +447,14 @@ export default class GasFeePool extends Component {
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
-        let GasFeePool = {};
+        let MetaTransactionTest = {};
         try {
           GasFeePool = require("../../../../build/contracts/GasFeePool.json");  // Load artifact-file of GasFeePool
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
           RelayerManager = require("../../../../build/contracts/RelayerManager.json");  //@dev - Artifact of RelayerManager contract
-          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  
+          MetaTransactionTest = require("../../../../build/contracts/MetaTransactionTest.json");  
         } catch (e) {
           console.log(e);
         }
@@ -540,24 +540,17 @@ export default class GasFeePool extends Component {
                 console.log('=== instanceRelayerManager ===', instanceRelayerManager);
               }
             }
-            // let instanceRelayerManager = null;
-            // let RelayerManagerAddress = "0x6651360Ff49cD68c783D4cdC16D7A9C1f13873Eb"; //@dev - RelayerManager.sol address
-            // instanceRelayerManager = new web3.eth.Contract(
-            //   RelayerManager.abi,
-            //   RelayerManagerAddress,
-            // );
-            // console.log('=== instanceRelayerManager ===', instanceRelayerManager); 
 
-            //@dev - Create instance of GasFeePool.sol
-            let instanceGasFeePool = null;
-            if (GasFeePool.networks) {
-              deployedNetwork = GasFeePool.networks[networkId.toString()];
+            //@dev - Create instance of MetaTransactionTest.sol
+            let instanceMetaTransactionTest = null;
+            if (MetaTransactionTest.networks) {
+              deployedNetwork = MetaTransactionTest.networks[networkId.toString()];
               if (deployedNetwork) {
-                instanceGasFeePool = new web3.eth.Contract(
-                   GasFeePool.abi,
+                instanceMetaTransactionTest = new web3.eth.Contract(
+                   MetaTransactionTest.abi,
                    deployedNetwork && deployedNetwork.address,
                 );
-                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
+                console.log('=== instanceMetaTransactionTest ===', instanceMetaTransactionTest);
               }
             }
 
