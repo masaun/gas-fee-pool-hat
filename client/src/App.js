@@ -5,8 +5,8 @@ import Footer from "./components/Footer/index.js";
 import Hero from "./components/Hero/index.js";
 import Web3Info from "./components/Web3Info/index.js";
 
-// MarketplaceRegistry
-import MarketplaceRegistry from "./components/MarketplaceRegistry/index.js";
+// GasFeePool
+import GasFeePool from "./components/GasFeePool/index.js";
 
 // MetaTransactionTest
 import MetaTransactionTest from "./components/MetaTransactionTest/index2.js";
@@ -57,9 +57,9 @@ class App extends Component {
   componentDidMount = async () => {
     const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
  
-    let MarketplaceRegistry = {};
+    let GasFeePool = {};
     try {
-      MarketplaceRegistry = require("../../build/contracts/MarketplaceRegistry.json");          // Load artifact-file of MarketplaceRegistry
+      GasFeePool = require("../../build/contracts/GasFeePool.json");          // Load artifact-file of GasFeePool
     } catch (e) {
       console.log(e);
     }
@@ -86,22 +86,22 @@ class App extends Component {
         let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
         balance = web3.utils.fromWei(balance, 'ether');
 
-        let instanceMarketplaceRegistry = null;
+        let instanceGasFeePool = null;
         let deployedNetwork = null;
 
         // Create instance of contracts
-        if (MarketplaceRegistry.networks) {
-          deployedNetwork = MarketplaceRegistry.networks[networkId.toString()];
+        if (GasFeePool.networks) {
+          deployedNetwork = GasFeePool.networks[networkId.toString()];
           if (deployedNetwork) {
-            instanceMarketplaceRegistry = new web3.eth.Contract(
-              MarketplaceRegistry.abi,
+            instanceGasFeePool = new web3.eth.Contract(
+              GasFeePool.abi,
               deployedNetwork && deployedNetwork.address,
             );
-            console.log('=== instanceMarketplaceRegistry ===', instanceMarketplaceRegistry);
+            console.log('=== instanceGasFeePool ===', instanceGasFeePool);
           }
         }
 
-        if (MarketplaceRegistry) {
+        if (GasFeePool) {
           // Set web3, accounts, and contract to the state, and then proceed with an
           // example of interacting with the contract's methods.
           this.setState({ 
@@ -113,13 +113,13 @@ class App extends Component {
             networkType, 
             hotLoaderDisabled,
             isMetaMask, 
-            marketplace_registry: instanceMarketplaceRegistry
+            gas_fee_pool: instanceGasFeePool
           }, () => {
             this.refreshValues(
-              instanceMarketplaceRegistry
+              instanceGasFeePool
             );
             setInterval(() => {
-              this.refreshValues(instanceMarketplaceRegistry);
+              this.refreshValues(instanceGasFeePool);
             }, 5000);
           });
         }
@@ -142,9 +142,9 @@ class App extends Component {
     }
   }
 
-  refreshValues = (instanceMarketplaceRegistry) => {
-    if (instanceMarketplaceRegistry) {
-      console.log('refreshValues of instanceMarketplaceRegistry');
+  refreshValues = (instanceGasFeePool) => {
+    if (instanceGasFeePool) {
+      console.log('refreshValues of instanceGasFeePool');
     }
   }
 
@@ -183,7 +183,7 @@ class App extends Component {
   renderGasFeePool() {
     return (
       <div className={styles.wrapper}>
-        <MarketplaceRegistry />
+        <GasFeePool />
       </div>
     );
   }

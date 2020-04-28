@@ -12,33 +12,8 @@ import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 
 import App from "../../App.js";
 
-
-
 let sigUtil = require("eth-sig-util");
 const { config } = require("./config");
-
-const domainType = [
-  { name: "name", type: "string" },
-  { name: "version", type: "string" },
-  { name: "chainId", type: "uint256" },
-  { name: "verifyingContract", type: "address" }
-];
-
-const metaTransactionType = [
-  { name: "nonce", type: "uint256" },
-  { name: "from", type: "address" },
-  { name: "functionSignature", type: "bytes" }
-];
-
-let domainData = {
-  name: "TestContract",
-  version: "1",
-  verifyingContract: config.contract.address
-};
-
-let web3;
-let contract;
-
 
 
 export default class MetaTransactionTest extends Component {
@@ -69,9 +44,10 @@ export default class MetaTransactionTest extends Component {
       this.onSubmit = this.onSubmit.bind(this);
   }
 
-  //function App() {
 
-  getTestData = async () => {
+  App = async () => {
+
+  //getTestData = async () => {
     const [quote, setQuote] = useState("This is a default quote");
     const [owner, setOwner] = useState("Default Owner Address");
     const [newQuote, setNewQuote] = useState("");
@@ -113,7 +89,8 @@ export default class MetaTransactionTest extends Component {
 
 
     onQuoteChange({ target: { value } }) {
-        this.setState({ setNewQuote: value });
+        setNewQuote(event.target.value);
+        //this.setState({ setNewQuote: value });
     }
 
     onSubmit = async event => {
@@ -272,7 +249,7 @@ export default class MetaTransactionTest extends Component {
       }
     };
 
-  }
+  //}
 
 
   render() {

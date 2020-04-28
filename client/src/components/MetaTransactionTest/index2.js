@@ -16,8 +16,8 @@ import { walletAddressList } from '../../data/testWalletAddress.js'
 import { contractAddressList } from '../../data/contractAddress/contractAddress.js'
 
 import {
-  NotificationContainer,
-  NotificationManager
+    NotificationContainer,
+    NotificationManager
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
@@ -41,30 +41,44 @@ export default class MetaTransactionTest extends Component {
             route: window.location.pathname.replace("/", "")
         };
 
+        this.handleInputExecuteMetaTransactionTestNewText = this.handleInputExecuteMetaTransactionTestNewText.bind(this);
+        this.handleInputSetTextNewText = this.handleInputSetTextNewText.bind(this);
+
         this.executeMetaTransactionTest = this.executeMetaTransactionTest.bind(this);
+        this.setText = this.setText.bind(this);
+    }
+
+    handleInputExecuteMetaTransactionTestNewText({ target: { value } }) {
+        this.setState({ valueOfExecuteMetaTransactionTestNewText: value });
+    }
+
+    handleInputSetTextNewText({ target: { value } }) {
+        this.setState({ valueOfSetTextNewText: value });
     }
 
     executeMetaTransactionTest = async () => {
-        const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
+        const { accounts, web3, meta_transaction_test, domainType, metaTransactionType, domainData, valueOfExecuteMetaTransactionTestNewText } = this.state;
 
         //@dev - Execute function
-        const _newQuote = "Write new quote for Test Meta-Transaction";
-        let response = await gas_fee_pool.methods.executeMetaTransactionTest(_newQuote).send({ from: accounts[0] });
+        const _newText = valueOfExecuteMetaTransactionTestNewText;
+        let response = await meta_transaction_test.methods.executeMetaTransactionTest(_newText).send({ from: accounts[0] });
         console.log('=== response of executeMetaTransactionTest() ===', response);
+
+        this.setState({ valueOfExecuteMetaTransactionTestNewText: '' });
     }
 
-    setQuote = async () => {
-        const { accounts, gas_fee_pool, web3, domainType, metaTransactionType, domainData } = this.state;
+    setText = async () => {
+        const { accounts, web3, meta_transaction_test, domainType, metaTransactionType, domainData, valueOfSetTextNewText } = this.state;
 
         /***
          * @dev - Global Variable
          **/
-        const quote = "This is a default quote";
-        const setQuote = "This is a default quote";
+        const text = "This is a default text";
+        const setText = "This is a default text";
         const owner = "Default Owner Address";
         const setOwner = "Default Owner Address";
-        const newQuote = "Test New Quote";
-        const setNewQuote = "";
+        const newText = "Test New Text";
+        const setNewText = valueOfSetTextNewText;
         const selectedAddress = accounts[0];
         //const selectedAddress = "";
         const setSelectedAddress = accounts[0];
@@ -72,13 +86,13 @@ export default class MetaTransactionTest extends Component {
         const metaTxEnabled = true;
         const setMetaTxEnabled = true;
 
-        if (newQuote != "" && gas_fee_pool) {
+        if (newText != "" && meta_transaction_test) {
           if (metaTxEnabled) {
 
             console.log("=== Sending meta transaction ===");
             let userAddress = selectedAddress;
-            let nonce = await gas_fee_pool.methods.getNonce(userAddress).call();
-            let functionSignature = gas_fee_pool.methods.setQuote(newQuote).encodeABI();
+            let nonce = await meta_transaction_test.methods.getNonce(userAddress).call();
+            let functionSignature = meta_transaction_test.methods.setText(newText).encodeABI();
             let message = {};
             message.nonce = parseInt(nonce);
             message.from = userAddress;
@@ -127,8 +141,8 @@ export default class MetaTransactionTest extends Component {
             );
           } else {
             console.log("=== Sending normal transaction ===");
-            gas_fee_pool.methods
-              .setQuote(newQuote)
+            meta_transaction_test.methods
+              .setText(newText)
               .send({ from: selectedAddress })
               .on("transactionHash", function(hash) {
                   console.log(`=== Transaction sent to blockchain with hash ${hash} ===`);
@@ -137,16 +151,15 @@ export default class MetaTransactionTest extends Component {
               .once("confirmation", function(confirmationNumber, receipt) {
                   console.log("=== Transaction confirmed ===");
                   //showSuccessMessage("Transaction confirmed");
-                  this.getQuoteFromNetwork();
+                  this.getTextFromNetwork();
               });
           }
         } else {
-            console.log("=== Please enter the quote ===");
+            console.log("=== Please enter the text ===");
             //showErrorMessage("Please enter the quote");
         }
-        // const _newQuote = "Write new quote for Test Meta-Transaction";
-        // let response = await gas_fee_pool.methods.setQuote(_newQuote).send({ from: accounts[0] });
-        // console.log('=== response of setQuote() ===', response);
+
+        this.setState({ valueOfSetTextNewText: '' });
     }
 
 
@@ -154,7 +167,7 @@ export default class MetaTransactionTest extends Component {
     ///// Internal function 
     ////////////////////////////////////
     getSignatureParameters = signature => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, meta_transaction_test, web3 } = this.state;
 
         if (!web3.utils.isHexStrict(signature)) {
           throw new Error(
@@ -173,29 +186,29 @@ export default class MetaTransactionTest extends Component {
         };
     };
 
-    getQuoteFromNetwork = () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+    getTextFromNetwork = () => {
+        const { accounts, meta_transaction_test, web3 } = this.state;
 
-        if (web3 && gas_fee_pool) {
-          gas_fee_pool.methods
-            .getQuote()
+        if (web3 && meta_transaction_test) {
+          meta_transaction_test.methods
+            .getText()
             .call()
             .then(function(result) {
               console.log("=== result ===", result);
               if (
                 result &&
-                result.currentQuote != undefined &&
+                result.currentText != undefined &&
                 result.currentOwner != undefined
               ) {
-                if (result.currentQuote == "") {
-                  console.log("=== No quotes set on blockchain yet ===");
-                  //this.showErrorMessage("No quotes set on blockchain yet");
+                if (result.currentText == "") {
+                  console.log("=== No texts set on blockchain yet ===");
+                  //this.showErrorMessage("No texts set on blockchain yet");
                 } else {
-                  gas_fee_pool.methods.setQuote(result.currentQuote);
-                  gas_fee_pool.methods.setOwner(result.currentOwner);
+                  meta_transaction_test.methods.setText(result.currentText);
+                  meta_transaction_test.methods.setOwner(result.currentOwner);
                 }
               } else {
-                this.showErrorMessage("Not able to get quote information from Network");
+                this.showErrorMessage("Not able to get text information from Network");
               }
             });
         }
@@ -214,17 +227,17 @@ export default class MetaTransactionTest extends Component {
     };
 
     sendTransaction = async (userAddress, functionData, r, s, v) => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, meta_transaction_test, web3 } = this.state;
 
-        if (web3 && gas_fee_pool) {
+        if (web3 && meta_transaction_test) {
           try {
-            let gasLimit = await gas_fee_pool.methods
+            let gasLimit = await meta_transaction_test.methods
               .executeMetaTransaction(userAddress, functionData, r, s, v)
               .estimateGas({ from: userAddress });
             let gasPrice = await web3.eth.getGasPrice();
             console.log(gasLimit);
             console.log(gasPrice);
-            let tx = gas_fee_pool.methods
+            let tx = meta_transaction_test.methods
               .executeMetaTransaction(userAddress, functionData, r, s, v)
               .send({
                 from: userAddress,
@@ -238,7 +251,7 @@ export default class MetaTransactionTest extends Component {
             }).once("confirmation", function(confirmationNumber, receipt) {
               console.log(receipt);
               this.showSuccessMessage("Transaction confirmed on chain");
-              this.getQuoteFromNetwork();
+              this.getTextFromNetwork();
             });
           } catch (error) {
             console.log(error);
@@ -252,9 +265,9 @@ export default class MetaTransactionTest extends Component {
     //////////////////////////////////// 
     ///// Refresh Values
     ////////////////////////////////////
-    refreshValues = (instanceMarketplaceRegistry) => {
-        if (instanceMarketplaceRegistry) {
-          console.log('refreshValues of instanceMarketplaceRegistry');
+    refreshValues = (instanceGasFeePool) => {
+        if (instanceGasFeePool) {
+          console.log('refreshValues of instanceGasFeePool');
         }
     }
 
@@ -278,19 +291,19 @@ export default class MetaTransactionTest extends Component {
          **/
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
      
-        let MarketplaceRegistry = {};
+        let GasFeePool = {};
         let Dai = {};
         let rDAI = {};
         let RelayHub = {};
         let RelayerManager = {};
-        let GasFeePool = {};
+        let MetaTransactionTest = {};
         try {
-          MarketplaceRegistry = require("../../../../build/contracts/MarketplaceRegistry.json");  // Load artifact-file of MarketplaceRegistry
+          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  // Load artifact-file of GasFeePool
           Dai = require("../../../../build/contracts/Dai.json");    //@dev - DAI（Underlying asset）
           rDAI = require("../../../../build/contracts/rDAI.json");  //@dev - rDAI（rDAI proxy contract）
           RelayHub = require("../../../../build/contracts/RelayHub.json");  //@dev - Artifact of RelayHub contract
           RelayerManager = require("../../../../build/contracts/RelayerManager.json");  //@dev - Artifact of RelayerManager contract
-          GasFeePool = require("../../../../build/contracts/GasFeePool.json");  
+          MetaTransactionTest = require("../../../../build/contracts/MetaTransactionTest.json");  
         } catch (e) {
           console.log(e);
         }
@@ -317,24 +330,24 @@ export default class MetaTransactionTest extends Component {
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
 
-            let instanceMarketplaceRegistry = null;
+            let instanceGasFeePool = null;
             let deployedNetwork = null;
 
             // Create instance of contracts
-            if (MarketplaceRegistry.networks) {
-              deployedNetwork = MarketplaceRegistry.networks[networkId.toString()];
+            if (GasFeePool.networks) {
+              deployedNetwork = GasFeePool.networks[networkId.toString()];
               if (deployedNetwork) {
-                instanceMarketplaceRegistry = new web3.eth.Contract(
-                  MarketplaceRegistry.abi,
+                instanceGasFeePool = new web3.eth.Contract(
+                  GasFeePool.abi,
                   deployedNetwork && deployedNetwork.address,
                 );
-                console.log('=== instanceMarketplaceRegistry ===', instanceMarketplaceRegistry);
+                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
               }
             }
 
             //@dev - Create instance of DAI-contract
             let instanceDai = null;
-            let MarketplaceRegistryAddress = MarketplaceRegistry.networks[networkId.toString()].address;
+            let GasFeePoolAddress = GasFeePool.networks[networkId.toString()].address;
             let DaiAddress = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"; //@dev - DAI（Underlying asset）
             instanceDai = new web3.eth.Contract(
               Dai.abi,
@@ -385,21 +398,21 @@ export default class MetaTransactionTest extends Component {
             // console.log('=== instanceRelayerManager ===', instanceRelayerManager); 
 
             //@dev - Create instance of GasFeePool.sol
-            let instanceGasFeePool = null;
-            let GasFeePoolAddress = "";
-            if (GasFeePool.networks) {
-              deployedNetwork = GasFeePool.networks[networkId.toString()];
+            let instanceMetaTransactionTest = null;
+            let MetaTransactionTestAddress = "";
+            if (MetaTransactionTest.networks) {
+              deployedNetwork = MetaTransactionTest.networks[networkId.toString()];
               if (deployedNetwork) {
-                instanceGasFeePool = new web3.eth.Contract(
-                   GasFeePool.abi,
+                instanceMetaTransactionTest = new web3.eth.Contract(
+                   MetaTransactionTest.abi,
                    deployedNetwork && deployedNetwork.address,
                 );
-                console.log('=== instanceGasFeePool ===', instanceGasFeePool);
+                console.log('=== instanceMetaTransactionTest ===', instanceMetaTransactionTest);
 
-                GasFeePoolAddress = deployedNetwork.address;
+                MetaTransactionTestAddress = deployedNetwork.address;
               }
             }
-            console.log('=== GasFeePoolAddress ===', GasFeePoolAddress);
+            console.log('=== MetaTransactionTestAddress ===', MetaTransactionTestAddress);
 
             /***
              * @dev - Definition for Meta-Transaction test
@@ -419,13 +432,13 @@ export default class MetaTransactionTest extends Component {
             ];
 
             let domainData = {
-              name: "GasFeePool",
+              name: "MetaTransactionTest",
               version: "1",
-              verifyingContract: GasFeePoolAddress,
-              verifyingContract: GasFeePoolAddress
+              verifyingContract: MetaTransactionTestAddress,
+              verifyingContract: MetaTransactionTestAddress
             };
 
-            if (MarketplaceRegistry || Dai || rDAI || RelayHub || RelayerManager || GasFeePool) {
+            if (GasFeePool || Dai || rDAI || RelayHub || RelayerManager || MetaTransactionTest) {
               // Set web3, accounts, and contract to the state, and then proceed with an
               // example of interacting with the contract's methods.
               this.setState({ 
@@ -437,23 +450,23 @@ export default class MetaTransactionTest extends Component {
                 networkType, 
                 hotLoaderDisabled,
                 isMetaMask, 
-                marketplace_registry: instanceMarketplaceRegistry,
+                gas_fee_pool: instanceGasFeePool,
                 dai: instanceDai,
                 rDAI: instanceRDai,
-                marketplace_registry_address: MarketplaceRegistryAddress,
+                gas_fee_pool_address: GasFeePoolAddress,
                 rDAI_address: rDaiAddress,
                 relay_hub: instanceRelayHub,
                 relayer_manager: instanceRelayerManager,
-                gas_fee_pool: instanceGasFeePool,
+                meta_transaction_test: instanceMetaTransactionTest,
                 domainType: domainType,
                 metaTransactionType: metaTransactionType,
                 domainData: domainData
               }, () => {
                 this.refreshValues(
-                  instanceMarketplaceRegistry
+                  instanceGasFeePool
                 );
                 setInterval(() => {
-                  this.refreshValues(instanceMarketplaceRegistry);
+                  this.refreshValues(instanceGasFeePool);
                 }, 5000);
               });
             } else {
@@ -471,14 +484,14 @@ export default class MetaTransactionTest extends Component {
 
 
     render() {
-        const { accounts, marketplace_registry } = this.state;
+        const { accounts, gas_fee_pool } = this.state;
 
         return (
             <div className={styles.widgets}>
                 <Grid container style={{ marginTop: 32 }}>
                     <Grid item xs={12}>
                         <Card width={"auto"} 
-                              maxWidth={"420px"} 
+                              maxWidth={"960px"} 
                               mx={"auto"} 
                               my={5} 
                               p={20} 
@@ -486,9 +499,33 @@ export default class MetaTransactionTest extends Component {
                         >
                             <h4>Meta-Transaction Test</h4> <br />
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>New Text</p></td>
+                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfExecuteMetaTransactionTestNewText} onChange={this.handleInputExecuteMetaTransactionTestNewText} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
-                            <Button size={'small'} mt={3} mb={2} onClick={this.setQuote}> Set Quote </Button> <br />
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>New Text</p></td>
+                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfSetTextNewText} onChange={this.handleInputSetTextNewText} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.setText}> Set Text </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
                         </Card>
                     </Grid>
 

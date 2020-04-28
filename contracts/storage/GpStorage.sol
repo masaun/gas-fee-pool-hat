@@ -1,12 +1,12 @@
 pragma solidity ^0.5.11;
 pragma experimental ABIEncoderV2;
 
-import "./McObjects.sol";
-import "./McEvents.sol";
+import "./GpObjects.sol";
+import "./GpEvents.sol";
 
 
 // shared storage
-contract McStorage is McObjects, McEvents {
+contract GpStorage is GpObjects, GpEvents {
 
     ///////////////////////////////////
     // @dev - Define as memory

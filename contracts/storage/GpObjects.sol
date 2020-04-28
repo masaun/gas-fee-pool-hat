@@ -2,7 +2,7 @@ pragma solidity ^0.5.11;
 pragma experimental ABIEncoderV2;
 
 
-contract McObjects {
+contract GpObjects {
 
     enum ExampleType { TypeA, TypeB, TypeC }
 
