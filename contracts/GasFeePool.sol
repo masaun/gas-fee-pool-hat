@@ -32,27 +32,17 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
     address rDaiAddress;
     address rTokenAddress;
 
-
     Dai public dai;  //@dev - dai.sol
-
     IERC20 public erc20;
-    //RToken public rToken;
-    //IRToken public rToken;
     rDAI public rDai;
     IAllocationStrategy public allocationStrategy;
-
-    //RelayerManager public relayerManager;
 
 
     constructor(address _erc20, address _rDai, address _rToken, address _allocationStrategy, address _relayerManager) public {
         dai = Dai(_erc20);
 
         erc20 = IERC20(_erc20);
-        rDai = rDAI(_rDai);           //@dev - Assign rDAI-Proxy address into rDAI.sol
-        //rToken = RToken(_rDai);     //@dev - Assign rDAI-Proxy address into RToken.sol
-        //rToken = IRToken(_rDai);    //@dev - Assign rDAI-Proxy address into IRToken.sol
-        //rToken = IRToken(_rToken);
-        //allocationStrategy = IAllocationStrategy(_allocationStrategy);
+        rDai = rDAI(_rDai); //@dev - Assign rDAI-Proxy address into rDAI.sol
 
         underlyingERC20 = _erc20;
         rDaiAddress = _rDai;
@@ -60,56 +50,10 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
 
         _ias = rDai.getCurrentSavingStrategy();
         allocationStrategy = IAllocationStrategy(_ias);
-
-        //relayerManager = RelayerManager(_relayerManager);
     }
-
-    function testFunc(uint256 _mintAmount) public returns (bool, uint256 _approvedValue) {
-        uint256 _id = 1;
-        uint256 _exchangeRateCurrent = GpConstants.onePercent;
-
-        address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
-
-        address _owner = address(this); //@dev - contract address which do delegate call
-        //address _owner = msg.sender;
-        address _spender = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;    // DAI address on Kovan
-        //address _spender = 0x462303f77a3f17Dbd95eb7bab412FE4937F9B9CB;  // rDAI-proxy
-
-        //@dev - Allow _spender to withdraw from your account, multiple times, up to the _value amount. 
-        erc20.approve(_spender, _mintAmount.mul(10**18));
-            
-        //@dev - Returns the amount which _spender is still allowed to withdraw from _owner
-        uint256 _approvedValue = erc20.allowance(_owner, _spender);
-        
-        //@dev - Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
-        erc20.transfer(_to, _mintAmount.mul(10**18).div(10**2));        
-
-        emit Example(_id, _exchangeRateCurrent, msg.sender, _approvedValue);
-
-        return (GpConstants.CONFIRMED, _approvedValue);
-    }
-
-    function balanceOfCurrentAccount(address _currentAccount) public view returns (uint256 balanceOfCurrentAccount) {
-        return erc20.balanceOf(_currentAccount);
-    }
-    
-
-    function transferDAIFromUserToContract(uint256 _mintAmount) public returns (bool) {
-        address _from = address(this);
-        address _to = 0x8Fc9d07b1B9542A71C4ba1702Cd230E160af6EB3;
-
-        erc20.approve(underlyingERC20, _mintAmount.mul(10**18));
-        uint256 _allowanceAmount = erc20.allowance(address(this), underlyingERC20);
-        //uint256 _allowanceAmount = erc20.allowance(msg.sender, address(this));
-        erc20.transferFrom(_from, _to, _mintAmount.mul(10**18).div(10**2));
-
-        emit _TransferFrom(_from, _to, _mintAmount.mul(10**18), _allowanceAmount);
-    }
-    
 
 
     function rTokenInfo() public view returns (string memory _name, string memory _symbol, uint256 _decimals) {
-        //return (rToken.name(), rToken.symbol(), rToken.decimals());
         return (rDai.name(), rDai.symbol(), rDai.decimals());
     }
 
@@ -118,7 +62,6 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         uint32[] memory _proportions,
         bool _doChangeHat
     ) public returns (uint256 _hatID) {
-        //uint256 _hatID = rToken.createHat(_recipients, _proportions, _doChangeHat);
         uint256 _hatID = rDai.createHat(_recipients, _proportions, _doChangeHat);
         
         emit CreateHat(_hatID);
@@ -131,7 +74,6 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         view
         returns (address[] memory _recipients, uint32[] memory _proportions) {
         
-        //return rToken.getHatByID(_hatID);
         return rDai.getHatByID(_hatID);
     }
 
@@ -144,7 +86,6 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
             uint32[] memory _proportions
         ) {
         address _owner = address(this);    //@dev - contract address which do delegate call
-        //rToken.getHatByAddress(_owner);
         rDai.getHatByAddress(_owner);
     }
     
@@ -154,16 +95,8 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         address _spenderRDai = rDaiAddress;
         address _spender = address(this);
 
-        //@dev - contract address which do delegate access to current user's asset
-        //erc20.approve(_spender, _amount.mul(10**18));      //@dev - Allow contract which does delegate call of rDAI to access DAI 
-        //erc20.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
         erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI 
 
-        //rDai.approve(_spender, _amount.mul(10**18));
-        //rDai.approve(_spenderUnderlyingERC20, _amount.mul(10**18));
-        //rDai.approve(_spenderRDai, _amount.mul(10**18));
-
-        //@dev - transfer DAI from this contract to rDAI address;
         erc20.transfer(_spenderRDai, _amount.mul(10**18).div(10**2));
         emit TransferDaiToRDai(_spenderRDai, _amount.mul(10**18));
     }
@@ -196,7 +129,6 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         //@dev - Approve rDAI for DAI
         dai.approve(_spenderRDai, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI 
         dai.approve(_spender, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI
-        //erc20.approve(_spenderRDai, _mintAmountt.mul(10**18));  //@dev - Allow rDAI to access DAI 
 
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
         rDai.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
@@ -208,33 +140,27 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         uint32[] memory _proportions
     ) public returns (bool) {
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
-        //rToken.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
         rDai.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
     }
     
     function _interestPayableOf() public view returns (uint256 _amount) {
         address _owner = address(this);  //@dev - contract address which do delegate call
-        //return rToken.interestPayableOf(_owner);
         return rDai.interestPayableOf(_owner);
     }
 
     function _redeem(uint256 _redeemTokens) public returns (bool) {
-        //rToken.redeem(_redeemTokens);
         rDai.redeem(_redeemTokens);
     }
     
     function _redeemAll() public returns (bool) {
-        //rToken.redeemAll();
         rDai.redeemAll();
     }
 
     function _redeemAndTransfer(address _redeemTo, uint256 _redeemTokens) public returns (bool) {
-        //rToken.redeemAndTransfer(_redeemTo, _redeemTokens);
         rDai.redeemAndTransfer(_redeemTo, _redeemTokens);
     }
     
     function _redeemAndTransferAll(address _redeemTo) public returns (bool) {
-        //rToken.redeemAndTransferAll(_redeemTo);
         rDai.redeemAndTransferAll(_redeemTo);
     }
     
@@ -243,13 +169,11 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
      * @dev - Hat Status
      **/
     function _getHatStats(uint256 _hatID) public view returns (RTokenStructs.HatStatsView memory _stats) {
-        //return rToken.getHatStats(_hatID);
         return rDai.getHatStats(_hatID);
     }
 
     function _balanceOf() public view returns (uint256 _balanceOfSpecifiedAccountAddress) {
         address _owner = address(this); //@dev - contract address which do delegate call
-        //return rToken.balanceOf(_owner);
         return rDai.balanceOf(_owner);
     }
     
@@ -259,18 +183,7 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
      * @return address Underlying asset address
      */
     function _underlying() public view returns (address _underlyingAssetAddress) {
-        //return rToken.underlying();
-        //return rDai.underlying();
         return allocationStrategy.underlying();
     }
-    
-    
 
-    /***
-     * @dev - Biconomy RelayerManager.sol
-     **/
-    // function ownerOfRelayerManager() public view returns (address _owner) {
-    //     return relayerManager.owner();
-    // }
-    
 }

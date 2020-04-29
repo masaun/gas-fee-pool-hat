@@ -11,14 +11,14 @@ contract GpStorage is GpObjects, GpEvents {
     ///////////////////////////////////
     // @dev - Define as memory
     ///////////////////////////////////
-    address[] exampleGroups;
+    //address[] exampleGroups;
 
     
     //////////////////////////////////
     // @dev - Define as storage
     ///////////////////////////////////
-    ExampleObject[] public exampleObjects;
+    //ExampleObject[] public exampleObjects;
 
-    mapping (uint256 => Sample) samples;
+    //mapping (uint256 => Sample) samples;
 
 }
