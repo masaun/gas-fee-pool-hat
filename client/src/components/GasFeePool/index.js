@@ -116,11 +116,11 @@ export default class GasFeePool extends Component {
         createHatRecipientsList.push(valueOfCreateHatRecipients);
         console.log('=== createHatRecipientsList ===', createHatRecipientsList);
 
-        const recipientList = createHatRecipientsList.map((recipient) => 
+        const _createHatRecipientsList = createHatRecipientsList.map((recipient) => 
             <li>{ recipient }</li>
         );
 
-        this.setState({ valueOfCreateHatRecipients: '', recipientList: recipientList });
+        this.setState({ valueOfCreateHatRecipients: '', _createHatRecipientsList: _createHatRecipientsList });
 
         return createHatRecipientsList;
     }
@@ -132,11 +132,11 @@ export default class GasFeePool extends Component {
         createHatProportionsList.push(valueOfCreateHatProportions);
         console.log('=== createHatProportionsList ===', createHatProportionsList);
 
-        const proportionList = createHatProportionsList.map((proportion) => 
+        const _createHatProportionsList = createHatProportionsList.map((proportion) => 
             <li>{ proportion }</li>
         );
 
-        this.setState({ valueOfCreateHatProportions: '', proportionList: proportionList });
+        this.setState({ valueOfCreateHatProportions: '', _createHatProportionsList: _createHatProportionsList });
 
         return createHatProportionsList;
     }
@@ -227,7 +227,12 @@ export default class GasFeePool extends Component {
         mintWithNewHatRecipientsList.push(valueOfMintWithNewHatRecipients);
         console.log('=== mintWithNewHatRecipientsList ===', mintWithNewHatRecipientsList);
 
-        this.setState({ valueOfMintWithNewHatRecipients: '' });
+        const _mintWithNewHatRecipientsList = mintWithNewHatRecipientsList.map((recipient) => 
+            <li>{ recipient }</li>
+        );
+
+        this.setState({ valueOfMintWithNewHatRecipients: '', 
+                        _mintWithNewHatRecipientsList: _mintWithNewHatRecipientsList });
 
         return mintWithNewHatRecipientsList;
     }
@@ -238,7 +243,12 @@ export default class GasFeePool extends Component {
         mintWithNewHatProportionsList.push(valueOfMintWithNewHatProportions);
         console.log('=== mintWithNewHatProportionsList ===', mintWithNewHatProportionsList);
 
-        this.setState({ valueOfMintWithNewHatProportions: '' });
+        const _mintWithNewHatProportionsList = mintWithNewHatProportionsList.map((proportion) => 
+            <li>{ proportion }</li>
+        );
+
+        this.setState({ valueOfMintWithNewHatProportions: '', 
+                        _mintWithNewHatProportionsList: _mintWithNewHatProportionsList });
 
         return mintWithNewHatProportionsList;
     }
@@ -571,7 +581,12 @@ export default class GasFeePool extends Component {
 
 
     render() {
-        const { accounts, gas_fee_pool, recipientList, proportionList } = this.state;
+        const { accounts, 
+                gas_fee_pool, 
+                _createHatRecipientsList, 
+                _createHatProportionsList,
+                _mintWithNewHatRecipientsList, 
+                _mintWithNewHatProportionsList } = this.state;
 
         return (
             <div className={styles.widgets}>
@@ -615,13 +630,13 @@ export default class GasFeePool extends Component {
                                     <td><p>Recipients</p></td>
                                     <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
-                                    <td>{ recipientList }</td>
+                                    <td>{ _createHatRecipientsList }</td>
                                 </tr>
                                 <tr>
                                     <td><p>Proportions</p></td>
                                     <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
-                                    <td>{ proportionList }</td>
+                                    <td>{ _createHatProportionsList }</td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -638,20 +653,24 @@ export default class GasFeePool extends Component {
                                     <td><p>Mint Amount</p></td>
                                     <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithNewHatMintAmount} onChange={this.handleInputMintWithNewHatMintAmount} /></td>
                                     <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td><p>Recipients</p></td>
                                     <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfMintWithNewHatRecipients} onChange={this.handleInputMintWithNewHatRecipients} /></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHatAddRecipients}> Add Recipients </Button></td>
+                                    <td>{ _mintWithNewHatRecipientsList }</td>
                                 </tr>
                                 <tr>
                                     <td><p>Proportions</p></td>
                                     <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfMintWithNewHatProportions} onChange={this.handleInputMintWithNewHatProportions} /></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHatAddProportions}> Add Proportions </Button></td>
+                                    <td>{ _mintWithNewHatProportionsList }</td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithNewHat}> Mint With New Hat </Button></td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                             </Table>
