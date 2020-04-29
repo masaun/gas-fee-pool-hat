@@ -36,7 +36,6 @@ export default class GasFeePool extends Component {
             mintWithNewHatProportionsList: []
         };
 
-        this.getTestData = this.getTestData.bind(this);
         this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
 
         this.handleInputCreateHatRecipients = this.handleInputCreateHatRecipients.bind(this);
@@ -379,41 +378,6 @@ export default class GasFeePool extends Component {
         console.log('=== RelayerManager.sol of getRelayerStatus() function ===', relayerStatus);
     }    
 
-
-    /***
-     * @dev - Test Functions
-     **/
-    getTestData = async () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
-
-        const _currentAccount = accounts[0];
-        let balanceOf1 = await gas_fee_pool.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 1 ===', balanceOf1);
- 
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-        let response = await gas_fee_pool.methods.testFunc(_mintAmount).send({ from: accounts[0] })
-        console.log('=== response of testFunc() function ===', response);
-
-        let balanceOf2 = await gas_fee_pool.methods.balanceOfCurrentAccount(_currentAccount).call();
-        console.log('=== response of balanceOfCurrentAccount() / 2 ===', balanceOf2);
-    }
-
-    transferDAIFromUserToContract = async () => {
-        const { accounts, gas_fee_pool, dai, gasFeePoolAddress, web3 } = this.state;
-
-        const _mintAmount = 105;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）s
-
-        //@dev - Transfer DAI from UserWallet to DAI-contract
-        let decimals = 18;
-        let _amount = web3.utils.toWei((_mintAmount / ((10)**2)).toString(), 'ether');
-        console.log('=== _amount ===', _amount);
-        const _to = gasFeePoolAddress;
-        let response1 = await dai.methods.transfer(_to, _amount).send({ from: accounts[0] });
-
-        //@dev - Transfer DAI from DAI-contract to Logic-contract
-        let response2 = await gas_fee_pool.methods.transferDAIFromUserToContract(_mintAmount).send({ from: accounts[0] });  // wei
-        console.log('=== response of transferDAIFromUserToContract() function ===', response2);
-    }
 
 
     //////////////////////////////////// 
@@ -771,14 +735,15 @@ export default class GasFeePool extends Component {
                                     <td></td>
                                 </tr>
                             </Table>
+                        </Card>
 
-                            <br />
-                            <br />
-
-                            <hr /> 
-
-                            <br /> 
-
+                        <Card width={"auto"} 
+                              maxWidth={"1280px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
                             <h4>Read Functions</h4>
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
@@ -795,22 +760,6 @@ export default class GasFeePool extends Component {
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.balanceOf}> Balance Of </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
-                        </Card>
-
-                        <Card width={"auto"} 
-                              maxWidth={"1280px"} 
-                              mx={"auto"} 
-                              my={5} 
-                              p={20} 
-                              borderColor={"#E8E8E8"}
-                        >
-                            <h4>Testing Function</h4>
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get Test Data </Button> <br />
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.transferDAIFromUserToContract}> Transfer DAI From User To Contract </Button> <br />
-
-                            <Button size={'small'} mt={3} mb={2} onClick={this.approve}> Approve rDAI Proxy Contract </Button> <br />
                         </Card>
 
                     </Grid>
