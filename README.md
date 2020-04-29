@@ -10,19 +10,19 @@
 &nbsp;
 
 ## 【User Flow】
-1. Register `Relayer Address` 
+- ① Register `Relayer Address` 
     (※ Attention: allow onlyOwner address to execute this function. So that you need to specify `owner address` before you execute migrate：https://github.com/masaun/gas-fee-pool/blob/master/migrations/2_deploy_mexa.js#L9 )
 
 <br>
 
-2. Create `new Hat` for gas-fee-pool (=Called `"gas fee pool Hat"` ) 
+- ② Create `new Hat` for gas-fee-pool (=Called `"gas fee pool Hat"` ) 
   - At that time, user specify proportions between user's wallet address and registered `Relayer Address`
   - By specifying above, generated interest will be pooled into gas-fee-pool-Hat every time which interest are generated. 
     (Pooled amount into gas-fee-pool-Hat is amount that proportion is specified)
 
 <br>
 
-3. Execute test function (Push a button of "Set Text" in the page of "Mete-Transaction")
+- ③ Execute test function (Push a button of "Set Text" in the page of "Mete-Transaction")
   - At the same time with executing this function, Gas Fee is paid by registered relayer via meta-transaction of Biconomy.
     (Registered relayer pay with pooled interest income for gas fee which happen by executing test function)
 
