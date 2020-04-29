@@ -3,12 +3,32 @@
 ***
 ## 【Introduction of Gas Fee Pool】
 - Gas Fee Pool is for `Service Providers` on ethereum.
-  - Service Providers generate `Interest income` by using `rDAI`
+  - Service Providers generate `Interest income` via specific Hat of `rDAI`
   - Service Providers staking `generated "interest income"` into `Gas Fee Pool` .
   - Service Providers can pay `"Gas Fee" of users` with `generated "interest income"` instead of users. 
     - This structure is realized by `"Meta-Transaction"` by using `Biconomy` . 
 
 &nbsp;
+
+## 【User Flow】
+- 1. Register `Relayer Address` 
+    (※ Allow only Owner to execute this function. So that you need to specify `owner address` before you execute migrate：https://github.com/masaun/gas-fee-pool/blob/master/migrations/2_deploy_mexa.js#L9 )
+
+<br>
+
+- 2. Create `new Hat` 
+  - At that time, user specify their address and registered `Relayer Address`
+
+<br>
+
+- 3. Push a button of "set text"
+  - At the same time, Gas Fee is paid by registered relayer via meta-transaction of Biconomy.
+
+
+&nbsp;
+
+***
+
 
 ***
 
@@ -52,13 +72,6 @@ $ npm run client
 ```
 http://127.0.0.1:3000/gas-fee-pool
 ```
-
-&nbsp;
-
-***
-
-
-## 【Work flow】
 
 &nbsp;
 
