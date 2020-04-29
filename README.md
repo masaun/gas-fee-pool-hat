@@ -22,7 +22,7 @@
 
 <br>
 
-- 3. Execute test function (Push a button of "set text" in the page of "Mete-Transaction")
+- 3. Execute test function (Push a button of "Set Text" in the page of "Mete-Transaction")
   - At the same time with executing this function, Gas Fee is paid by registered relayer via meta-transaction of Biconomy.
     (Registered relayer pay with pooled interest income for gas fee which happen by executing test function)
 

@@ -116,7 +116,11 @@ export default class GasFeePool extends Component {
         createHatRecipientsList.push(valueOfCreateHatRecipients);
         console.log('=== createHatRecipientsList ===', createHatRecipientsList);
 
-        this.setState({ valueOfCreateHatRecipients: '' });
+        const recipientList = createHatRecipientsList.map((recipient) => 
+            <li>{ recipient }</li>
+        );
+
+        this.setState({ valueOfCreateHatRecipients: '', recipientList: recipientList });
 
         return createHatRecipientsList;
     }
@@ -128,7 +132,11 @@ export default class GasFeePool extends Component {
         createHatProportionsList.push(valueOfCreateHatProportions);
         console.log('=== createHatProportionsList ===', createHatProportionsList);
 
-        this.setState({ valueOfCreateHatProportions: '' });
+        const proportionList = createHatProportionsList.map((proportion) => 
+            <li>{ proportion }</li>
+        );
+
+        this.setState({ valueOfCreateHatProportions: '', proportionList: proportionList });
 
         return createHatProportionsList;
     }
@@ -563,7 +571,7 @@ export default class GasFeePool extends Component {
 
 
     render() {
-        const { accounts, gas_fee_pool } = this.state;
+        const { accounts, gas_fee_pool, recipientList, proportionList } = this.state;
 
         return (
             <div className={styles.widgets}>
@@ -607,15 +615,18 @@ export default class GasFeePool extends Component {
                                     <td><p>Recipients</p></td>
                                     <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
+                                    <td>{ recipientList }</td>
                                 </tr>
                                 <tr>
                                     <td><p>Proportions</p></td>
                                     <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
+                                    <td>{ proportionList }</td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                             </Table>
