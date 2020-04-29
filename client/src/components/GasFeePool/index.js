@@ -594,7 +594,11 @@ export default class GasFeePool extends Component {
                         >
                             <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
                             <h4>↓</h4> <br />
-                            <h4>Proportions example<br />10%: GasFeePool (To RelayerAddress)<br />90%: Owner</h4> <br />
+                            <ul>
+                                <h4>Example of proportions specification of receivng interest income between recipients</h4>
+                                <li>10%: GasFeePool (To RelayerAddress)</li>
+                                <li>90%: Owner（To UserAddress）</li>
+                            </ul>
 
                             <hr /> <br />
 
