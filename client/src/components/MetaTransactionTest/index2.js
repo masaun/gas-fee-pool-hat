@@ -502,12 +502,12 @@ export default class MetaTransactionTest extends Component {
                             <Table>
                                 <tr>
                                     <td><p>New Text</p></td>
-                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfExecuteMetaTransactionTestNewText} onChange={this.handleInputExecuteMetaTransactionTestNewText} /></td>
+                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfSetTextNewText} onChange={this.handleInputSetTextNewText} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.setText}> Set Text </Button></td>
                                     <td></td>
                                 </tr>
                             </Table>
@@ -517,12 +517,12 @@ export default class MetaTransactionTest extends Component {
                             <Table>
                                 <tr>
                                     <td><p>New Text</p></td>
-                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfSetTextNewText} onChange={this.handleInputSetTextNewText} /></td>
+                                    <td><Input type="text" placeholder="Please input New Text" value={this.state.valueOfExecuteMetaTransactionTestNewText} onChange={this.handleInputExecuteMetaTransactionTestNewText} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.setText}> Set Text </Button></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.executeMetaTransactionTest}> Execute Meta-Transaction Test </Button></td>
                                     <td></td>
                                 </tr>
                             </Table>

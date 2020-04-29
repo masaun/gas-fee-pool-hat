@@ -569,8 +569,6 @@ export default class GasFeePool extends Component {
             <div className={styles.widgets}>
                 <Grid container style={{ marginTop: 32 }}>
                     <Grid item xs={12}>
-                        <h4>Gas Fee Pool</h4> <br />
-
                         <Card width={"auto"} 
                               maxWidth={"1280px"} 
                               mx={"auto"} 
@@ -585,10 +583,6 @@ export default class GasFeePool extends Component {
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button></td>
                                 </tr>
                             </Table>
-
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getAllRelayers}> Get All Relayers </Button> <br />
-
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getRelayerStatus}> Get Relayer Status </Button> <br />
                         </Card>
 
                         <Card width={"auto"} 
@@ -603,7 +597,6 @@ export default class GasFeePool extends Component {
                             <h4>Proportions example<br />10%: GasFeePool (To RelayerAddress)<br />90%: Owner</h4> <br />
 
                             <hr /> <br />
-                            <h4>Write Functions</h4>
 
                             <Table>
                                 <tr>
@@ -744,7 +737,15 @@ export default class GasFeePool extends Component {
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
-                            <h4>Read Functions</h4>
+                            <h4>Read Functions of Relayer</h4>
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getAllRelayers}> Get All Relayers </Button> <br />
+
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getRelayerStatus}> Get Relayer Status </Button> <br />
+
+                            <hr />
+
+                            <br />
+                            <h4>Read Functions of rDAI</h4>
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.rTokenInfo}> rToken Info </Button> <br />
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.getHatByID}> Get Hat By ID </Button> <br />
