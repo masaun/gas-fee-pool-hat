@@ -15,7 +15,7 @@ https://medium.com/@masanoriuno_75621/user-flow-guide-of-gas-fee-pool-hat-bfb713
 
 <br>
 
-### _[User Flow]_
+### _[User Flow (briefly)]_
 - ① Register `Relayer Address` 
     (※ Attention: allow onlyOwner address to execute this function. So that you need to specify `owner address` before you execute migrate：https://github.com/masaun/gas-fee-pool/blob/master/migrations/2_deploy_mexa.js#L9 )
 
