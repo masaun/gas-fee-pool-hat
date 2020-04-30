@@ -294,14 +294,30 @@ export default class GasFeePool extends Component {
         console.log('=== dai.sol of allowance() function ===', allowance);
 
         //@dev - Execute mintWithNewHat() function via rDAI.sol
-        let response = await rDAI.methods.mintWithNewHat(mintAmount, _recipients, _proportions).send({ from: accounts[0] });
-        console.log('=== rDAI.sol of of mintWithNewHat() function ===', response);
+        let res1 = await rDAI.methods.mintWithNewHat(mintAmount, _recipients, _proportions).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of of mintWithNewHat() function ===', res1);
+
+        //@dev - Get created Hat ID
+        let createdHatID = res1.events.HatChanged.returnValues.newHatID;
+        console.log('=== createdHatID ===', createdHatID);
+
+        //@dev - Get status of Hat ID
+        let _statusOfHatID = await rDAI.methods.getHatByID(createdHatID).call();
+        console.log('=== _statusOfHatID ===', _statusOfHatID);
+        const statusOfHatID = (
+            <ul>
+                <li>Proportions: { _statusOfHatID.proportions }</li>
+                <li>Recipients: { _statusOfHatID.recipients }</li>
+            </ul>
+        );
 
         this.setState({ valueOfMintWithNewHatMintAmount: '', 
                         mintWithNewHatRecipientsList: [], 
                         mintWithNewHatProportionsList: [],
                         _mintWithNewHatRecipientsList: [],
-                        _mintWithNewHatProportionsList: [] });     
+                        _mintWithNewHatProportionsList: [],
+                        createdHatID: createdHatID,
+                        statusOfHatID: statusOfHatID });     
     }
 
     interestPayableOf = async () => {
@@ -618,7 +634,9 @@ export default class GasFeePool extends Component {
                 _createHatProportionsList,
                 _mintWithNewHatRecipientsList, 
                 _mintWithNewHatProportionsList,
-                AddedRelayers } = this.state;
+                AddedRelayers,
+                createdHatID,
+                statusOfHatID } = this.state;
 
         return (
             <div className={styles.widgets}>
@@ -692,7 +710,14 @@ export default class GasFeePool extends Component {
 
                             <p>↓</p>
 
-                            <p> Created Hat ID: ●● </p>
+                            <Table>
+                                <tr>
+                                    <td><p>Created Hat ID: { createdHatID } </p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Status of Hat ID: { createdHatID } <br /> { statusOfHatID } </p></td>
+                                </tr>
+                            </Table>
 
                             <p>↓</p>
 
@@ -709,7 +734,7 @@ export default class GasFeePool extends Component {
                                 </tr>
                             </Table>
 
-                            <h4>↓</h4> 
+                            <p>↓</p>
 
                             <Table>
                                 <tr>
