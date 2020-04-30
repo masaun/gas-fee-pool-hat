@@ -157,7 +157,10 @@ export default class GasFeePool extends Component {
                                                                      _doChangeHat).send({ from: accounts[0] })
         console.log('=== response of _createHat() function ===', response);
 
-        this.setState({ createHatRecipientsList: [], createHatProportionsList: [] });              
+        this.setState({ createHatRecipientsList: [], 
+                        createHatProportionsList: [],
+                        _createHatRecipientsList: [],
+                        _createHatProportionsList: [] });              
     }
 
     getHatByID = async () => {
@@ -283,7 +286,9 @@ export default class GasFeePool extends Component {
 
         this.setState({ valueOfMintWithNewHatMintAmount: '', 
                         mintWithNewHatRecipientsList: [], 
-                        mintWithNewHatProportionsList: [] });     
+                        mintWithNewHatProportionsList: [],
+                        _mintWithNewHatRecipientsList: [],
+                        _mintWithNewHatProportionsList: [] });     
     }
 
     interestPayableOf = async () => {
