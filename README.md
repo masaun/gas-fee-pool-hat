@@ -1,15 +1,21 @@
-# Gas Fee Pool
+# Gas Fee Pool Hat
 
-## 【Introduction of Gas Fee Pool】
-- Gas Fee Pool is for `Service Providers` on ethereum.
-  - Service Providers generate `Interest income` via specific Hat of `rDAI`
-  - Service Providers staking `generated "interest income"` into `Gas Fee Pool` .
-  - Service Providers can pay `"Gas Fee" of users` with `generated "interest income"` instead of users. 
+## 【Introduction of Gas Fee Pool Hat】
+- Gas Fee Pool Hat is for `Service Providers` on ethereum.
+  - Users generate `Interest income` via specific Hat of `rDAI`
+  - Users are staking `generated "interest income"` into `Gas Fee Pool Hat` .
+  - Users can pay `"Gas Fee" of users` with `generated "interest income"` instead of users. 
     - This structure is realized by `"Meta-Transaction"` by using `Biconomy` . 
 
 &nbsp;
 
 ## 【User Flow】
+### _[User Flow Guide of Gas Fee Pool Hat]_
+https://medium.com/@masanoriuno_75621/user-flow-guide-of-gas-fee-pool-hat-bfb713f3fcbc
+
+<br>
+
+### _[User Flow]_
 - ① Register `Relayer Address` 
     (※ Attention: allow onlyOwner address to execute this function. So that you need to specify `owner address` before you execute migrate：https://github.com/masaun/gas-fee-pool/blob/master/migrations/2_deploy_mexa.js#L9 )
 
