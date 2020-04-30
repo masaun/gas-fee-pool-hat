@@ -312,6 +312,7 @@ export default class GasFeePool extends Component {
         //@dev - Get status of Hat ID
         let _statusOfHatID = await rDAI.methods.getHatByID(createdHatID).call();
         console.log('=== _statusOfHatID ===', _statusOfHatID);
+
         const statusOfHatID = (
             <ul>
                 <li>Proportions: { _statusOfHatID.proportions }</li>
@@ -754,12 +755,17 @@ export default class GasFeePool extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Redeem To</p></td>
-                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemAndTransferRedeemTokens} onChange={this.handleInputRedeemAndTransferRedeemTokens} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button></td>
                                     <td></td>
                                 </tr>
                             </Table>
@@ -892,6 +898,21 @@ export default class GasFeePool extends Component {
                                     <td></td>
                                 </tr>
                             </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem To</p></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>                            
                         </Card>
                     </Grid>
 
