@@ -687,7 +687,18 @@ export default class GasFeePool extends Component {
 
                             <p>↓</p>
 
-                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
+                            <Table>
+                                <tr>
+                                    <td><p>Owner Address of Hat</p></td>
+                                    <td><Input type="text" placeholder="Please input Owner Address of Hat" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
 
                             <h4>↓</h4> 
 
