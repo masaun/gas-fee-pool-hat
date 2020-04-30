@@ -397,8 +397,8 @@ export default class GasFeePool extends Component {
         const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3, valueOfAddRelayer } = this.state;
 
         const _relayerAddress = valueOfAddRelayer;
-        let relayer = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
-        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);
+        let res = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
+        console.log('=== RelayerManager.sol of addRelayer() function ===', res);
 
         this.setState({ valueOfAddRelayer: '' });
     }
@@ -408,6 +408,12 @@ export default class GasFeePool extends Component {
 
         let relayers = await relayer_manager.methods.getAllRelayers().call();
         console.log('=== RelayerManager.sol of getAllRelayers() function ===', relayers);
+
+        const AddedRelayers = relayers.map((relayer) => 
+            <li>{ relayer }</li>
+        );
+
+        this.setState({ AddedRelayers: AddedRelayers });
     }
 
     getRelayerStatus = async () => {
@@ -592,6 +598,8 @@ export default class GasFeePool extends Component {
             else {
               this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
             }
+
+            this.getAllRelayers();
           }
         } catch (error) {
           // Catch any errors for any of the above operations.
@@ -609,7 +617,8 @@ export default class GasFeePool extends Component {
                 _createHatRecipientsList, 
                 _createHatProportionsList,
                 _mintWithNewHatRecipientsList, 
-                _mintWithNewHatProportionsList } = this.state;
+                _mintWithNewHatProportionsList,
+                AddedRelayers } = this.state;
 
         return (
             <div className={styles.widgets}>
@@ -632,7 +641,7 @@ export default class GasFeePool extends Component {
                                 </tr>
                             </Table>
                             <p>↓</p>
-                            <p> Created Relayer Address: ●● </p>
+                            <p> Added Relayer Addresses: { AddedRelayers } </p>
                         </Card>
 
                         <Card width={"auto"} 
