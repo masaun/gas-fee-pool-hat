@@ -95,10 +95,9 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         address _spenderRDai = rDaiAddress;
         address _spender = address(this);
 
-        erc20.approve(_spenderRDai, _amount.mul(10**18));  //@dev - Allow rDAI to access DAI 
+        erc20.approve(_spenderRDai, _amount);  //@dev - Allow rDAI to access DAI 
 
-        erc20.transfer(_spenderRDai, _amount.mul(10**18).div(10**2));
-        emit TransferDaiToRDai(_spenderRDai, _amount.mul(10**18));
+        erc20.transfer(_spenderRDai, _amount);
     }
     
     function _allowance() 
@@ -127,11 +126,11 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         address _msgSender = msg.sender;
 
         //@dev - Approve rDAI for DAI
-        dai.approve(_spenderRDai, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI 
-        dai.approve(_spender, _mintAmount.mul(10**18));  //@dev - Allow rDAI to access DAI
+        dai.approve(_spenderRDai, _mintAmount);  //@dev - Allow rDAI to access DAI 
+        dai.approve(_spender, _mintAmount);  //@dev - Allow rDAI to access DAI
 
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
-        rDai.mintWithSelectedHat(_mintAmount.mul(10**18), _hatID);
+        rDai.mintWithSelectedHat(_mintAmount, _hatID);
     }
     
     function _mintWithNewHat(
@@ -140,7 +139,7 @@ contract GasFeePool is Ownable, GpStorage, GpConstants {
         uint32[] memory _proportions
     ) public returns (bool) {
         //@dev - Need to call by uint256. So that put ".mul(10**18)" only. Don't put ".div(10**2)"
-        rDai.mintWithNewHat(_mintAmount.mul(10**18), _recipients, _proportions);
+        rDai.mintWithNewHat(_mintAmount, _recipients, _proportions);
     }
     
     function _interestPayableOf() public view returns (uint256 _amount) {

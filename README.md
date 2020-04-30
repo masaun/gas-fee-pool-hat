@@ -22,7 +22,12 @@
 
 <br>
 
-- ③ Execute test function (Push a button of "Set Text" in the page of "Mete-Transaction")
+- ③ Redeem & Transfer (from `"gas fee pool Hat"` to `"RelayerAddress"` )
+
+
+<br>
+
+- ④ Execute test function (Push a button of "Set Text" in the page of "Mete-Transaction")
   - At the same time with executing this function, Gas Fee is paid by registered relayer via meta-transaction of Biconomy.
     (Registered relayer pay with pooled interest income for gas fee which happen by executing test function)
 
@@ -33,6 +38,19 @@
 ***
 
 ## 【Setup】
+### Versions / Environment
+```
+$ truffle versions
+
+  - Truffle v5.1.23 (core: 5.1.23)
+  - Solidity v0.5.16 (solc-js)
+  - Node v12.13.0
+  - Web3.js v1.2.1
+```
+
+<br>
+
+
 ### Setup wallet by using Metamask
 1. Add MetaMask to browser (Chrome or FireFox or Opera or Brave)    
 https://metamask.io/  

@@ -36,6 +36,7 @@ export default class GasFeePool extends Component {
             mintWithNewHatProportionsList: []
         };
 
+        /////// Input value buttons
         this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
 
         this.handleInputCreateHatRecipients = this.handleInputCreateHatRecipients.bind(this);
@@ -48,10 +49,26 @@ export default class GasFeePool extends Component {
         this.handleInputMintWithNewHatRecipients = this.handleInputMintWithNewHatRecipients.bind(this);
         this.handleInputMintWithNewHatProportions = this.handleInputMintWithNewHatProportions.bind(this);
 
+        this.handleInputInterestPayableOfOwnerAddress = this.handleInputInterestPayableOfOwnerAddress.bind(this);
+
         this.handleInputRedeemTokens = this.handleInputRedeemTokens.bind(this);        
         this.handleInputRedeemAndTransferRedeemTo = this.handleInputRedeemAndTransferRedeemTo.bind(this);        
         this.handleInputRedeemAndTransferRedeemTokens = this.handleInputRedeemAndTransferRedeemTokens.bind(this);        
         this.handleInputRedeemAndTransferAllRedeemTo = this.handleInputRedeemAndTransferAllRedeemTo.bind(this);
+
+        /////// Submit buttons
+        this.addRelayer = this.addRelayer.bind(this);
+
+        this.createHat = this.createHat.bind(this);
+        this.mintWithSelectedHat = this.mintWithSelectedHat.bind(this);
+        this.mintWithNewHat = this.mintWithNewHat.bind(this);
+
+        this.interestPayableOf = this.interestPayableOf.bind(this);
+
+        this.redeem = this.redeem.bind(this);
+        this.redeemAll = this.redeemAll.bind(this);
+        this.redeemAndTransfer = this.redeemAndTransfer.bind(this);
+        this.redeemAndTransferAll = this.redeemAndTransferAll.bind(this);
     }
 
     handleInputAddRelayer({ target: { value } }) {
@@ -84,6 +101,10 @@ export default class GasFeePool extends Component {
 
     handleInputMintWithNewHatProportions({ target: { value } }) {
         this.setState({ valueOfMintWithNewHatProportions: Number(value) });
+    }
+
+    handleInputInterestPayableOfOwnerAddress({ target: { value } }) {
+        this.setState({ valueOfInterestPayableOfOwnerAddress: value });
     }
 
     handleInputRedeemTokens({ target: { value } }) {
@@ -157,7 +178,10 @@ export default class GasFeePool extends Component {
                                                                      _doChangeHat).send({ from: accounts[0] })
         console.log('=== response of _createHat() function ===', response);
 
-        this.setState({ createHatRecipientsList: [], createHatProportionsList: [] });              
+        this.setState({ createHatRecipientsList: [], 
+                        createHatProportionsList: [],
+                        _createHatRecipientsList: [],
+                        _createHatProportionsList: [] });              
     }
 
     getHatByID = async () => {
@@ -278,28 +302,56 @@ export default class GasFeePool extends Component {
         console.log('=== dai.sol of allowance() function ===', allowance);
 
         //@dev - Execute mintWithNewHat() function via rDAI.sol
-        let response = await rDAI.methods.mintWithNewHat(mintAmount, _recipients, _proportions).send({ from: accounts[0] });
-        console.log('=== rDAI.sol of of mintWithNewHat() function ===', response);
+        let res1 = await rDAI.methods.mintWithNewHat(mintAmount, _recipients, _proportions).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of of mintWithNewHat() function ===', res1);
+
+        //@dev - Get created Hat ID
+        let createdHatID = res1.events.HatChanged.returnValues.newHatID;
+        console.log('=== createdHatID ===', createdHatID);
+
+        //@dev - Get status of Hat ID
+        let _statusOfHatID = await rDAI.methods.getHatByID(createdHatID).call();
+        console.log('=== _statusOfHatID ===', _statusOfHatID);
+
+        var proportionsList = [];
+        var recipientsList = [];
+        for (let i=0; i < _statusOfHatID.proportions.length; i++) {
+            proportionsList.push(_statusOfHatID.proportions[i]);
+            recipientsList.push(_statusOfHatID.recipients[i]);
+        }
+
+        const proportions = proportionsList.map((proportion) => 
+            <li>{ proportion }</li>
+        );
+        const recipients = recipientsList.map((recipient) => 
+            <li>{ recipient }</li>
+        );
 
         this.setState({ valueOfMintWithNewHatMintAmount: '', 
                         mintWithNewHatRecipientsList: [], 
-                        mintWithNewHatProportionsList: [] });     
+                        mintWithNewHatProportionsList: [],
+                        _mintWithNewHatRecipientsList: [],
+                        _mintWithNewHatProportionsList: [],
+                        createdHatID: createdHatID,
+                        proportions: proportions,
+                        recipients: recipients });     
     }
 
     interestPayableOf = async () => {
-        const { accounts, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, web3 } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfInterestPayableOfOwnerAddress } = this.state;
 
-        const _owner = walletAddressList["addressList"]["address1"];
+        const _owner = valueOfInterestPayableOfOwnerAddress;
 
         let interestPayableOfAmount = await rDAI.methods.interestPayableOf(_owner).call();
         console.log('=== rDAI.sol of interestPayableOf() function ===', interestPayableOfAmount); 
+
+        this.setState({ interestPayableOfAmount: interestPayableOfAmount });
     }
 
     redeem = async () => {
         const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemTokens } = this.state;
 
         const _redeemTokens = valueOfRedeemTokens;
-        //const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
@@ -314,31 +366,37 @@ export default class GasFeePool extends Component {
     }
 
     redeemAll = async () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address } = this.state;
 
-        let response = await gas_fee_pool.methods._redeemAll().send({ from: accounts[0] });
-        console.log('=== response of _redeemAll() function ===', response);           
+        let response = await rDAI.methods.redeemAll().send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeemAll() function ===', response);           
     }
 
     redeemAndTransfer = async () => {
-        const { accounts, web3, gas_fee_pool, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
 
         const _redeemTo = valueOfRedeemAndTransferRedeemTo;
         const _redeemTokens = valueOfRedeemAndTransferRedeemTokens;
 
-        let response = await gas_fee_pool.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
-        console.log('=== response of _redeemAndTransfer() function ===', response);           
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let redeemTokens = web3.utils.toWei(_redeemTokens.toString(), 'ether');
+        console.log('=== redeemTokens ===', redeemTokens);
+        const _spender = rDAI_address;
+
+        let response = await rDAI.methods.redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeemAndTransfer() function ===', response);           
 
         this.setState({ valueOfRedeemAndTransferRedeemTo: '', valueOfRedeemAndTransferRedeemTokens: '' });
     }
 
     redeemAndTransferAll = async () => {
-        const { accounts, web3, gas_fee_pool, valueOfRedeemAndTransferAllRedeemTo } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemAndTransferAllRedeemTo } = this.state;
 
         const _redeemTo = valueOfRedeemAndTransferAllRedeemTo;
 
-        let response = await gas_fee_pool.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
-        console.log('=== response of _redeemAndTransferAll() function ===', response);           
+        let response = await rDAI.methods.redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeemAndTransferAll() function ===', response);           
 
         this.setState({ valueOfRedeemAndTransferAllRedeemTo: '' });
     }
@@ -374,8 +432,8 @@ export default class GasFeePool extends Component {
         const { accounts, relay_hub, relayer_manager, gas_fee_pool, web3, valueOfAddRelayer } = this.state;
 
         const _relayerAddress = valueOfAddRelayer;
-        let relayer = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
-        console.log('=== RelayerManager.sol of addRelayer() function ===', relayer);
+        let res = await relayer_manager.methods.addRelayer(_relayerAddress).send({ from: accounts[0] });
+        console.log('=== RelayerManager.sol of addRelayer() function ===', res);
 
         this.setState({ valueOfAddRelayer: '' });
     }
@@ -385,6 +443,12 @@ export default class GasFeePool extends Component {
 
         let relayers = await relayer_manager.methods.getAllRelayers().call();
         console.log('=== RelayerManager.sol of getAllRelayers() function ===', relayers);
+
+        const AddedRelayers = relayers.map((relayer) => 
+            <li>{ relayer }</li>
+        );
+
+        this.setState({ AddedRelayers: AddedRelayers });
     }
 
     getRelayerStatus = async () => {
@@ -569,6 +633,8 @@ export default class GasFeePool extends Component {
             else {
               this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
             }
+
+            this.getAllRelayers();
           }
         } catch (error) {
           // Catch any errors for any of the above operations.
@@ -586,7 +652,13 @@ export default class GasFeePool extends Component {
                 _createHatRecipientsList, 
                 _createHatProportionsList,
                 _mintWithNewHatRecipientsList, 
-                _mintWithNewHatProportionsList } = this.state;
+                _mintWithNewHatProportionsList,
+                interestPayableOfAmount,
+                AddedRelayers,
+                createdHatID,
+                //statusOfHatID,
+                proportions,
+                recipients } = this.state;
 
         return (
             <div className={styles.widgets}>
@@ -603,9 +675,13 @@ export default class GasFeePool extends Component {
                             <Table>
                                 <tr>
                                     <td><Input type="text" placeholder="Please input relayer address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                </tr>
+                                <tr>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button></td>
                                 </tr>
                             </Table>
+                            <p>↓</p>
+                            <p> Added Relayer Addresses: { AddedRelayers } </p>
                         </Card>
 
                         <Card width={"auto"} 
@@ -615,36 +691,15 @@ export default class GasFeePool extends Component {
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
-                            <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
-                            <h4>↓</h4> <br />
+                            <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4>
+                            <p>↓</p>
                             <ul>
                                 <h4>Example of proportions specification of receivng interest income between recipients</h4>
                                 <li>10%: GasFeePool (To RelayerAddress)</li>
                                 <li>90%: Owner（To UserAddress）</li>
                             </ul>
 
-                            <hr /> <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Recipients</p></td>
-                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
-                                    <td>{ _createHatRecipientsList }</td>
-                                </tr>
-                                <tr>
-                                    <td><p>Proportions</p></td>
-                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
-                                    <td>{ _createHatProportionsList }</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
+                            <hr /> 
 
                             <br />
 
@@ -675,65 +730,42 @@ export default class GasFeePool extends Component {
                                 </tr>
                             </Table>
 
-                            <br />
-
-                            <h4>↓</h4> 
-
-                            <br />
+                            <p>↓</p>
 
                             <Table>
                                 <tr>
-                                    <td><p>Mint Amount</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
+                                    <td><p>Created Hat ID: { createdHatID } </p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Status of Hat ID: { createdHatID } <br /> Proportions: { proportions } <br /> Recipients: { recipients } </p> </td>
+                                </tr>
+                            </Table>
+
+                            <p>↓</p>
+
+                            <Table>
+                                <tr>
+                                    <td><p>Owner Address of Hat</p></td>
+                                    <td><Input type="text" placeholder="Please input Owner Address of Hat" value={this.state.valueOfInterestPayableOfOwnerAddress} onChange={this.handleInputInterestPayableOfOwnerAddress} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><p>Hat ID</p></td>
-                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
                                     <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
+                                    <td><Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button></td>
                                     <td></td>
                                 </tr>
                             </Table>
 
-                            <br />
+                            <p>↓</p>
 
-                            <h4>↓</h4> 
+                            Interest Payable Of Amount: { interestPayableOfAmount }
 
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Redeem Tokens（Amount）</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemTokens} onChange={this.handleInputRedeemTokens} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
-
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
-
-                            <br />
+                            <p>↓</p>
 
                             <Table>
                                 <tr>
                                     <td><p>Redeem To</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -744,21 +776,6 @@ export default class GasFeePool extends Component {
                                 <tr>
                                     <td></td>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
-
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Redeem To</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button></td>
                                     <td></td>
                                 </tr>
                             </Table>
@@ -797,6 +814,116 @@ export default class GasFeePool extends Component {
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
 
+                        <Card width={"auto"} 
+                              maxWidth={"1280px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
+                            <h4>Other Write Functions</h4>
+
+                            <Table>
+                                <tr>
+                                    <td><p>Recipients</p></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
+                                    <td>{ _createHatRecipientsList }</td>
+                                </tr>
+                                <tr>
+                                    <td><p>Proportions</p></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
+                                    <td>{ _createHatProportionsList }</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Hat ID</p></td>
+                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemTokens} onChange={this.handleInputRedeemTokens} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem To</p></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemAndTransferRedeemTokens} onChange={this.handleInputRedeemAndTransferRedeemTokens} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem To</p></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransferAll}> Redeem And Transfer All </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>                            
+                        </Card>
                     </Grid>
 
                     <Grid item xs={4}>
