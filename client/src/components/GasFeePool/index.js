@@ -327,20 +327,12 @@ export default class GasFeePool extends Component {
             <li>{ recipient }</li>
         );
 
-        // const statusOfHatID = (
-        //     <ul>
-        //         <li>Proportions: { _statusOfHatID.proportions }</li>
-        //         <li>Recipients: { _statusOfHatID.recipients }</li>
-        //     </ul>
-        // );
-
         this.setState({ valueOfMintWithNewHatMintAmount: '', 
                         mintWithNewHatRecipientsList: [], 
                         mintWithNewHatProportionsList: [],
                         _mintWithNewHatRecipientsList: [],
                         _mintWithNewHatProportionsList: [],
                         createdHatID: createdHatID,
-                        //statusOfHatID: statusOfHatID,
                         proportions: proportions,
                         recipients: recipients });     
     }
