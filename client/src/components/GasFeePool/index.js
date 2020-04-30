@@ -49,6 +49,8 @@ export default class GasFeePool extends Component {
         this.handleInputMintWithNewHatRecipients = this.handleInputMintWithNewHatRecipients.bind(this);
         this.handleInputMintWithNewHatProportions = this.handleInputMintWithNewHatProportions.bind(this);
 
+        this.handleInputInterestPayableOfOwnerAddress = this.handleInputInterestPayableOfOwnerAddress.bind(this);
+
         this.handleInputRedeemTokens = this.handleInputRedeemTokens.bind(this);        
         this.handleInputRedeemAndTransferRedeemTo = this.handleInputRedeemAndTransferRedeemTo.bind(this);        
         this.handleInputRedeemAndTransferRedeemTokens = this.handleInputRedeemAndTransferRedeemTokens.bind(this);        
@@ -59,7 +61,9 @@ export default class GasFeePool extends Component {
 
         this.createHat = this.createHat.bind(this);
         this.mintWithSelectedHat = this.mintWithSelectedHat.bind(this);
-        this.mintWithNewHat = this.mintWithNewHat.bind(this);        
+        this.mintWithNewHat = this.mintWithNewHat.bind(this);
+
+        this.interestPayableOf = this.interestPayableOf.bind(this);
 
         this.redeem = this.redeem.bind(this);
         this.redeemAll = this.redeemAll.bind(this);
@@ -97,6 +101,10 @@ export default class GasFeePool extends Component {
 
     handleInputMintWithNewHatProportions({ target: { value } }) {
         this.setState({ valueOfMintWithNewHatProportions: Number(value) });
+    }
+
+    handleInputInterestPayableOfOwnerAddress({ target: { value } }) {
+        this.setState({ valueOfInterestPayableOfOwnerAddress: value });
     }
 
     handleInputRedeemTokens({ target: { value } }) {
@@ -321,12 +329,14 @@ export default class GasFeePool extends Component {
     }
 
     interestPayableOf = async () => {
-        const { accounts, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, web3 } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfInterestPayableOfOwnerAddress } = this.state;
 
-        const _owner = walletAddressList["addressList"]["address1"];
+        const _owner = valueOfInterestPayableOfOwnerAddress;
 
         let interestPayableOfAmount = await rDAI.methods.interestPayableOf(_owner).call();
         console.log('=== rDAI.sol of interestPayableOf() function ===', interestPayableOfAmount); 
+
+        this.setState({ interestPayableOfAmount: interestPayableOfAmount });
     }
 
     redeem = async () => {
@@ -634,6 +644,7 @@ export default class GasFeePool extends Component {
                 _createHatProportionsList,
                 _mintWithNewHatRecipientsList, 
                 _mintWithNewHatProportionsList,
+                interestPayableOfAmount,
                 AddedRelayers,
                 createdHatID,
                 statusOfHatID } = this.state;
@@ -724,7 +735,7 @@ export default class GasFeePool extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Owner Address of Hat</p></td>
-                                    <td><Input type="text" placeholder="Please input Owner Address of Hat" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td><Input type="text" placeholder="Please input Owner Address of Hat" value={this.state.valueOfInterestPayableOfOwnerAddress} onChange={this.handleInputInterestPayableOfOwnerAddress} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -733,6 +744,10 @@ export default class GasFeePool extends Component {
                                     <td></td>
                                 </tr>
                             </Table>
+
+                            <p>↓</p>
+
+                            Interest Payable Of Amount: { interestPayableOfAmount }
 
                             <p>↓</p>
 
