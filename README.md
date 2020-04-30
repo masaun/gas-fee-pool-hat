@@ -1,7 +1,8 @@
 # Gas Fee Pool Hat
 
 ## 【Introduction of Gas Fee Pool Hat】
-- Gas Fee Pool Hat is for `Service Providers` on ethereum.
+- Gas Fee Pool Hat is that gas fee is paid by relayer instead of users by utilizing rDAI and Biconomy.
+  - Amount that relayer pay for gas fee is provided from interest income via rDAI.
   - Users generate `Interest income` via specific Hat of `rDAI`
   - Users are staking `generated "interest income"` into `Gas Fee Pool Hat` .
   - Users can pay `"Gas Fee" of users` with `generated "interest income"` instead of users. 
