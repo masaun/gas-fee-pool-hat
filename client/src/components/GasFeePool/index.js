@@ -738,7 +738,7 @@ export default class GasFeePool extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Redeem To</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -758,7 +758,7 @@ export default class GasFeePool extends Component {
                             <Table>
                                 <tr>
                                     <td><p>Redeem To</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferAllRedeemTo} onChange={this.handleInputRedeemAndTransferAllRedeemTo} /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
