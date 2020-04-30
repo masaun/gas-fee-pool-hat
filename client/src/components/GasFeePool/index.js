@@ -626,9 +626,13 @@ export default class GasFeePool extends Component {
                             <Table>
                                 <tr>
                                     <td><Input type="text" placeholder="Please input relayer address" value={this.state.valueOfAddRelayer} onChange={this.handleInputAddRelayer} /></td>
+                                </tr>
+                                <tr>
                                     <td><Button size={'small'} mt={3} mb={2} onClick={this.addRelayer}> Add Relayer </Button></td>
                                 </tr>
                             </Table>
+                            <p>↓</p>
+                            <p> Created Relayer Address: ●● </p>
                         </Card>
 
                         <Card width={"auto"} 
@@ -638,8 +642,8 @@ export default class GasFeePool extends Component {
                               p={20} 
                               borderColor={"#E8E8E8"}
                         >
-                            <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4> <br />
-                            <h4>↓</h4> <br />
+                            <h4>Gas Fee Pool Hat<br />（by using rDAI）</h4>
+                            <p>↓</p>
                             <ul>
                                 <h4>Example of proportions specification of receivng interest income between recipients</h4>
                                 <li>10%: GasFeePool (To RelayerAddress)</li>
@@ -677,19 +681,15 @@ export default class GasFeePool extends Component {
                                 </tr>
                             </Table>
 
-                            <br />
+                            <p>↓</p>
 
-                            <h4>↓</h4> 
+                            <p> Created Hat ID: ●● </p>
 
-                            <br />
+                            <p>↓</p>
 
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
 
-                            <br />
-
                             <h4>↓</h4> 
-
-                            <br />
 
                             <Table>
                                 <tr>
