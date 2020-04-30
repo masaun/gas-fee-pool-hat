@@ -36,6 +36,7 @@ export default class GasFeePool extends Component {
             mintWithNewHatProportionsList: []
         };
 
+        /////// Input value buttons
         this.handleInputAddRelayer = this.handleInputAddRelayer.bind(this);
 
         this.handleInputCreateHatRecipients = this.handleInputCreateHatRecipients.bind(this);
@@ -52,6 +53,18 @@ export default class GasFeePool extends Component {
         this.handleInputRedeemAndTransferRedeemTo = this.handleInputRedeemAndTransferRedeemTo.bind(this);        
         this.handleInputRedeemAndTransferRedeemTokens = this.handleInputRedeemAndTransferRedeemTokens.bind(this);        
         this.handleInputRedeemAndTransferAllRedeemTo = this.handleInputRedeemAndTransferAllRedeemTo.bind(this);
+
+        /////// Submit buttons
+        this.addRelayer = this.addRelayer.bind(this);
+
+        this.createHat = this.createHat.bind(this);
+        this.mintWithSelectedHat = this.mintWithSelectedHat.bind(this);
+        this.mintWithNewHat = this.mintWithNewHat.bind(this);        
+
+        this.redeem = this.redeem.bind(this);
+        this.redeemAll = this.redeemAll.bind(this);
+        this.redeemAndTransfer = this.redeemAndTransfer.bind(this);
+        this.redeemAndTransferAll = this.redeemAndTransferAll.bind(this);
     }
 
     handleInputAddRelayer({ target: { value } }) {
@@ -304,7 +317,6 @@ export default class GasFeePool extends Component {
         const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemTokens } = this.state;
 
         const _redeemTokens = valueOfRedeemTokens;
-        //const _redeemTokens = 1.05;  // Expected transferred value is 1.05 DAI（= 1050000000000000000 Wei）
 
         //@dev - Transfer DAI from UserWallet to DAI-contract
         let decimals = 18;
@@ -319,31 +331,37 @@ export default class GasFeePool extends Component {
     }
 
     redeemAll = async () => {
-        const { accounts, gas_fee_pool, web3 } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address } = this.state;
 
-        let response = await gas_fee_pool.methods._redeemAll().send({ from: accounts[0] });
-        console.log('=== response of _redeemAll() function ===', response);           
+        let response = await rDAI.methods.redeemAll().send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeemAll() function ===', response);           
     }
 
     redeemAndTransfer = async () => {
-        const { accounts, web3, gas_fee_pool, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemAndTransferRedeemTo, valueOfRedeemAndTransferRedeemTokens } = this.state;
 
         const _redeemTo = valueOfRedeemAndTransferRedeemTo;
         const _redeemTokens = valueOfRedeemAndTransferRedeemTokens;
 
-        let response = await gas_fee_pool.methods._redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
-        console.log('=== response of _redeemAndTransfer() function ===', response);           
+        //@dev - Transfer DAI from UserWallet to DAI-contract
+        let decimals = 18;
+        let redeemTokens = web3.utils.toWei(_redeemTokens.toString(), 'ether');
+        console.log('=== redeemTokens ===', redeemTokens);
+        const _spender = rDAI_address;
+
+        let response = await rDAI.methods.redeemAndTransfer(_redeemTo, _redeemTokens).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeemAndTransfer() function ===', response);           
 
         this.setState({ valueOfRedeemAndTransferRedeemTo: '', valueOfRedeemAndTransferRedeemTokens: '' });
     }
 
     redeemAndTransferAll = async () => {
-        const { accounts, web3, gas_fee_pool, valueOfRedeemAndTransferAllRedeemTo } = this.state;
+        const { accounts, web3, gas_fee_pool, dai, rDAI, gas_fee_pool_address, rDAI_address, valueOfRedeemAndTransferAllRedeemTo } = this.state;
 
         const _redeemTo = valueOfRedeemAndTransferAllRedeemTo;
 
-        let response = await gas_fee_pool.methods._redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
-        console.log('=== response of _redeemAndTransferAll() function ===', response);           
+        let response = await rDAI.methods.redeemAndTransferAll(_redeemTo).send({ from: accounts[0] });
+        console.log('=== rDAI.sol of redeemAndTransferAll() function ===', response);           
 
         this.setState({ valueOfRedeemAndTransferAllRedeemTo: '' });
     }
