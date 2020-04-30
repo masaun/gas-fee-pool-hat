@@ -646,28 +646,7 @@ export default class GasFeePool extends Component {
                                 <li>90%: Owner（To UserAddress）</li>
                             </ul>
 
-                            <hr /> <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Recipients</p></td>
-                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
-                                    <td>{ _createHatRecipientsList }</td>
-                                </tr>
-                                <tr>
-                                    <td><p>Proportions</p></td>
-                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
-                                    <td>{ _createHatProportionsList }</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
+                            <hr /> 
 
                             <br />
 
@@ -704,72 +683,11 @@ export default class GasFeePool extends Component {
 
                             <br />
 
-                            <Table>
-                                <tr>
-                                    <td><p>Mint Amount</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><p>Hat ID</p></td>
-                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
+                            <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.interestPayableOf}> Interest Payable Of </Button> <br />
 
                             <br />
 
                             <h4>↓</h4> 
-
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Redeem Tokens（Amount）</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemTokens} onChange={this.handleInputRedeemTokens} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
-
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
-
-                            <br />
-
-                            <Table>
-                                <tr>
-                                    <td><p>Redeem To</p></td>
-                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><p>Redeem Tokens（Amount）</p></td>
-                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemAndTransferRedeemTokens} onChange={this.handleInputRedeemAndTransferRedeemTokens} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button></td>
-                                    <td></td>
-                                </tr>
-                            </Table>
 
                             <br />
 
@@ -820,6 +738,101 @@ export default class GasFeePool extends Component {
                             <Button mainColor="DarkCyan" size={'small'} mt={3} mb={2} onClick={this.underlying}> Underlying Asset Address </Button> <br />
                         </Card>
 
+                        <Card width={"auto"} 
+                              maxWidth={"1280px"} 
+                              mx={"auto"} 
+                              my={5} 
+                              p={20} 
+                              borderColor={"#E8E8E8"}
+                        >
+                            <h4>Other Write Functions</h4>
+
+                            <Table>
+                                <tr>
+                                    <td><p>Recipients</p></td>
+                                    <td><Input type="text" placeholder="Please input recipients address" value={this.state.valueOfCreateHatRecipients} onChange={this.handleInputCreateHatRecipients} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddRecipients}> Add Recipients </Button></td>
+                                    <td>{ _createHatRecipientsList }</td>
+                                </tr>
+                                <tr>
+                                    <td><p>Proportions</p></td>
+                                    <td><Input type="text" placeholder="Please input proportions" value={this.state.valueOfCreateHatProportions} onChange={this.handleInputCreateHatProportions} /></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHatAddProportions}> Add Proportions </Button></td>
+                                    <td>{ _createHatProportionsList }</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.createHat}> Create Hat </Button></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Mint Amount</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Mint Amount" value={this.state.valueOfMintWithSelectedHatMintAmount} onChange={this.handleInputMintWithSelectedHatMintAmount} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Hat ID</p></td>
+                                    <td><Input type="text" placeholder="Please input Hat ID" value={this.state.valueOfMintWithSelectedHatHatID} onChange={this.handleInputMintWithSelectedHatHatID} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.mintWithSelectedHat}> Mint With Selected Hat </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemTokens} onChange={this.handleInputRedeemTokens} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeem}> Redeem </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAll}> Redeem All </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+
+                            <br />
+
+                            <Table>
+                                <tr>
+                                    <td><p>Redeem To</p></td>
+                                    <td><Input type="text" placeholder="Please input Redeem To" value={this.state.valueOfRedeemAndTransferRedeemTo} onChange={this.handleInputRedeemAndTransferRedeemTo} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Redeem Tokens（Amount）</p></td>
+                                    <td><Input type="number" step="0.01" placeholder="Please input Redeem Tokens（Amount）" value={this.state.valueOfRedeemAndTransferRedeemTokens} onChange={this.handleInputRedeemAndTransferRedeemTokens} /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><Button size={'small'} mt={3} mb={2} onClick={this.redeemAndTransfer}> Redeem And Transfer </Button></td>
+                                    <td></td>
+                                </tr>
+                            </Table>
+                        </Card>
                     </Grid>
 
                     <Grid item xs={4}>
